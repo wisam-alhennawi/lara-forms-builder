@@ -1,17 +1,17 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "wisam-alhennawi/lara-forms-builder",
+    "description": "This is my package lara-forms-builder",
     "keywords": [
-        ":vendor_name",
+        "wisam-alhennawi",
         "laravel",
-        ":package_slug"
+        "lara-forms-builder"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/wisam-alhennawi/lara-forms-builder",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Wisam Alhennawi",
+            "email": "wesam.h1989@gmail.com",
             "role": "Developer"
         }
     ],
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "WisamAlhennawi\\LaraFormsBuilder\\": "src",
+            "WisamAlhennawi\\LaraFormsBuilder\\Database\\Factories\\": "database/factories"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "WisamAlhennawi\\LaraFormsBuilder\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -61,10 +61,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "WisamAlhennawi\\LaraFormsBuilder\\LaraFormsBuilderServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "LaraFormsBuilder": "WisamAlhennawi\\LaraFormsBuilder\\Facades\\LaraFormsBuilder"
             }
         }
     },

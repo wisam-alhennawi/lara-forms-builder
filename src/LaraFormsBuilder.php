@@ -89,7 +89,6 @@ trait LaraFormsBuilder
      */
     protected function beforeFormProperties()
     {
-
     }
 
     /**
@@ -114,7 +113,6 @@ trait LaraFormsBuilder
      */
     protected function afterFormProperties()
     {
-
     }
 
     /**

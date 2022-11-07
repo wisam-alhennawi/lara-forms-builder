@@ -38,8 +38,7 @@
     },
     "autoload": {
         "psr-4": {
-            "WisamAlhennawi\\LaraFormsBuilder\\": "src",
-            "WisamAlhennawi\\LaraFormsBuilder\\Database\\Factories\\": "database/factories"
+            "WisamAlhennawi\\LaraFormsBuilder\\": "src"
         }
     },
     "autoload-dev": {

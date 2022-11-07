@@ -2,16 +2,20 @@
 
 namespace WisamAlhennawi\LaraFormsBuilder;
 
-use Route;
 use Illuminate\Support\Str;
 use Lang;
+use Route;
 
-Trait LaraFormsBuilder
+trait LaraFormsBuilder
 {
     public $model;
+
     public $mode;
+
     public $submitButtonLabel;
+
     public $cancelButtonLabel;
+
     public $headView;
 
     /**
@@ -29,6 +33,7 @@ Trait LaraFormsBuilder
                 $fieldKeys[] = $key;
             }
         }
+
         return $fieldKeys;
     }
 
@@ -50,6 +55,7 @@ Trait LaraFormsBuilder
                 $fieldValidationAttributes[$key] = $field['label'] ?? $key;
             }
         }
+
         return [$fieldRules, $fieldValidationAttributes];
     }
 
@@ -59,11 +65,12 @@ Trait LaraFormsBuilder
      *
      * @param $model
      */
-    protected function mountForm($model) {
+    protected function mountForm($model)
+    {
         $this->model = $model;
-        [$this->rules, $this->validationAttributes]= $this->getFieldRulesAndValidationAttributes();
+        [$this->rules, $this->validationAttributes] = $this->getFieldRulesAndValidationAttributes();
 
-        if (str_ends_with(Route::currentRouteName(), '.show') && !$this->mode) {
+        if (str_ends_with(Route::currentRouteName(), '.show') && ! $this->mode) {
             $this->mode = 'view';
         }
         // TODO : add configuration for submit and cancel button labels
@@ -77,13 +84,12 @@ Trait LaraFormsBuilder
         $this->afterFormProperties();
     }
 
-
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
     protected function beforeFormProperties()
     {
-        return;
+
     }
 
     /**
@@ -108,7 +114,7 @@ Trait LaraFormsBuilder
      */
     protected function afterFormProperties()
     {
-        return;
+
     }
 
     /**
@@ -124,7 +130,8 @@ Trait LaraFormsBuilder
     /**
      * Submit the form (validation, create or update the model, etc.)
      */
-    protected function submit() {
+    protected function submit()
+    {
         $validated_data = $this->validate();
 
         // create or update the model
@@ -132,11 +139,12 @@ Trait LaraFormsBuilder
 
         // it could be used to save relations or do other things after saving the model, saveFoo() method
         foreach ($this->getFieldKeys() as $fieldKey) {
-                $function = 'save' . Str::of($fieldKey)->studly();
-                $validated_data = $this->$fieldKey;
-                if (method_exists($this, $function)) $this->$function($validated_data);
+            $function = 'save'.Str::of($fieldKey)->studly();
+            $validated_data = $this->$fieldKey;
+            if (method_exists($this, $function)) {
+                $this->$function($validated_data);
+            }
         }
-
     }
 
     /**
@@ -163,10 +171,8 @@ Trait LaraFormsBuilder
         $this->model->update($validated_data);
     }
 
-
     /**
      * After clicking on the submit button (submit the form, show success message and callback)
-     *
      */
     public function checkAndSave()
     {
@@ -193,10 +199,10 @@ Trait LaraFormsBuilder
         // if you want to customize the success message, you should add the custom message key entry to the lang file (Example: "A new forestryPoolMember has benn created successfully.") or override the method
         $modelName = Str::lcfirst(class_basename(get_class($this->model)));
         if ($this->mode == 'create') {
-            $customeMessageKey = 'A new ' . $modelName . ' has been created successfully.';
+            $customeMessageKey = 'A new '.$modelName.' has been created successfully.';
             $message = trans('A new entry has been created successfully.');
         } elseif ($this->mode == 'update') {
-            $customeMessageKey = 'The ' . $modelName . ' has been updated successfully.';
+            $customeMessageKey = 'The '.$modelName.' has been updated successfully.';
             $message = trans('Changes were saved successfully.');
         }
 

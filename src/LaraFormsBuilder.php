@@ -198,16 +198,15 @@ trait LaraFormsBuilder
     {
         // if you want to customize the success message, you should add the custom message key entry to the lang file (Example: "A new forestryPoolMember has benn created successfully.") or override the method
         $modelName = Str::lcfirst(class_basename(get_class($this->model)));
-        if ($this->mode == 'create') {
-            $customeMessageKey = 'A new '.$modelName.' has been created successfully.';
-            $message = trans('A new entry has been created successfully.');
-        } elseif ($this->mode == 'update') {
-            $customeMessageKey = 'The '.$modelName.' has been updated successfully.';
+        $customMessageKey = 'A new '.$modelName.' has been created successfully.';
+        $message = trans('A new entry has been created successfully.');
+        if ($this->mode == 'update') {
+            $customMessageKey = 'The '.$modelName.' has been updated successfully.';
             $message = trans('Changes were saved successfully.');
         }
 
-        if (Lang::has($customeMessageKey)) {
-            $message = trans($customeMessageKey);
+        if (Lang::has($customMessageKey)) {
+            $message = trans($customMessageKey);
         }
 
         session()->flash('flash.banner', $message);

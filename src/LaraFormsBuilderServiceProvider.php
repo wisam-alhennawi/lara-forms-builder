@@ -19,6 +19,7 @@ class LaraFormsBuilderServiceProvider extends PackageServiceProvider
             ->name('lara-forms-builder')
             ->hasConfigFile()
             ->hasViews()
+            ->hasTranslations()
             ->hasCommand(LaraFormsBuilderCommand::class);
     }
 }

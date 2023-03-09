@@ -41,10 +41,10 @@ trait LaraFormsBuilder
      * @param $field array
      * @param $key string
      * @param $modelRules array
-     *
      * @return string
      */
-    private function getfieldRules($field, $key, $modelRules){
+    private function getfieldRules($field, $key, $modelRules)
+    {
         $fieldRules = '';
         // check if the field has rules or the model has rules for this field
         if (isset($field['rules'])) {
@@ -54,6 +54,7 @@ trait LaraFormsBuilder
         } else {
             $fieldRules = '';
         }
+
         return $fieldRules;
     }
 

@@ -38,20 +38,41 @@ trait LaraFormsBuilder
     }
 
     /**
+     * @param $field array
+     * @param $key string
+     * @param $modelRules array
+     *
+     * @return string
+     */
+    private function getfieldRules($field, $key, $modelRules){
+        $fieldRules = '';
+        // check if the field has rules or the model has rules for this field
+        if (isset($field['rules'])) {
+            $fieldRules = $field['rules'];
+        } elseif (isset($modelRules[$key])) {
+            $fieldRules = $modelRules[$key];
+        } else {
+            $fieldRules = '';
+        }
+        return $fieldRules;
+    }
+
+    /**
      * @return array
      */
     private function getFieldRulesAndValidationAttributes()
     {
+        $modelRules = get_class($this->model)::$rules ?? [];
         $fieldRules = [];
         $fieldValidationAttributes = [];
         foreach ($this->fields() as $key => $field) {
             if (is_numeric($key) && isset($field['fields'])) {
                 foreach ($field['fields'] as $key => $field) {
-                    $fieldRules[$key] = $field['rules'] ?? '';
+                    $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
                     $fieldValidationAttributes[$key] = $field['label'] ?? $key;
                 }
             } else {
-                $fieldRules[$key] = $field['rules'] ?? '';
+                $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
                 $fieldValidationAttributes[$key] = $field['label'] ?? $key;
             }
         }

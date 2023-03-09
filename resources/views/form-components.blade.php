@@ -6,7 +6,8 @@
             'label' => $field['label'],
             'inputType' => isset($field['inputType']) ? $field['inputType'] : 'text',
             'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
-            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
     @case('select')
@@ -14,7 +15,9 @@
             'key' => $fieldKey,
             'label' => $field['label'],
             'selectOptions' => $field['options'],
-            'helpText' => isset($field['helpText']) ? $field['helpText'] : ''
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
     @case('radio')
@@ -22,14 +25,16 @@
             'key' => $fieldKey,
             'label' => $field['label'],
             'radioOptions' => $field['options'],
-            'helpText' => isset($field['helpText']) ? $field['helpText'] : ''
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
     @case('checkbox')
         @include('lara-forms-builder::components.checkbox', [
             'key' => $fieldKey,
             'label' => $field['label'],
-            'helpText' => isset($field['helpText']) ? $field['helpText'] : ''
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
     @default

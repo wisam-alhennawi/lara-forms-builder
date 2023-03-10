@@ -34,7 +34,7 @@
                 id="form-date-picker-component-{{ $key }}"
                 x-data="{ value: @entangle($key) }"
                 x-on:change="value = $event.target.value"
-                x-init="new Pikaday({ field: $refs.input, format: 'd.m.Y', firstDay: 1, showWeekNumber: true, i18n: pikadayTranslations, theme: 'pikaday-white' });"
+                x-init="new Pikaday({ field: $refs.input, format: 'DD.MM.YYYY', firstDay: 1, showWeekNumber: true, i18n: pikadayTranslations, theme: 'pikaday-white' });"
             >
                 <input
                     x-ref="input"

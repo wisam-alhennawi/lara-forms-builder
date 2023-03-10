@@ -19,22 +19,40 @@ trait LaraFormsBuilder
     public $headView;
 
     /**
+     * get field keys from fields array
      * @return array
      */
     public function getFieldKeys()
     {
-        $fieldKeys = [];
+        // get all keys from fields array
+        return array_map(function ($field) {
+            return $field['key'];
+        }, $this->getFieldsFlat());
+    }
+
+    /**
+     * get all fields from fields array as flat array
+     * @return array
+     */
+    public function getFieldsFlat()
+    {
+        $fields = [];
         foreach ($this->fields() as $key => $field) {
             if (is_numeric($key) && isset($field['fields'])) {
-                foreach ($field['fields'] as $key => $field) {
-                    $fieldKeys[] = $key;
+                foreach ($field['fields'] as $k => $f) {
+                    $fields[] = [
+                        'key' => $k,
+                        'field' => $f
+                    ];
                 }
             } else {
-                $fieldKeys[] = $key;
+                $fields[] = [
+                    'key' => $key,
+                    'field' => $field
+                ];
             }
         }
-
-        return $fieldKeys;
+        return $fields;
     }
 
     /**
@@ -116,14 +134,16 @@ trait LaraFormsBuilder
      */
     protected function setFormProperties()
     {
+        // get all fields
+        $fields = $this->getFieldsFlat();
         // set field values
-        $fieldKeys = $this->getFieldKeys();
-        // set field values
-        foreach ($fieldKeys as $fieldKey) {
+        foreach ($fields as $field) {
             if (filled($this->model) && $this->model->exists) {
-                $this->$fieldKey = isset($this->model->$fieldKey) ? $this->model->$fieldKey : null;
+                $this->{$field['key']} = isset($this->model->{$field['key']}) ? $this->model->{$field['key']} : null;
+            } elseif (isset($field['field']['default'])) {
+                $this->{$field['key']} = $field['field']['default'];
             } else {
-                $this->$fieldKey = null;
+                $this->{$field['key']} = null;
             }
         }
     }
@@ -145,24 +165,39 @@ trait LaraFormsBuilder
         return view('lara-forms-builder::form');
     }
 
+    private function processSaveFunctions() {
+        // saveFoo(), for all fields
+        foreach ($this->getFieldKeys() as $fieldKey) {
+            $function = 'save' . Str::of($fieldKey)->studly();
+            $validated_data = $this->$fieldKey;
+            if (method_exists($this, $function)) $this->$function($validated_data);
+        }
+    }
+
+    /**
+     * It can be used to add extra validation rules
+     * @return bool
+     */
+    protected function extraValidate() {
+        return true;
+    }
+
     /**
      * Submit the form (validation, create or update the model, etc.)
      */
     protected function submit()
     {
         $validated_data = $this->validate();
+        if (!$this->extraValidate()) {
+            return false;
+        }
 
         // create or update the model
         $this->success($validated_data);
 
         // it could be used to save relations or do other things after saving the model, saveFoo() method
-        foreach ($this->getFieldKeys() as $fieldKey) {
-            $function = 'save'.Str::of($fieldKey)->studly();
-            $validated_data = $this->$fieldKey;
-            if (method_exists($this, $function)) {
-                $this->$function($validated_data);
-            }
-        }
+        $this->processSaveFunctions();
+        return true;
     }
 
     /**
@@ -194,8 +229,7 @@ trait LaraFormsBuilder
      */
     public function checkAndSave()
     {
-        $this->submit();
-        if (count($this->errorBag->getMessages()) == 0) {
+        if ($this->submit() && count($this->errorBag->getMessages()) == 0) {
             $this->successMessage();
             $this->responseCallBack();
         }

@@ -40,6 +40,7 @@
                     x-ref="input"
                     x-bind:value="value"
                     type="text"
+                    @if(isset($readOnly) && $readOnly) readonly @endif
                     class="mt-1 block w-full rounded border text-gray-600 border-gray-200 focus:border-gray-300 focus:ring-gray-300 @if(isset($readOnly) && $readOnly) read-only:bg-gray-100 read-only:pointer-events-none read-only:select-none @endif" >
             </div>
             @error($key) <span class="mt-2 text-sm text-red-600">{{ $message }}</span> @enderror

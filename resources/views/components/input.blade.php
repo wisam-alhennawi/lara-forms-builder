@@ -6,7 +6,7 @@
         @endif
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
-        <div class="relative mt-1" x-data="{ showSecretValue: false }">
+        <div class="relative mt-1">
             <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}" x-ref="field"
             value="@if ($model->$key || is_numeric($model->$key) || $this->$key || is_numeric($this->$key)){{ $model->$key ?? $this->$key }}@else - @endif"
             class="mt-1 block w-full rounded border text-gray-600 border-gray-200 focus:border-gray-300 focus:ring-gray-300 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none disabled:pointer-events-none" readonly disabled>

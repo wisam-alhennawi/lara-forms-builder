@@ -6,7 +6,7 @@
         @endif
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
-        <div class="relative mt-1" x-data="{ showSecretValue: false }">
+        <div class="relative mt-1">
             <textarea name="form-textarea-component-{{ $key }}" id="form-textarea-component-{{ $key }}"
                 wire:model="{{ $key }}"
                 rows="{{$rows}}"

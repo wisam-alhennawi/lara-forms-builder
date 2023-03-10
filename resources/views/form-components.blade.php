@@ -37,5 +37,15 @@
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
+    @case('textarea')
+        @include('lara-forms-builder::components.textarea', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
+            'rows' => isset($field['rows']) ? $field['rows'] : 5
+        ])
+        @break
     @default
 @endswitch

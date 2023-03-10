@@ -17,7 +17,7 @@
     <fieldset class="mt-4">
         <div class="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
             @foreach($radioOptions as $optionKey => $optionLabel)
-            <div class="flex items-center">
+            <div class="flex items-center {{ array_key_first($radioOptions) !== $optionKey ? 'ml-2' : '' }}">
                 <input wire:key="form-radion-component-{{ md5($key) }}" id="{{ $key . $loop->index }}" name="{{ $key }}" type="radio" value="{{ $optionKey }}" wire:model="{{ $key }}" class="h-4 w-4 border-gray-300 text-primary focus:ring-primary">
                 <label class="ml-3 block text-sm font-medium text-gray-700">{{ $optionLabel }}</label>
             </div>

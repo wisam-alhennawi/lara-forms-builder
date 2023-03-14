@@ -6,12 +6,17 @@
         @endif
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
-        <div class="block w-full rounded-md border-gray-300 border px-3 py-2 shadow-sm sm:text-sm bg-gray-100 select-none mt-1">
-            @if ($model->$key && array_key_exists(is_object($model->$key) && enum_exists($model->$key::class) ? $model->$key->value : $model->$key, $radioOptions))
-                {{ $radioOptions[is_object($model->$key) && enum_exists($model->$key::class) ? $model->$key->value : $model->$key] }}
-            @else
-                -
-            @endif
+        @if ($model->$key && array_key_exists(is_object($model->$key) && enum_exists($model->$key::class) ? $model->$key->value : $model->$key, $radioOptions))
+            @php
+                $fieldValue = $radioOptions[is_object($model->$key) && enum_exists($model->$key::class) ? $model->$key->value : $model->$key];
+            @endphp
+        @else
+            @php
+                $fieldValue = '-';
+            @endphp
+        @endif
+        <div class="mt-1">
+            <input type="text" name="{{ $key }}" id="{{ $key }}" value="{{$fieldValue}}" class="mt-1 block w-full rounded border text-gray-600 border-gray-200 focus:border-gray-300 focus:ring-gray-300 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none disabled:pointer-events-none" readonly disabled>
         </div>
     @else
     <fieldset class="mt-4">

@@ -18,6 +18,8 @@ trait LaraFormsBuilder
 
     public $headView;
 
+    public $fields;
+
     /**
      * get field keys from fields array
      * @return array
@@ -120,6 +122,8 @@ trait LaraFormsBuilder
         $this->beforeFormProperties();
         $this->setFormProperties();
         $this->afterFormProperties();
+
+        $this->fields = $this->fields();
     }
 
     /**

@@ -7,7 +7,7 @@
     @if ($headView)
         @include($headView)
     @endif
-    @foreach ( $this->fields() as $fieldKey => $field)
+    @foreach ($fields as $fieldKey => $field)
         @if (is_numeric($fieldKey) && isset($field['fields']))
             <div class="{{ array_key_last($this->fields()) === $fieldKey ? 'pt-4' : 'py-4 border-b' }}">
                 @if (isset($field['group_info']))

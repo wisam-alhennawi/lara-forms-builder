@@ -66,19 +66,19 @@
 
     <div class="border-t border-gray-200 mt-8 pt-6">
         <div class="px-4 flex justify-end gap-2">
-            <x-jet-secondary-button wire:click="cancel">
+            <button wire:click="cancel" class="{{$this->getSecodaryButtonClasses()}}">
                 {{ $cancelButtonLabel }}
-            </x-jet-secondary-button>
+            </button>
             @if (isset($mode) && $mode == 'view')
                 @can('update', $model)
-                <x-jet-button wire:click="switchToEditMode">
+                <button wire:click="switchToEditMode" class="{{$this->getPrimaryButtonClasses()}}">
                     {{ __('Edit') }}
-                </x-jet-button>
+                </button>
                 @endcan
             @else
-            <x-jet-button wire:click="checkAndSave" type="button">
+            <button wire:click="checkAndSave" type="button" class="{{$this->getPrimaryButtonClasses()}}">
                 {{ $submitButtonLabel }}
-            </x-jet-button>
+            </button>
             @endif
         </div>
     </div>

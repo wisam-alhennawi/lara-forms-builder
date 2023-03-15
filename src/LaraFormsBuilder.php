@@ -276,8 +276,7 @@ trait LaraFormsBuilder
      */
     protected function getDefaultGroupWrapperClass()
     {
-        // TODO : add to config
-        return 'grid grid-cols-2 gap-6';
+        return config('lara-forms-builder.default_group_wrapper_class');
     }
 
     /**
@@ -287,7 +286,26 @@ trait LaraFormsBuilder
      */
     protected function getDefaultFieldWrapperClass()
     {
-        // TODO : add to config
-        return 'col-span-1 sm:col-span-1';
+        return config('lara-forms-builder.default_field_wrapper_class');
+    }
+
+    /**
+     * Get the css classes for primary button
+     *
+     * @return string
+     */
+    protected function getPrimaryButtonClasses()
+    {
+        return config('lara-forms-builder.primary_button_classes');
+    }
+
+    /**
+     * Get the css classes for secondary button
+     *
+     * @return string
+     */
+    protected function getSecodaryButtonClasses()
+    {
+        return config('lara-forms-builder.secondary_button_classes');
     }
 }

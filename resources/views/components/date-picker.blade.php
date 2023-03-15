@@ -13,7 +13,7 @@
 <div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
     <label for="{{ $key }}" class="block text-sm font-medium text-gray-800">
         {{ $label }}
-        @if ((!isset($mode) || (isset($mode) and $mode != 'view')) and isset($rules) and array_key_exists($key, $rules) && str_contains($rules[$key], 'required|'))
+        @if ((!isset($mode) || (isset($mode) and $mode != 'view')) and isset($rules) and array_key_exists($key, $rules) && str_contains($rules[$key], 'required'))
         *
         @endif
     </label>

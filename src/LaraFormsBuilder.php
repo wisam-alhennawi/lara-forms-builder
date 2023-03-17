@@ -22,6 +22,7 @@ trait LaraFormsBuilder
 
     /**
      * get field keys from fields array
+     *
      * @return array
      */
     public function getFieldKeys()
@@ -34,6 +35,7 @@ trait LaraFormsBuilder
 
     /**
      * get all fields from fields array as flat array
+     *
      * @return array
      */
     public function getFieldsFlat()
@@ -44,16 +46,17 @@ trait LaraFormsBuilder
                 foreach ($field['fields'] as $k => $f) {
                     $fields[] = [
                         'key' => $k,
-                        'field' => $f
+                        'field' => $f,
                     ];
                 }
             } else {
                 $fields[] = [
                     'key' => $key,
-                    'field' => $field
+                    'field' => $field,
                 ];
             }
         }
+
         return $fields;
     }
 
@@ -169,20 +172,25 @@ trait LaraFormsBuilder
         return view('lara-forms-builder::form');
     }
 
-    private function processSaveFunctions() {
+    private function processSaveFunctions()
+    {
         // saveFoo(), for all fields
         foreach ($this->getFieldKeys() as $fieldKey) {
-            $function = 'save' . Str::of($fieldKey)->studly();
+            $function = 'save'.Str::of($fieldKey)->studly();
             $validated_data = $this->$fieldKey;
-            if (method_exists($this, $function)) $this->$function($validated_data);
+            if (method_exists($this, $function)) {
+                $this->$function($validated_data);
+            }
         }
     }
 
     /**
      * It can be used to add extra validation rules
+     *
      * @return bool
      */
-    protected function extraValidate() {
+    protected function extraValidate()
+    {
         return true;
     }
 
@@ -192,7 +200,7 @@ trait LaraFormsBuilder
     protected function submit()
     {
         $validated_data = $this->validate();
-        if (!$this->extraValidate()) {
+        if (! $this->extraValidate()) {
             return false;
         }
 
@@ -201,6 +209,7 @@ trait LaraFormsBuilder
 
         // it could be used to save relations or do other things after saving the model, saveFoo() method
         $this->processSaveFunctions();
+
         return true;
     }
 

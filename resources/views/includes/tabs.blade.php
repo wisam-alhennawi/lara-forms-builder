@@ -1,5 +1,5 @@
-<div x-data="{ tab: @entangle('activeTab') }"
-    id="tab-layout" class="bg-white shadow rounded-md">
+{{-- TODO: add css to config --}}
+<div x-data="{ tab: @entangle('activeTab') }" class="bg-white shadow rounded-md">
     <div class="divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x">
         {{-- Tabs Links --}}
         <aside class="py-4 lg:col-span-2">
@@ -35,10 +35,9 @@
                         </div>
                     </div>
                 @endforeach
-                </div>
-
-                @include('lara-forms-builder::includes.buttons')
             </div>
+
+            @include('lara-forms-builder::includes.buttons')
         </div>
     </div>
 </div>

@@ -42,18 +42,39 @@ trait LaraFormsBuilder
     {
         $fields = [];
         foreach ($this->fields() as $key => $field) {
-            if (is_numeric($key) && isset($field['fields'])) {
-                foreach ($field['fields'] as $k => $f) {
+            if (!isset($this->hasTabs) || !$this->hasTabs) {
+                if (is_numeric($key) && isset($field['fields'])) {
+                    foreach ($field['fields'] as $k => $f) {
+                        $fields[] = [
+                            'key' => $k,
+                            'field' => $f,
+                        ];
+                    }
+                } else {
                     $fields[] = [
-                        'key' => $k,
-                        'field' => $f,
+                        'key' => $key,
+                        'field' => $field,
                     ];
                 }
             } else {
-                $fields[] = [
-                    'key' => $key,
-                    'field' => $field,
-                ];
+                // tabs
+                $tabFields = $field['tab']['content'] ?? [];
+                foreach ($tabFields as $tabFieldKey => $tabFieldValue) {
+                    // check if the field is tab
+                    if ($tabFieldKey == 'fields' && is_array($tabFieldValue)) {
+                        foreach ($tabFieldValue as $k => $f) {
+                            $fields[] = [
+                                'key' => $k,
+                                'field' => $f,
+                            ];
+                        }
+                    } elseif(is_numeric($tabFieldKey)) {
+                        $fields[] = [
+                            'key' => $tabFieldKey,
+                            'field' => $tabFieldValue,
+                        ];
+                    }
+                }
             }
         }
 
@@ -90,14 +111,31 @@ trait LaraFormsBuilder
         $fieldRules = [];
         $fieldValidationAttributes = [];
         foreach ($this->fields() as $key => $field) {
-            if (is_numeric($key) && isset($field['fields'])) {
-                foreach ($field['fields'] as $key => $field) {
+            if (!isset($this->hasTabs) || !$this->hasTabs) {
+                if (is_numeric($key) && isset($field['fields'])) {
+                    foreach ($field['fields'] as $key => $field) {
+                        $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
+                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                    }
+                } else {
                     $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
                     $fieldValidationAttributes[$key] = $field['label'] ?? $key;
                 }
             } else {
-                $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                // tabs
+                $tabContents = $field['tab']['content'] ?? [];
+                foreach ($tabContents as $tabKey => $tabContent) {
+                    // check if the field is tab
+                    if ($tabKey == 'fields' && is_array($tabContent)) {
+                        foreach ($tabContent as $key => $field) {
+                            $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
+                            $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                        }
+                    } elseif(is_numeric($tabKey)) {
+                        $fieldRules[$key] = $this->getfieldRules($tabContent, $tabKey, $modelRules);
+                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                    }
+                }
             }
         }
 

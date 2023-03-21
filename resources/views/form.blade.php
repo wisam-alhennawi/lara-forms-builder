@@ -1,6 +1,7 @@
 @php
     $groupWrapperClass = $this->getDefaultGroupWrapperClass();
     $defaultFieldWrapperClass = $this->getDefaultFieldWrapperClass();
+    $defaultCardFieldErrorWrapperClasses = $this->getDefaultCardFieldErrorWrapperClasses();
 @endphp
 
 <div id="lara-forms-builder">

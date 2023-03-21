@@ -20,6 +20,22 @@
         {{-- Tabs Content --}}
         <div class="lg:col-span-10 relative" wire:target="save" wire:loading.class="opacity-50">
             <div class="relative">
+                @error('tabWarning')
+                    <div class="shadow mx-4 mt-6 overflow-hidden rounded-md" role="alert">
+                        <div class="flex">
+                            <div class="bg-cyan-500 w-14 text-center p-2">
+                                <div class="flex justify-center h-full items-center">
+                                    <x-heroicon-o-exclamation-circle  class="h-6 w-6 text-white" />
+                                </div>
+                            </div>
+                            <div class="bg-gray-100 border-r-4 border-cyan-500 w-full p-4">
+                                <div>
+                                <p class="text-gray-600 text-sm">{{ $message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @enderror
                 @foreach($fields as $fieldKey => $field)
                     <div x-show="tab == '{{ $field['tab']['key'] }}'" wire:key="{{ 'tab-'. md5($field['tab']['key']) }}" x-cloak class="py-6">
                         <div class="px-4">

@@ -56,5 +56,16 @@
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
+    @case('cards')
+        @include('lara-forms-builder::components.cards', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'selectOptions' => $field['options'],
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
+            'cardFieldErrorWrapperClass' => isset($field['card_field_error_wrapper_class']) ? $field['card_field_error_wrapper_class'] : $defaultCardFieldErrorWrapperClasses,
+        ])
+        @break
     @default
 @endswitch

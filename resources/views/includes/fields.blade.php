@@ -1,3 +1,4 @@
+<!-- TODO: add css to config file-->
 @foreach ($fields as $fieldKey => $field)
     @if (is_numeric($fieldKey) && isset($field['fields']))
         <div class="mt-6">

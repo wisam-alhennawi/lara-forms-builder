@@ -1,3 +1,4 @@
+<!-- TODO: add css to config file-->
 <div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
     <label for="{{ $key }}" class="block text-sm font-medium text-gray-800">
         {{ $label }}

@@ -20,6 +20,10 @@ trait LaraFormsBuilder
 
     public $fields;
 
+    public bool $hasSession = true;
+
+    public bool $disableSaveButton = false;
+
     /**
      * get field keys from fields array
      *
@@ -146,7 +150,7 @@ trait LaraFormsBuilder
      * It should be called in mount method which runs once, immediately after the component is instantiated, but before render() is called. This is only called once on initial page load and never called again, even on component refreshes
      * It will set the model, mode, submitButtonLabel, cancelButtonLabel, form properties
      */
-    protected function mountForm($model)
+    protected function mountForm($model, $configurations = [])
     {
         $this->model = $model;
         [$this->rules, $this->validationAttributes] = $this->getFieldRulesAndValidationAttributes();
@@ -159,6 +163,11 @@ trait LaraFormsBuilder
         $this->submitButtonLabel = __('Save');
 
         ($this->mode == 'view') ? '' : ((filled($this->model) && $this->model->exists) ? $this->mode = 'update' : $this->mode = 'create');
+
+        // loop through configurations and set them
+        foreach ($configurations as $key => $value) {
+            $this->{$key} = $value;
+        }
 
         $this->beforeFormProperties();
         $this->setFormProperties();
@@ -312,8 +321,15 @@ trait LaraFormsBuilder
             $message = trans($customMessageKey);
         }
 
-        session()->flash('flash.banner', $message);
-        session()->flash('flash.bannerStyle', 'success');
+        if ($this->hasSession) {
+            session()->flash('flash.banner', $message);
+            session()->flash('flash.bannerStyle', 'success');
+        } else {
+            $this->dispatchBrowserEvent('banner-message', [
+                'style' => 'success',
+                'message' => $message
+            ]);
+        }
     }
 
     /**
@@ -354,5 +370,15 @@ trait LaraFormsBuilder
     protected function getSecodaryButtonClasses()
     {
         return config('lara-forms-builder.secondary_button_classes');
+    }
+
+    /**
+     * Get the css classes for the wrapper of error messages of card fields
+     *
+     * @return string
+     */
+    protected function getDefaultCardFieldErrorWrapperClasses()
+    {
+        return config('lara-forms-builder.card_field_error_wrapper_classes');
     }
 }

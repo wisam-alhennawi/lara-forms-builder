@@ -1,3 +1,4 @@
+<!-- TODO: add css to config file -->
 <div class="border-t border-gray-200 mt-8 py-6">
     <div class="px-4 flex justify-end gap-2">
         <button wire:click="cancel" class="{{$this->getSecodaryButtonClasses()}}">
@@ -10,7 +11,7 @@
             </button>
             @endcan
         @else
-        <button wire:click="checkAndSave" type="button" class="{{$this->getPrimaryButtonClasses()}}">
+        <button wire:click="checkAndSave" type="button" class="{{$this->getPrimaryButtonClasses()}}" @if($disableSaveButton) disabled @endif wire:loading.attr="disabled">
             {{ $submitButtonLabel }}
         </button>
         @endif

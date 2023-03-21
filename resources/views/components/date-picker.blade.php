@@ -1,3 +1,4 @@
+<!-- TODO: add css to config file-->
 @once
     <script>
         window.pikadayTranslations =  {

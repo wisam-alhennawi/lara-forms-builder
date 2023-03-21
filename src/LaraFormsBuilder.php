@@ -20,6 +20,10 @@ trait LaraFormsBuilder
 
     public $fields;
 
+    public bool $hasSession = true;
+
+    public bool $disableSaveButton = false;
+
     /**
      * get field keys from fields array
      *
@@ -42,18 +46,39 @@ trait LaraFormsBuilder
     {
         $fields = [];
         foreach ($this->fields() as $key => $field) {
-            if (is_numeric($key) && isset($field['fields'])) {
-                foreach ($field['fields'] as $k => $f) {
+            if (!isset($this->hasTabs) || !$this->hasTabs) {
+                if (is_numeric($key) && isset($field['fields'])) {
+                    foreach ($field['fields'] as $k => $f) {
+                        $fields[] = [
+                            'key' => $k,
+                            'field' => $f,
+                        ];
+                    }
+                } else {
                     $fields[] = [
-                        'key' => $k,
-                        'field' => $f,
+                        'key' => $key,
+                        'field' => $field,
                     ];
                 }
             } else {
-                $fields[] = [
-                    'key' => $key,
-                    'field' => $field,
-                ];
+                // tabs
+                $tabFields = $field['tab']['content'] ?? [];
+                foreach ($tabFields as $tabFieldKey => $tabFieldValue) {
+                    // check if the field is tab
+                    if ($tabFieldKey == 'fields' && is_array($tabFieldValue)) {
+                        foreach ($tabFieldValue as $k => $f) {
+                            $fields[] = [
+                                'key' => $k,
+                                'field' => $f,
+                            ];
+                        }
+                    } elseif(is_numeric($tabFieldKey)) {
+                        $fields[] = [
+                            'key' => $tabFieldKey,
+                            'field' => $tabFieldValue,
+                        ];
+                    }
+                }
             }
         }
 
@@ -90,14 +115,31 @@ trait LaraFormsBuilder
         $fieldRules = [];
         $fieldValidationAttributes = [];
         foreach ($this->fields() as $key => $field) {
-            if (is_numeric($key) && isset($field['fields'])) {
-                foreach ($field['fields'] as $key => $field) {
+            if (!isset($this->hasTabs) || !$this->hasTabs) {
+                if (is_numeric($key) && isset($field['fields'])) {
+                    foreach ($field['fields'] as $key => $field) {
+                        $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
+                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                    }
+                } else {
                     $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
                     $fieldValidationAttributes[$key] = $field['label'] ?? $key;
                 }
             } else {
-                $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                // tabs
+                $tabContents = $field['tab']['content'] ?? [];
+                foreach ($tabContents as $tabKey => $tabContent) {
+                    // check if the field is tab
+                    if ($tabKey == 'fields' && is_array($tabContent)) {
+                        foreach ($tabContent as $key => $field) {
+                            $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
+                            $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                        }
+                    } elseif(is_numeric($tabKey)) {
+                        $fieldRules[$key] = $this->getfieldRules($tabContent, $tabKey, $modelRules);
+                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                    }
+                }
             }
         }
 
@@ -108,7 +150,7 @@ trait LaraFormsBuilder
      * It should be called in mount method which runs once, immediately after the component is instantiated, but before render() is called. This is only called once on initial page load and never called again, even on component refreshes
      * It will set the model, mode, submitButtonLabel, cancelButtonLabel, form properties
      */
-    protected function mountForm($model)
+    protected function mountForm($model, $configurations = [])
     {
         $this->model = $model;
         [$this->rules, $this->validationAttributes] = $this->getFieldRulesAndValidationAttributes();
@@ -121,6 +163,11 @@ trait LaraFormsBuilder
         $this->submitButtonLabel = __('Save');
 
         ($this->mode == 'view') ? '' : ((filled($this->model) && $this->model->exists) ? $this->mode = 'update' : $this->mode = 'create');
+
+        // loop through configurations and set them
+        foreach ($configurations as $key => $value) {
+            $this->{$key} = $value;
+        }
 
         $this->beforeFormProperties();
         $this->setFormProperties();
@@ -274,8 +321,15 @@ trait LaraFormsBuilder
             $message = trans($customMessageKey);
         }
 
-        session()->flash('flash.banner', $message);
-        session()->flash('flash.bannerStyle', 'success');
+        if ($this->hasSession) {
+            session()->flash('flash.banner', $message);
+            session()->flash('flash.bannerStyle', 'success');
+        } else {
+            $this->dispatchBrowserEvent('banner-message', [
+                'style' => 'success',
+                'message' => $message
+            ]);
+        }
     }
 
     /**
@@ -316,5 +370,15 @@ trait LaraFormsBuilder
     protected function getSecodaryButtonClasses()
     {
         return config('lara-forms-builder.secondary_button_classes');
+    }
+
+    /**
+     * Get the css classes for the wrapper of error messages of card fields
+     *
+     * @return string
+     */
+    protected function getDefaultCardFieldErrorWrapperClasses()
+    {
+        return config('lara-forms-builder.card_field_error_wrapper_classes');
     }
 }

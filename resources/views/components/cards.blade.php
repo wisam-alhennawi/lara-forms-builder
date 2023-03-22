@@ -26,7 +26,7 @@
                 <div class="w-10/12">
                     <div class="flex flex-col gap-1 items-start justify-center">
                         <h4 class="text-base leading-6">
-                            {{ $option['label'] }}
+                            {!! $option['label'] !!}
                         </h4>
                     </div>
                 </div>
@@ -37,3 +37,6 @@
         </div>
     @endforeach
 </div>
+@if(isset($helpText) && $helpText)
+    <p class="mt-2 text-sm text-gray-500">{{ $helpText }}</p>
+@endif

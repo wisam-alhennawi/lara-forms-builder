@@ -46,7 +46,7 @@ trait LaraFormsBuilder
     {
         $fields = [];
         foreach ($this->fields() as $key => $field) {
-            if (!isset($this->hasTabs) || !$this->hasTabs) {
+            if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $k => $f) {
                         $fields[] = [
@@ -72,7 +72,7 @@ trait LaraFormsBuilder
                                 'field' => $f,
                             ];
                         }
-                    } elseif(is_numeric($tabFieldKey)) {
+                    } elseif (is_numeric($tabFieldKey)) {
                         $fields[] = [
                             'key' => $tabFieldKey,
                             'field' => $tabFieldValue,
@@ -115,7 +115,7 @@ trait LaraFormsBuilder
         $fieldRules = [];
         $fieldValidationAttributes = [];
         foreach ($this->fields() as $key => $field) {
-            if (!isset($this->hasTabs) || !$this->hasTabs) {
+            if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $key => $field) {
                         $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
@@ -135,7 +135,7 @@ trait LaraFormsBuilder
                             $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
                             $fieldValidationAttributes[$key] = $field['label'] ?? $key;
                         }
-                    } elseif(is_numeric($tabKey)) {
+                    } elseif (is_numeric($tabKey)) {
                         $fieldRules[$key] = $this->getfieldRules($tabContent, $tabKey, $modelRules);
                         $fieldValidationAttributes[$key] = $field['label'] ?? $key;
                     }
@@ -327,7 +327,7 @@ trait LaraFormsBuilder
         } else {
             $this->dispatchBrowserEvent('banner-message', [
                 'style' => 'success',
-                'message' => $message
+                'message' => $message,
             ]);
         }
     }

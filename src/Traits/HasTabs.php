@@ -5,6 +5,7 @@ namespace WisamAlhennawi\LaraFormsBuilder\Traits;
 trait HasTabs
 {
     public $activeTab = '';
+
     public $hasTabs = true;
 
     protected function initActiveTab($value)

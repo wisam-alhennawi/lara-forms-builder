@@ -67,5 +67,15 @@
             'cardFieldErrorWrapperClass' => isset($field['card_field_error_wrapper_class']) ? $field['card_field_error_wrapper_class'] : $defaultCardFieldErrorWrapperClasses,
         ])
         @break
+    @case('checkbox-group')
+        @include('lara-forms-builder::components.checkbox-group', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'checkboxGroupOptions' => $field['options'],
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
+        ])
+        @break
     @default
 @endswitch

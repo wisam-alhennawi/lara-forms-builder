@@ -8,6 +8,18 @@ use WisamAlhennawi\LaraFormsBuilder\Commands\LaraFormsBuilderCommand;
 
 class LaraFormsBuilderServiceProvider extends PackageServiceProvider
 {
+    public function boot(): void
+    {
+        /*
+         * Bootstrap any package services.
+         */
+        $this->publishes([
+            __DIR__ . '/../resources/css/lara-forms-builder.css' => resource_path('css/lara-forms-builder.css'),
+        ], 'lara-forms-builder-css');
+
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'lara-forms-builder');
+    }
+
     public function configurePackage(Package $package): void
     {
         /*

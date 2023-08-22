@@ -1,6 +1,5 @@
-<!-- TODO: add css to config file -->
-<div class="border-t border-gray-200 mt-8 py-6">
-    <div class="px-4 flex justify-end gap-2">
+<div class="lfb-buttons-wrapper">
+    <div class="lfb-buttons">
         <button wire:click="cancel" class="{{$this->getSecodaryButtonClasses()}}">
             {{ $cancelButtonLabel }}
         </button>

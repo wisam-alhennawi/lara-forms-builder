@@ -1,17 +1,16 @@
-<!-- TODO: add css to config file-->
 @foreach ($fields as $fieldKey => $field)
     @if (is_numeric($fieldKey) && isset($field['fields']))
-        <div class="mt-6">
+        <div class="lfb-fields-wrapper">
             @if (isset($field['group_info']))
                 @if (isset($field['group_info']['title']) || isset($field['group_info']['description']) || isset($field['group_info']['description_view']))
                     <div>
                         @if (isset($field['group_info']['title']))
-                            <h2 class="text-xl font-normal leading-6 text-gray-800">
+                            <h2 class="lfb-group-title">
                                 {{ $field['group_info']['title'] }}
                             </h2>
                         @endif
                         @if (isset($field['group_info']['description']))
-                            <p class="mt-1 text-sm text-gray-500">
+                            <p class="lfb-group-description">
                                 {{ $field['group_info']['description'] }}
                             </p>
                         @endif

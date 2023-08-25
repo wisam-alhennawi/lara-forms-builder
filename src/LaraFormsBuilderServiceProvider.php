@@ -20,6 +20,7 @@ class LaraFormsBuilderServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasTranslations()
+            ->hasAssets()
             ->hasCommand(LaraFormsBuilderCommand::class);
     }
 }

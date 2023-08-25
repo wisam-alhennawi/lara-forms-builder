@@ -38,5 +38,5 @@
     @endforeach
 </div>
 @if(isset($helpText) && $helpText)
-    <p class="mt-2 text-sm text-gray-500">{{ $helpText }}</p>
+    <p class="lfb-help-text">{{ $helpText }}</p>
 @endif

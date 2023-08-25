@@ -11,7 +11,7 @@
                 </label>
             </div>
         </div>
-        @error($key) <span class="lfb-alert lfb-alter-error>{{ $message }}</span> @enderror
+        @error($key) <span class="lfb-alert lfb-alter-error">{{ $message }}</span> @enderror
         @if(isset($helpText) && $helpText)
         <p class="lfb-help-text">{{ $helpText }}</p>
         @endif

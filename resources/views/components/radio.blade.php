@@ -23,7 +23,7 @@
         <div class="lfb-fieldset-container">
             @foreach($radioOptions as $optionKey => $optionLabel)
             <div class="lfb-fieldset-item {{ array_key_first($radioOptions) !== $optionKey ? 'lfb-fieldset-item-spacing' : '' }}">
-                <input wire:key="form-radion-component-{{ md5($key) }}" id="{{ $key . $loop->index }}" name="{{ $key }}" type="radio" value="{{ $optionKey }}" wire:model="{{ $key }}" class="lfb-radio">
+                <input wire:key="form-radio-component-{{ md5($key) }}" id="{{ $key . $loop->index }}" name="{{ $key }}" type="radio" value="{{ $optionKey }}" wire:model="{{ $key }}" class="lfb-radio">
                 <label class="lfb-label lfb-label-spacing">{{ $optionLabel }}</label>
             </div>
             @endforeach

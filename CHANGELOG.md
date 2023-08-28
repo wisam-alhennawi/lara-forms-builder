@@ -2,6 +2,18 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v0.4.0 - 2023-08-28
+
+### What's Changed
+
+- Move inline Tailwind CSS classes to custom CSS file by @florianbinderme in https://github.com/wisam-alhennawi/lara-forms-builder/pull/17
+
+### New Contributors
+
+- @florianbinderme made their first contribution in https://github.com/wisam-alhennawi/lara-forms-builder/pull/17
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v0.3.0...v0.4.0
+
 ## v0.3.0 - 2023-08-01
 
 ### What's Changed

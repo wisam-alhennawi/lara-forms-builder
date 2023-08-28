@@ -1,0 +1,42 @@
+<?php
+
+namespace [namespace];
+
+use WisamAlhennawi\LaraFormsBuilder\LaraFormComponent;
+use [model_import];
+
+class [class] extends LaraFormComponent
+{
+    public function mount(?[model] $[object])
+    {
+        $this->mountForm($[object]);
+    }
+
+    public function beforeFormProperties()
+    {
+        //
+    }
+
+    public function afterFormProperties()
+    {
+        //
+    }
+
+    protected function fields(): array
+    {
+        return [
+            [fields]
+        ];
+    }
+
+    protected function responseCallBack()
+    {
+        //return redirect()->route('');
+    }
+
+    public function cancel()
+    {
+        //return redirect()->route('');
+    }
+}
+

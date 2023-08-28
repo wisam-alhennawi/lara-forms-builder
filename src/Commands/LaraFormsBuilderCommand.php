@@ -161,7 +161,7 @@ class LaraFormsBuilderCommand extends Command
             ['created_at', 'updated_at']
         );
 
-        $columns = "[\n" . "                " . "'fields' => [\n";
+        $fields = "[\n" . "                " . "'fields' => [\n";
 
 
         foreach ($getFillable as $field) {
@@ -169,14 +169,14 @@ class LaraFormsBuilderCommand extends Command
                 continue;
             }
 
-            $columns .= "                    " . "'" . $field . "'" . " => [" . "\n" .
+            $fields .= "                    " . "'" . $field . "'" . " => [" . "\n" .
                                                     "                        'type' => ''," . "\n" .
                                                     "                        'label' => ''," ."\n" .
                                                     "                    ]," . "\n";
         }
 
-        $columns .= '                ]' . "\n" . '            ]';
+        $fields .= '                ]' . "\n" . '            ]';
 
-        return $columns;
+        return $fields;
     }
 }

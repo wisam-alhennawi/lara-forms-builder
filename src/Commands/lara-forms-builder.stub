@@ -39,4 +39,3 @@ class [class] extends LaraFormComponent
         //return redirect()->route('');
     }
 }
-

@@ -28,14 +28,21 @@ class LaraFormsBuilderCommand extends Command
     protected ?string $modelPath;
 
     /**
+     * @var string|null
+     */
+    protected ?string $langModelFileName;
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
      */
+    // TODO fields as optional argument
     protected $signature = 'make:lara-forms-builder
         {name : The name of your Livewire class}
         {model : The name of the model you want to use in this form}
         {modelpath? : The name of the model you want to use in this form}
+        {--langModelFileName= : The name of the lang file of the model}
         {--force}';
 
     /**
@@ -66,6 +73,7 @@ class LaraFormsBuilderCommand extends Command
 
         $this->model = Str::studly($this->argument('model'));
         $this->modelPath = $this->argument('modelpath') ?? null;
+        $this->langModelFileName = $this->option('langModelFileName') ?? null;
 
         $force = $this->option('force');
 
@@ -163,18 +171,54 @@ class LaraFormsBuilderCommand extends Command
 
         $fields = "[\n" . "                " . "'fields' => [\n";
 
+        // TODO check if fields argument is passed and use it to generate fields otherwise use fillable
 
+        // get casted fields to generate input types
+        $castedFields = $model->getCasts();
         foreach ($getFillable as $field) {
             if (in_array($field, $model->getHidden())) {
                 continue;
             }
 
+            $fieldType = '';
+            $inputType = '';
+            $label = $this->langModelFileName
+                ? '__('."'". 'models/'.$this->langModelFileName.'.fields.' . $field . "'".')'
+                : '__('."'". $field . "'".')';
+
+            // TODO add select, radio, textarea, etc. and improve input types
+            if (array_key_exists($field, $castedFields)) {
+                $type= $castedFields[$field];
+                switch ($type) {
+                    case 'int':
+                        $fieldType = 'input';
+                        $inputType = 'number';
+                        break;
+                    break;
+                    case 'string':
+                        $fieldType = 'input';
+                        break;
+                    case 'boolean':
+                        $fieldType = 'checkbox';
+                        break;
+                    case 'date':
+                        $fieldType = 'date-picker';
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
             $fields .= "                    " . "'" . $field . "'" . " => [" . "\n" .
-                                                    "                        'type' => ''," . "\n" .
-                                                    "                        'label' => ''," ."\n" .
+                                                    "                        'type' => '" . $fieldType . "'," . "\n";
+            // add input type if exists
+            if ($fieldType === 'input' && $inputType !== '') {
+                $fields .= "                        'inputType' => '" . $inputType . "'," . "\n";
+            }
+            $fields .= "                        'label' => " . $label . "," . "\n" .
+
                                                     "                    ]," . "\n";
         }
-
         $fields .= '                ]' . "\n" . '            ]';
 
         return $fields;

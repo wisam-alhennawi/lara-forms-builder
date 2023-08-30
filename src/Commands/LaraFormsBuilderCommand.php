@@ -190,7 +190,7 @@ class LaraFormsBuilderCommand extends Command
             if (array_key_exists($field, $castedFields)) {
                 $type= $castedFields[$field];
                 switch ($type) {
-                    case 'int':
+                    case 'integer':
                         $fieldType = 'input';
                         $inputType = 'number';
                     break;
@@ -201,6 +201,7 @@ class LaraFormsBuilderCommand extends Command
                         $fieldType = 'checkbox';
                         break;
                     case 'date':
+                    case 'datetime':
                         $fieldType = 'date-picker';
                         break;
                     default:

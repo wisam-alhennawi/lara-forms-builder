@@ -193,7 +193,6 @@ class LaraFormsBuilderCommand extends Command
                     case 'int':
                         $fieldType = 'input';
                         $inputType = 'number';
-                        break;
                     break;
                     case 'string':
                         $fieldType = 'input';

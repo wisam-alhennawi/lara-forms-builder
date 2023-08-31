@@ -13,11 +13,15 @@
                         <label for="{{ $key }}" class="lfb-checkbox-category-group-label">
                             {{ $category }}
                         </label>
-                        @each('lara-forms-builder::includes.checkboxGroupOptions', $options, 'option')
+                        @foreach($options as $option)
+                            @include('lara-forms-builder::includes.checkboxGroupOptions')
+                        @endforeach
                     </div>
                 @endforeach
             @else
-                @each('lara-forms-builder::includes.checkboxGroupOptions', $checkboxGroupOptions, 'option')
+                @foreach($checkboxGroupOptions as $option)
+                    @include('lara-forms-builder::includes.checkboxGroupOptions')
+                @endforeach
             @endif
         </div>
     </div>

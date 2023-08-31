@@ -7,17 +7,18 @@
     </label>
     <div class="lfb-fieldset lfb-fieldset-container">
         <div class="lfb-checkbox-group">
-            @foreach($checkboxGroupOptions as $option)
-                <div class="lfb-checkbox-group-item">
-                    <input wire:key="form-checkbox-group-component-{{ md5($key) }}" type="checkbox"
-                           id="{{ $option['value'] }}" value="{{ $option['value'] }}"
-                           wire:model="{{ $key }}" class="lfb-checkbox"
-                    @if (isset($mode) && ($mode == 'view' || $mode == 'confirm')) disabled @endif>
-                        <label class="lfb-label lfb-label-spacing print:text-xs"
-                               for="{{ $option['value'] }}">{{ $option['label'] }}
+            @if($hasCategory)
+                @foreach($checkboxGroupOptions as $category => $options)
+                    <div class="lfb-checkbox-category-group">
+                        <label for="{{ $key }}" class="lfb-checkbox-category-group-label">
+                            {{ $category }}
                         </label>
-                </div>
-            @endforeach
+                        @each('lara-forms-builder::includes.checkboxGroupOptions', $options, 'option')
+                    </div>
+                @endforeach
+            @else
+                @each('lara-forms-builder::includes.checkboxGroupOptions', $checkboxGroupOptions, 'option')
+            @endif
         </div>
     </div>
     @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror

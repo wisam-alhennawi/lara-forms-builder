@@ -12,24 +12,12 @@ use Livewire\Commands\MakeCommand as LivewireMakeCommand;
 
 class LaraFormsBuilderCommand extends Command
 {
-    /**
-     * @var ComponentParser
-     */
     protected ComponentParser $parser;
 
-    /**
-     * @var string
-     */
     protected string $model;
 
-    /**
-     * @var string|null
-     */
     protected ?string $modelPath;
 
-    /**
-     * @var string|null
-     */
     protected ?string $langModelFileName;
 
     /**
@@ -125,7 +113,7 @@ class LaraFormsBuilderCommand extends Command
                 $this->model,
                 lcfirst($this->model),
                 $this->getModelImport(),
-                $this->generateFields($this->getModelImport())
+                $this->generateFields($this->getModelImport()),
             ],
             file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'lara-forms-builder.stub')
         );
@@ -169,7 +157,7 @@ class LaraFormsBuilderCommand extends Command
             ['created_at', 'updated_at']
         );
 
-        $fields = "[\n" . "                " . "'fields' => [\n";
+        $fields = "[\n".'                '."'fields' => [\n";
 
         // TODO check if fields argument is passed and use it to generate fields otherwise use fillable
 
@@ -183,17 +171,17 @@ class LaraFormsBuilderCommand extends Command
             $fieldType = '';
             $inputType = '';
             $label = $this->langModelFileName
-                ? '__('."'". 'models/'.$this->langModelFileName.'.fields.' . $field . "'".')'
-                : '__('."'". $field . "'".')';
+                ? '__('."'".'models/'.$this->langModelFileName.'.fields.'.$field."'".')'
+                : '__('."'".$field."'".')';
 
             // TODO add select, radio, textarea, etc. and improve input types
             if (array_key_exists($field, $castedFields)) {
-                $type= $castedFields[$field];
+                $type = $castedFields[$field];
                 switch ($type) {
                     case 'integer':
                         $fieldType = 'input';
                         $inputType = 'number';
-                    break;
+                        break;
                     case 'string':
                         $fieldType = 'input';
                         break;
@@ -205,21 +193,21 @@ class LaraFormsBuilderCommand extends Command
                         $fieldType = 'date-picker';
                         break;
                     default:
-                        # code...
+                        // code...
                         break;
                 }
             }
-            $fields .= "                    " . "'" . $field . "'" . " => [" . "\n" .
-                                                    "                        'type' => '" . $fieldType . "'," . "\n";
+            $fields .= '                    '."'".$field."'".' => ['."\n".
+                                                    "                        'type' => '".$fieldType."',"."\n";
             // add input type if exists
             if ($fieldType === 'input' && $inputType !== '') {
-                $fields .= "                        'inputType' => '" . $inputType . "'," . "\n";
+                $fields .= "                        'inputType' => '".$inputType."',"."\n";
             }
-            $fields .= "                        'label' => " . $label . "," . "\n" .
+            $fields .= "                        'label' => ".$label.','."\n".
 
-                                                    "                    ]," . "\n";
+                                                    '                    ],'."\n";
         }
-        $fields .= '                ]' . "\n" . '            ]';
+        $fields .= '                ]'."\n".'            ]';
 
         return $fields;
     }

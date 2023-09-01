@@ -44,7 +44,8 @@ composer require wisam-alhennawi/lara-forms-builder
 
 ### Publishing Assets
 
-1) #### Config (optional)
+1) #### Config **(Mandatory)**
+    You Must publish the config file and add it to the `tailwind.config.js` in order to apply the styles: 
     ```bash
     sail artisan vendor:publish --tag="lara-forms-builder-config"
     php artisan vendor:publish --tag="lara-forms-builder-config"
@@ -59,32 +60,40 @@ composer require wisam-alhennawi/lara-forms-builder
         'secondary_button_classes' => 'btn btn-secondary',
     ];
     ```
-
-2) #### Translation (optional)
-    ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-translations"
-    php artisan vendor:publish --tag="lara-forms-builder-translations"
-    ```
-
-3) #### Views (optional)
-    ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-views"
-    php artisan vendor:publish --tag="lara-forms-builder-views"
-    ```
-
-4) #### CSS **(Mandatory)**
-    Publishing css file is **Mandatory** to apply styles.
+   
+   Update `tailwind.config.js`:
+   ```js
+   export default {
+       content: [
+        './config/lara-forms-builder.php',
+       ],
+   };
+   ```
+2) #### CSS **(Mandatory)**
+   Publishing css file is **Mandatory** to apply styles.
 
     ```bash
     sail artisan vendor:publish --tag="lara-forms-builder-assets"
     php artisan vendor:publish --tag="lara-forms-builder-assets"
     ```
-    That will make a new css file `lara-forms-builder.css` in the `public/vendor/lara-forms-builder/css/` directory.
-    After that you must import this file with your `resources/css/app.css` by adding:
+   That will make a new css file `lara-forms-builder.css` in the `public/vendor/lara-forms-builder/css/` directory.
+   After that you must import this file with your `resources/css/app.css` by adding:
     ```bash
     @import "../../public/vendor/lara-forms-builder/css/lara-forms-builder.css";
     ```
-    And feel free to edit the default style in `lara-forms-builder.css` to fulfil your form requirements style.
+   And feel free to edit the default style in `lara-forms-builder.css` to fulfil your form requirements style.
+
+3) #### Translation (optional)
+    ```bash
+    sail artisan vendor:publish --tag="lara-forms-builder-translations"
+    php artisan vendor:publish --tag="lara-forms-builder-translations"
+    ```
+
+4) #### Views (optional)
+    ```bash
+    sail artisan vendor:publish --tag="lara-forms-builder-views"
+    php artisan vendor:publish --tag="lara-forms-builder-views"
+    ```
 
 ### Alpine.js Cloak **(Mandatory)**
 You must also make sure you have this Alpine style available globally:

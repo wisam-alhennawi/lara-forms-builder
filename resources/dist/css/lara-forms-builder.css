@@ -79,8 +79,8 @@
     .lfb-alert {
         @apply mt-2 text-sm;
     }
-    /*TODO: change wraning to warning*/
-    .lfb-alert-wraning {
+
+    .lfb-alert-warning {
         @apply text-yellow-600;
     }
 

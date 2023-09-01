@@ -80,7 +80,7 @@
         @apply mt-2 text-sm;
     }
 
-    .lfb-alert-wraning {
+    .lfb-alert-warning {
         @apply text-yellow-600;
     }
 
@@ -118,5 +118,13 @@
 
     .lfb-primary-button {
         @apply inline-flex items-center px-4 py-2 bg-primary border border-transparent rounded-md font-semibold text-xs text-white tracking-widest hover:bg-secondary active:bg-secondary disabled:opacity-25 transition print:hidden;
+    }
+
+    .lfb-checkbox-category-group {
+        @apply me-6;
+    }
+
+    .lfb-checkbox-category-group-label {
+        @apply block text-sm font-medium text-gray-800 mb-4;
     }
 }

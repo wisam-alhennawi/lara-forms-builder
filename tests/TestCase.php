@@ -2,9 +2,9 @@
 
 namespace WisamAlhennawi\LaraFormsBuilder\Tests;
 
+use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use WisamAlhennawi\LaraFormsBuilder\LaraFormsBuilderServiceProvider;
-use Livewire\LivewireServiceProvider;
 
 class TestCase extends Orchestra
 {

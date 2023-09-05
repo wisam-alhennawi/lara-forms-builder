@@ -4,6 +4,7 @@ namespace WisamAlhennawi\LaraFormsBuilder\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
 use WisamAlhennawi\LaraFormsBuilder\LaraFormsBuilderServiceProvider;
+use Livewire\LivewireServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -16,6 +17,7 @@ class TestCase extends Orchestra
     {
         return [
             LaraFormsBuilderServiceProvider::class,
+            LivewireServiceProvider::class,
         ];
     }
 

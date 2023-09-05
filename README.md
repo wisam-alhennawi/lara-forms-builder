@@ -45,7 +45,7 @@ composer require wisam-alhennawi/lara-forms-builder
 ### Publishing Assets
 
 1) #### Config **(Mandatory)**
-    You Must publish the config file and add it to the `tailwind.config.js` in order to apply the styles: 
+    You Must publish the config file and add it to the `tailwind.config.js` in order to apply the styles:
     ```bash
     sail artisan vendor:publish --tag="lara-forms-builder-config"
     php artisan vendor:publish --tag="lara-forms-builder-config"
@@ -60,15 +60,25 @@ composer require wisam-alhennawi/lara-forms-builder
         'secondary_button_classes' => 'btn btn-secondary',
     ];
     ```
-   
+
    Update `tailwind.config.js`:
    ```js
    export default {
-       content: [
+        content: [
         './config/lara-forms-builder.php',
        ],
+        theme: {
+            extend: {
+                colors: {
+                    'primary': '', // #7c8e63
+                    'secondary': '', // #aebf85
+                    'danger': '' // #DC3545
+                },
+            },
+        },
    };
    ```
+
 2) #### CSS **(Mandatory)**
    Publishing css file is **Mandatory** to apply styles.
 
@@ -142,6 +152,12 @@ Examples:
 sail artisan make:lara-forms-builder UserForm User --langModelFileName=users
 sail artisan make:lara-forms-builder Users.UserForm User --langModelFileName=users       //this will make a UserForm component inside Users directory.
 ```
+
+### Use confirmation modal
+
+In order to use the confirmation modal within your project you must include it globally in the default layout of your blade view where you want to use it.
+So you can add `@livewire('modals.confirmation')` to your `views/layouts/app.blade.php` inside the html `<body>` tag.
+
 
 ## Changelog
 

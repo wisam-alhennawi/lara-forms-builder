@@ -2,6 +2,16 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.0.0 - 2023-09-05
+
+### What's Changed
+
+- add command to generate livewire form component  by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/18
+- add category to checkbox group by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/19
+- Feature/update documentation by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/20
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v0.4.0...v1.0.0
+
 ## v0.4.0 - 2023-08-28
 
 ### What's Changed

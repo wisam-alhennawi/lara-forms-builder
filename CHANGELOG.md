@@ -2,6 +2,17 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.1.0 - 2023-09-11
+
+### What's Changed
+
+- Bump ramsey/composer-install from 1 to 2 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/2
+- Bump aglipanci/laravel-pint-action from 1.0.0 to 2.3.0 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/14
+- Bump dependabot/fetch-metadata from 1.3.6 to 1.5.1 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/15
+- Add confirmation modal livewire component by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/21
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.0.0...v1.1.0
+
 ## v1.0.0 - 2023-09-05
 
 ### What's Changed

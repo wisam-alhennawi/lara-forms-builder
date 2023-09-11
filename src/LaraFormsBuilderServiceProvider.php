@@ -2,12 +2,20 @@
 
 namespace WisamAlhennawi\LaraFormsBuilder;
 
+use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use WisamAlhennawi\LaraFormsBuilder\Commands\LaraFormsBuilderCommand;
+use WisamAlhennawi\LaraFormsBuilder\Http\Livewire\Modals\Confirmation;
 
 class LaraFormsBuilderServiceProvider extends PackageServiceProvider
 {
+    public function boot()
+    {
+        parent::boot();
+        Livewire::component('modals.confirmation', Confirmation::class);
+    }
+
     public function configurePackage(Package $package): void
     {
         /*

@@ -8,7 +8,7 @@ use Route;
 
 trait LaraFormsBuilder
 {
-    public $model;
+    public $model = (object)[];
 
     public $mode;
 

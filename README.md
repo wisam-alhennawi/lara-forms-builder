@@ -125,7 +125,7 @@ Like it mention in the Requirements section if your form has a date field you mu
     import Pikaday from 'pikaday';
     window.Pikaday = Pikaday;
     ```
-  add these to your `resources/css/app.js`
+  add these to your `resources/css/app.css`
     ```css
     @import 'pikaday/css/pikaday.css';
     ```

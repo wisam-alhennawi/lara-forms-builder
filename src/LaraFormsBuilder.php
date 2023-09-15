@@ -24,6 +24,10 @@ trait LaraFormsBuilder
 
     public bool $disableSaveButton = false;
 
+    protected $rules;
+
+    protected $validationAttributes;
+
     /**
      * get field keys from fields array
      *

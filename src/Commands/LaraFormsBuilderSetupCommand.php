@@ -50,7 +50,7 @@ class LaraFormsBuilderSetupCommand extends Command
     {
         $this->components->warn('Auto setup for this package is recommended to run only into a fresh Laravel project.');
         $this->line('If you install this package into an existing Laravel application in this case we recommended to configure this package manually as it explained in the documentation [https://github.com/wisam-alhennawi/lara-forms-builder].');
-        if (!$this->components->confirm('Do You Want To Continue And Start The Setup ?', true)) {
+        if (! $this->components->confirm('Do You Want To Continue And Start The Setup ?', true)) {
             exit;
         }
     }

@@ -6,6 +6,7 @@ use Livewire\Livewire;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use WisamAlhennawi\LaraFormsBuilder\Commands\LaraFormsBuilderCommand;
+use WisamAlhennawi\LaraFormsBuilder\Commands\LaraFormsBuilderSetupCommand;
 use WisamAlhennawi\LaraFormsBuilder\Http\Livewire\Modals\Confirmation;
 
 class LaraFormsBuilderServiceProvider extends PackageServiceProvider
@@ -29,6 +30,7 @@ class LaraFormsBuilderServiceProvider extends PackageServiceProvider
             ->hasViews()
             ->hasTranslations()
             ->hasAssets()
+            ->hasCommand(LaraFormsBuilderSetupCommand::class)
             ->hasCommand(LaraFormsBuilderCommand::class);
     }
 }

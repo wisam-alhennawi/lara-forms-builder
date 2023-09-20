@@ -2,6 +2,16 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.2.0 - 2023-09-20
+
+### What's Changed
+
+- Feature/setup command by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/24
+- Bump dependabot/fetch-metadata from 1.5.1 to 1.6.0 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/22
+- Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/23
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.1.0...v1.2.0
+
 ## v1.1.0 - 2023-09-11
 
 ### What's Changed

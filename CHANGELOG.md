@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.2.1 - 2023-09-22
+
+### What's Changed
+
+- fix rules and validationAttributes bug by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/25
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.2.0...v1.2.1
+
 ## v1.2.0 - 2023-09-20
 
 ### What's Changed

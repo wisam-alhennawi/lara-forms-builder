@@ -58,7 +58,7 @@ class LaraFormsBuilderSetupCommand extends Command
 
     protected function checkEnvironment(): void
     {
-        Log::info('LFB Jetstream = ' . InstalledVersions::isInstalled('laravel/jetstream'));
+        Log::info('LFB Jetstream = '.InstalledVersions::isInstalled('laravel/jetstream'));
         //check if jetstream version 3 installed
         if (InstalledVersions::isInstalled('laravel/jetstream')) {
             $jetstreamVersion = InstalledVersions::getVersion('laravel/jetstream');

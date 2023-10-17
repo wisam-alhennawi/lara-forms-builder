@@ -172,7 +172,7 @@ class LaraFormsBuilderSetupCommand extends Command
 
             // update the colors{} object in tailwind.config.js
             $this->insertInFile(
-                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL."            },",
+                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL.'            },',
                 '            colors: {'.PHP_EOL.
                       "                'primary': '', // #7c8e63".PHP_EOL.
                       "                'secondary': '', // #aebf85".PHP_EOL.

@@ -8,7 +8,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use SchwingeGmbH\SchwingeTallViews\Traits\WorkingWithStringsInFilesTrait;
+use WisamAlhennawi\LaraFormsBuilder\Traits\WorkingWithStringsInFilesTrait;
 
 class LaraFormsBuilderSetupCommand extends Command
 {

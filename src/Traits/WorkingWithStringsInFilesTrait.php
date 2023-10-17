@@ -1,6 +1,6 @@
 <?php
 
-namespace SchwingeGmbH\SchwingeTallViews\Traits;
+namespace WisamAlhennawi\LaraFormsBuilder\Traits;
 
 trait WorkingWithStringsInFilesTrait
 {

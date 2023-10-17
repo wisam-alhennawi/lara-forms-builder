@@ -152,7 +152,7 @@ class LaraFormsBuilderSetupCommand extends Command
             // add lara-forms-builder-config to the content[] in tailwind.config.js
             $this->insertInFile(
                 "'./resources/views/**/*.blade.php',",
-                "'./config/lara-forms-builder.php',",
+                "        './config/lara-forms-builder.php',",
                 base_path('tailwind.config.js')
             );
         }
@@ -172,7 +172,7 @@ class LaraFormsBuilderSetupCommand extends Command
 
             // update the colors{} object in tailwind.config.js
             $this->insertInFile(
-                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL."},",
+                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL."            },",
                 '            colors: {'.PHP_EOL.
                       "                'primary': '', // #7c8e63".PHP_EOL.
                       "                'secondary': '', // #aebf85".PHP_EOL.
@@ -180,22 +180,6 @@ class LaraFormsBuilderSetupCommand extends Command
                       '            },',
                 base_path('tailwind.config.js')
             );
-//            (new Filesystem)
-//                ->replaceInFile(
-//                    "            fontFamily: {
-//                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-//            },",
-//                    '            fontFamily: {'."\n".
-//                           "                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],"."\n".
-//                           '            },'."\n".
-//                           '            colors: {'."\n".
-//                           "                'primary': '', // #7c8e63"."\n".
-//                           "                'secondary': '', // #aebf85"."\n".
-//                           "                'danger': '' // #DC3545"."\n".
-//                           '            },',
-//
-//                    base_path('tailwind.config.js')
-//                );
         }
     }
 
@@ -205,7 +189,7 @@ class LaraFormsBuilderSetupCommand extends Command
             if ($this->components->confirm('Do you want to include confirmation modal in app.blade layout?', true)) {
                 $this->insertInFile(
                     "@livewire('navigation-menu')",
-                    "@livewire('modals.confirmation')",
+                    "            @livewire('modals.confirmation')",
                     resource_path('views/layouts/app.blade.php')
                 );
             }

@@ -88,7 +88,6 @@ This command will do the following:
    Publishing css file is **Mandatory** to apply styles.
 
     ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-assets"
     php artisan vendor:publish --tag="lara-forms-builder-assets"
     ```
    That will make a new css file `lara-forms-builder.css` in the `public/vendor/lara-forms-builder/css/` directory.
@@ -112,7 +111,6 @@ This command will do the following:
 Like it mention in the Requirements section if your form has a date field you must install required dependencies by following these steps:
 - Installing pikaday:
     ```bash
-    sail npm install pikaday
     npm install pikaday
     ```
   add these to your `resources/js/app.js`
@@ -127,7 +125,6 @@ Like it mention in the Requirements section if your form has a date field you mu
 
 - Installing moment:
     ```bash
-    sail npm install moment
     npm install moment
     ```
 ### Use confirmation modal

@@ -6,6 +6,7 @@ use Composer\InstalledVersions;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class LaraFormsBuilderSetupCommand extends Command
@@ -15,7 +16,7 @@ class LaraFormsBuilderSetupCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:lara-forms-builder-setup';
+    protected $signature = 'make:lara-forms-builder-setup {--stv}';
 
     /**
      * The console command description.
@@ -57,6 +58,7 @@ class LaraFormsBuilderSetupCommand extends Command
 
     protected function checkEnvironment(): void
     {
+        Log::info('LFB Jetstream = ' . InstalledVersions::isInstalled('laravel/jetstream'));
         //check if jetstream version 3 installed
         if (InstalledVersions::isInstalled('laravel/jetstream')) {
             $jetstreamVersion = InstalledVersions::getVersion('laravel/jetstream');
@@ -119,6 +121,9 @@ class LaraFormsBuilderSetupCommand extends Command
 
     protected function installJetstream(): void
     {
+        if ($this->option('stv')) {
+            $this->checkEnvironment();
+        }
         if (! $this->isJetstreamInstalled) {
             if ($this->components->confirm('This Package Requires (laravel/jetstream:^3.0 with livewire/livewire:^2.0) Do You Want To Install them ?', true)) {
                 try {

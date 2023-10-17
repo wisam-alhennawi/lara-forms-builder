@@ -8,9 +8,12 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use SchwingeGmbH\SchwingeTallViews\Traits\WorkingWithStringsInFilesTrait;
 
 class LaraFormsBuilderSetupCommand extends Command
 {
+    use WorkingWithStringsInFilesTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -147,12 +150,11 @@ class LaraFormsBuilderSetupCommand extends Command
             $this->call('vendor:publish', ['--tag' => 'lara-forms-builder-config', '--force' => true]);
             $this->components->info('(lara-forms-builder-config) published successfully.');
             // add lara-forms-builder-config to the content[] in tailwind.config.js
-            (new Filesystem)
-                ->replaceInFile(
-                    "'./resources/views/**/*.blade.php',",
-                    "'./resources/views/**/*.blade.php',\n        './config/lara-forms-builder.php',",
-                    base_path('tailwind.config.js')
-                );
+            $this->insertInFile(
+                "'./resources/views/**/*.blade.php',",
+                "'./config/lara-forms-builder.php',",
+                base_path('tailwind.config.js')
+            );
         }
     }
 
@@ -169,22 +171,31 @@ class LaraFormsBuilderSetupCommand extends Command
                 );
 
             // update the colors{} object in tailwind.config.js
-            (new Filesystem)
-                ->replaceInFile(
-                    "            fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-            },",
-                    '            fontFamily: {'."\n".
-                           "                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],"."\n".
-                           '            },'."\n".
-                           '            colors: {'."\n".
-                           "                'primary': '', // #7c8e63"."\n".
-                           "                'secondary': '', // #aebf85"."\n".
-                           "                'danger': '' // #DC3545"."\n".
-                           '            },',
-
-                    base_path('tailwind.config.js')
-                );
+            $this->insertInFile(
+                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL."},",
+                '            colors: {'.PHP_EOL.
+                      "                'primary': '', // #7c8e63".PHP_EOL.
+                      "                'secondary': '', // #aebf85".PHP_EOL.
+                      "                'danger': '' // #DC3545".PHP_EOL.
+                      '            },',
+                base_path('tailwind.config.js')
+            );
+//            (new Filesystem)
+//                ->replaceInFile(
+//                    "            fontFamily: {
+//                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+//            },",
+//                    '            fontFamily: {'."\n".
+//                           "                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],"."\n".
+//                           '            },'."\n".
+//                           '            colors: {'."\n".
+//                           "                'primary': '', // #7c8e63"."\n".
+//                           "                'secondary': '', // #aebf85"."\n".
+//                           "                'danger': '' // #DC3545"."\n".
+//                           '            },',
+//
+//                    base_path('tailwind.config.js')
+//                );
         }
     }
 
@@ -192,12 +203,11 @@ class LaraFormsBuilderSetupCommand extends Command
     {
         if (! $this->isConfirmationModalIncluded) {
             if ($this->components->confirm('Do you want to include confirmation modal in app.blade layout?', true)) {
-                (new Filesystem)
-                    ->replaceInFile(
-                        "@livewire('navigation-menu')",
-                        "@livewire('navigation-menu') \n            @livewire('modals.confirmation')",
-                        resource_path('views/layouts/app.blade.php')
-                    );
+                $this->insertInFile(
+                    "@livewire('navigation-menu')",
+                    "@livewire('modals.confirmation')",
+                    resource_path('views/layouts/app.blade.php')
+                );
             }
         }
     }

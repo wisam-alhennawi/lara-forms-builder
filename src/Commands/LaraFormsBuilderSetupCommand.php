@@ -172,7 +172,7 @@ class LaraFormsBuilderSetupCommand extends Command
 
             // update the colors{} object in tailwind.config.js
             $this->insertInFile(
-                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL."},",
+                "sans: ['Figtree', ...defaultTheme.fontFamily.sans],".PHP_EOL.'},',
                 '            colors: {'.PHP_EOL.
                       "                'primary': '', // #7c8e63".PHP_EOL.
                       "                'secondary': '', // #aebf85".PHP_EOL.
@@ -180,22 +180,22 @@ class LaraFormsBuilderSetupCommand extends Command
                       '            },',
                 base_path('tailwind.config.js')
             );
-//            (new Filesystem)
-//                ->replaceInFile(
-//                    "            fontFamily: {
-//                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
-//            },",
-//                    '            fontFamily: {'."\n".
-//                           "                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],"."\n".
-//                           '            },'."\n".
-//                           '            colors: {'."\n".
-//                           "                'primary': '', // #7c8e63"."\n".
-//                           "                'secondary': '', // #aebf85"."\n".
-//                           "                'danger': '' // #DC3545"."\n".
-//                           '            },',
-//
-//                    base_path('tailwind.config.js')
-//                );
+            //            (new Filesystem)
+            //                ->replaceInFile(
+            //                    "            fontFamily: {
+            //                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            //            },",
+            //                    '            fontFamily: {'."\n".
+            //                           "                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],"."\n".
+            //                           '            },'."\n".
+            //                           '            colors: {'."\n".
+            //                           "                'primary': '', // #7c8e63"."\n".
+            //                           "                'secondary': '', // #aebf85"."\n".
+            //                           "                'danger': '' // #DC3545"."\n".
+            //                           '            },',
+            //
+            //                    base_path('tailwind.config.js')
+            //                );
         }
     }
 

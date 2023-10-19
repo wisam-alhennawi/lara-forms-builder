@@ -11,6 +11,7 @@ trait WorkingWithStringsInFilesTrait
         // check if the file not exists
         if (! file_exists($path)) {
             $this->components->warn($errorMsg);
+
             return false;
         }
         // check if the file already has the $string
@@ -20,6 +21,7 @@ trait WorkingWithStringsInFilesTrait
         // check if the $keyword we want to add $string after it not in the file
         if (! str_contains($fileContentsAsString, $search)) {
             $this->components->warn($errorMsg);
+
             return false;
         }
 
@@ -34,6 +36,7 @@ trait WorkingWithStringsInFilesTrait
             return true;
         } else {
             $this->components->warn($errorMsg);
+
             return false;
         }
     }
@@ -45,6 +48,7 @@ trait WorkingWithStringsInFilesTrait
         // check if the file not exists
         if (! file_exists($path)) {
             $this->components->warn($errorMsg);
+
             return false;
         }
         // check if the file already has the string $replace
@@ -54,6 +58,7 @@ trait WorkingWithStringsInFilesTrait
         // check if the string $search we want to replace it with $replace not in the file
         if (! str_contains($fileContentsAsString, $search)) {
             $this->components->warn($errorMsg);
+
             return false;
         }
 
@@ -64,6 +69,7 @@ trait WorkingWithStringsInFilesTrait
             return true;
         } else {
             $this->components->warn($errorMsg);
+
             return false;
         }
     }

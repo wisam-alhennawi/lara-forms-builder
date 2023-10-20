@@ -52,7 +52,6 @@ This command will do the following:
 1) #### Config **(Mandatory)**
     You Must publish the config file and add it to the `tailwind.config.js` in order to apply the styles:
     ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-config"
     php artisan vendor:publish --tag="lara-forms-builder-config"
     ```
     This is the contents of the published config file:

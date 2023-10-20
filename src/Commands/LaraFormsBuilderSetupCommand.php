@@ -125,7 +125,7 @@ class LaraFormsBuilderSetupCommand extends Command
     protected function installJetstream(): void
     {
         if (! $this->option('skip-jetstream-installation') && ! $this->isJetstreamInstalled) {
-            if ($this->components->confirm('This package qequires (laravel/jetstream:^3.0 with livewire/livewire:^2.0). Do you want to install them?', true)) {
+            if ($this->components->confirm('This package requires (laravel/jetstream:^3.0 with livewire/livewire:^2.0). Do you want to install them?', true)) {
                 try {
                     exec('composer require laravel/jetstream:^3.0');
                     exec('php artisan jetstream:install livewire');

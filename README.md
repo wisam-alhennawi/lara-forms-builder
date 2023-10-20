@@ -10,35 +10,40 @@ The main functionality of this package is:
 - Generate Livewire forms (Show, Create, Update) by using one command and one Livewire component.
 
 ## Requirements
-The following points are required to install this package:
-- PHP 8.0+
-- Laravel [10.x, 9.x]
-- Laravel Livewire 2.x
-- Alpine.js 3.x
-- Tailwindcss 3.x
-> Note that the following npm packages is required only if you have a date field within your form.
-- pikaday: 1.x
-- moment: 2.x
+The following dependencies are required to use the package:
+
+| Dependency  | Version                                        |     |
+|:------------|:-----------------------------------------------|:----|
+| PHP         | [8.x](https://www.php.net/releases/8.0/en.php) |     |
+| Laravel     | [10.x, 9.x](https://laravel.com/docs/10.x)     |     |
+| Jetstream   | [3.x](https://jetstream.laravel.com/)          | 💡  |
+| Livewire    | [2.x](https://laravel-livewire.com/docs/2.x)   | 💡  |
+| Alpine.js   | [3.x](https://alpinejs.dev/)                   | 💡  |
+| TailwindCSS | [3.x](https://tailwindcss.com/docs)            | 💡  |
+| Pikaday     | [1.x](https://github.com/Pikaday/Pikaday)      | 💡  |
+| Moment      | [2.x](https://momentjs.com/docs/)              | 💡  |
+
+💡 => You can install it with Auto Setup & Configuration.
+> Note that (pikaday & moment) npm packages is required only if you have a date field within your form.
+
 ## Installation
 
-For now while the package is in development phase and not released yet, in order to use it you must add these line to your `composer.json` file:
-
-```
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/wisam-alhennawi/lara-forms-builder.git"
-        }
-    ]
-```
-> Note that each one of the following commands has two option for execution first with laravel sail & second with default laravel.
-
-After that run:
-
 ```bash
-sail composer require wisam-alhennawi/lara-forms-builder
 composer require wisam-alhennawi/lara-forms-builder
 ```
+
+## Auto Setup & Configuration
+```bash
+php artisan make:lara-forms-builder-setup
+```
+
+This command will do the following:
+- Install `"laravel/jetstream": "^3.0"` with `"livewire/livewire": "^2.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
+- Install `"pikaday": "^1.0"` and `"moment": "^2.0"` npm packages and make required configuration.
+- Add confirmation modal component to `app.blade.php` layout.
+- publish `lara-forms-builder.php` config file and make required configuration.
+- publish `lara-forms-builder.css` assets file and make required configuration.
+- Run `npm install` & `npm run build`.
 
 ## Configuration
 
@@ -47,7 +52,6 @@ composer require wisam-alhennawi/lara-forms-builder
 1) #### Config **(Mandatory)**
     You Must publish the config file and add it to the `tailwind.config.js` in order to apply the styles:
     ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-config"
     php artisan vendor:publish --tag="lara-forms-builder-config"
     ```
     This is the contents of the published config file:
@@ -83,7 +87,6 @@ composer require wisam-alhennawi/lara-forms-builder
    Publishing css file is **Mandatory** to apply styles.
 
     ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-assets"
     php artisan vendor:publish --tag="lara-forms-builder-assets"
     ```
    That will make a new css file `lara-forms-builder.css` in the `public/vendor/lara-forms-builder/css/` directory.
@@ -95,29 +98,18 @@ composer require wisam-alhennawi/lara-forms-builder
 
 3) #### Translation (optional)
     ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-translations"
     php artisan vendor:publish --tag="lara-forms-builder-translations"
     ```
 
 4) #### Views (optional)
     ```bash
-    sail artisan vendor:publish --tag="lara-forms-builder-views"
     php artisan vendor:publish --tag="lara-forms-builder-views"
     ```
-
-### Alpine.js Cloak **(Mandatory)**
-You must also make sure you have this Alpine style available globally:
-```
-<style>
-    [x-cloak] { display: none !important; }
-</style>
-```
 
 ### Using date in form (optional)
 Like it mention in the Requirements section if your form has a date field you must install required dependencies by following these steps:
 - Installing pikaday:
     ```bash
-    sail npm install pikaday
     npm install pikaday
     ```
   add these to your `resources/js/app.js`
@@ -132,9 +124,12 @@ Like it mention in the Requirements section if your form has a date field you mu
 
 - Installing moment:
     ```bash
-    sail npm install moment
     npm install moment
     ```
+### Use confirmation modal
+
+In order to use the confirmation modal within your project you must include it globally in the default layout of your blade view where you want to use it.
+So you can add `@livewire('modals.confirmation')` to your `views/layouts/app.blade.php` inside the html `<body>` tag.
 
 ## Usage
 
@@ -143,21 +138,14 @@ Like it mention in the Requirements section if your form has a date field you mu
 By using this command you can create a new Livewire form depending on a model,
 additionally you can add [--langModelFileName=] tag to specify a lang file for model fields labels:
 ```bash
-sail artisan make:lara-forms-builder [Component Name] [Model] [--langModelFileName=]
-php artisan make:lara-forms-builder [Component Name] [Model] [--langModelFileName=]
+php artisan make:lara-forms-builder name model --langModelFileName=
 ```
 
 Examples:
 ```bash
-sail artisan make:lara-forms-builder UserForm User --langModelFileName=users
-sail artisan make:lara-forms-builder Users.UserForm User --langModelFileName=users       //this will make a UserForm component inside Users directory.
+php artisan make:lara-forms-builder UserForm User --langModelFileName=users
+php artisan make:lara-forms-builder Users.UserForm User --langModelFileName=users       //this will make a UserForm component inside Users directory.
 ```
-
-### Use confirmation modal
-
-In order to use the confirmation modal within your project you must include it globally in the default layout of your blade view where you want to use it.
-So you can add `@livewire('modals.confirmation')` to your `views/layouts/app.blade.php` inside the html `<body>` tag.
-
 
 ## Changelog
 

@@ -2,6 +2,15 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.2.2 - 2023-10-20
+
+### What's Changed
+
+- Bump stefanzweifel/git-auto-commit-action from 4 to 5 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/26
+- Feature/improve setup command by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/27
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.2.1...v1.2.2
+
 ## v1.2.1 - 2023-09-22
 
 ### What's Changed

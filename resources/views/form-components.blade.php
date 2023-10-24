@@ -65,6 +65,7 @@
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
             'cardFieldErrorWrapperClass' => isset($field['card_field_error_wrapper_class']) ? $field['card_field_error_wrapper_class'] : $defaultCardFieldErrorWrapperClasses,
+            'icon' => isset($field['icon']) ? $field['icon'] : null,
         ])
         @break
     @case('checkbox-group')

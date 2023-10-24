@@ -356,6 +356,16 @@ trait LaraFormsBuilder
         return config('lara-forms-builder.default_field_wrapper_class');
     }
 
+     /**
+     * Get the css classes for footer buttons wrapper 
+     *
+     * @return string
+     */
+    protected function getFooterButtonsWrapperClasses()
+    {
+        return config('lara-forms-builder.footer_buttons_wrapper_classes');
+    }
+    
     /**
      * Get the css classes for primary button
      *

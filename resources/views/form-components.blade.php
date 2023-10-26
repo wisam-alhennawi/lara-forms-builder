@@ -66,6 +66,7 @@
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
             'cardFieldErrorWrapperClass' => isset($field['card_field_error_wrapper_class']) ? $field['card_field_error_wrapper_class'] : $defaultCardFieldErrorWrapperClasses,
             'icon' => isset($field['icon']) ? $field['icon'] : null,
+            'svgErrorMessageIcon' => isset($field['svgErrorMessageIcon']) ? $field['svgErrorMessageIcon'] : null,
         ])
         @break
     @case('checkbox-group')

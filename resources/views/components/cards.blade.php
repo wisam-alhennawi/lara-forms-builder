@@ -22,7 +22,7 @@
     <div wire:key="form-cards-component-{{ md5($key) }}" class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
         @foreach ($selectOptions as $option)
             <div wire:click="$set('{{ $key }}', '{{ $option['value'] }}')"
-            class="lfb-card-wrapper {{ $this->$key == $option['value'] ? 'lfb-card-wrapper--state-active' : '' }} {{($readOnly)? 'lfb-card-wrapper--state-read-only ':''}}">
+            class="lfb-card-wrapper {{ $this->$key == $option['value'] ? 'lfb-card-wrapper-state-active' : '' }} {{($readOnly)? 'lfb-card-wrapper-state-read-only ':''}}">
                 <div class="lfb-card-container @if(isset($icon)) with-icon @endif">
                     <div class="lfb-card-item">
                         <h4 class="lfb-card-label">

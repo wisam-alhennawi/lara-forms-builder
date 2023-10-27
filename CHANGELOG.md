@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.3.0 - 2023-10-27
+
+### What's Changed
+
+- add group option to the select component by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/30
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.2.2...v1.3.0
+
 ## v1.2.2 - 2023-10-20
 
 ### What's Changed

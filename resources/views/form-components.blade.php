@@ -15,6 +15,7 @@
             'key' => $fieldKey,
             'label' => $field['label'],
             'selectOptions' => $field['options'],
+            'isGrouped' => isset($field['isGrouped']) ? $field['isGrouped'] : false,
             'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass

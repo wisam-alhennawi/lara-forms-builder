@@ -35,7 +35,7 @@
         @apply relative;
     }
 
-    .lfb-input {
+    .lfb-input, .lfb-textarea {
         @apply mt-1 block w-full rounded border text-gray-600 border-gray-200 focus:border-gray-300 focus:ring-gray-300;
     }
 

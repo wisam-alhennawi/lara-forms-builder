@@ -10,7 +10,7 @@
             <textarea name="form-textarea-component-{{ $key }}" id="form-textarea-component-{{ $key }}"
                 wire:model="{{ $key }}"
                 rows="{{$rows}}"
-                class="lfb-textarea lfb-disables" readonly disabled>
+                class="lfb-textarea lfb-disabled" readonly disabled>
             </textarea>
             @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
                 <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
@@ -19,7 +19,7 @@
     @else
         <div class="lfb-input-wrapper">
             <textarea wire:key="form-textarea-component-{{ md5($key) }}" name="{{ $key }}" id="form-textarea-component-{{ $key }}"
-                class="lfb-input @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
+                class="lfb-textarea @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
                 wire:model="{{ $key }}"
                 rows="{{$rows}}"
                 @if(isset($readOnly) && $readOnly) readonly @endif>

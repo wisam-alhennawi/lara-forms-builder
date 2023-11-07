@@ -2,6 +2,18 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.4.0 - 2023-11-07
+
+### What's Changed
+
+- Feature/cards footer buttons layout by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/28
+
+### New Contributors
+
+- @sheol77 made their first contribution in https://github.com/wisam-alhennawi/lara-forms-builder/pull/28
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.3.0...v1.4.0
+
 ## v1.3.0 - 2023-10-27
 
 ### What's Changed

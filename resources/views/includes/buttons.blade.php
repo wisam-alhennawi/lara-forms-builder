@@ -1,4 +1,4 @@
-<div class="lfb-buttons-wrapper">
+<div class="{{ $this->getFooterButtonsWrapperClasses() }}">
     <div class="lfb-buttons">
         <button wire:click="cancel" class="{{$this->getSecodaryButtonClasses()}}">
             {{ $cancelButtonLabel }}

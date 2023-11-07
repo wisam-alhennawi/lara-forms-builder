@@ -35,7 +35,7 @@
         @apply relative;
     }
 
-    .lfb-input {
+    .lfb-input, .lfb-textarea {
         @apply mt-1 block w-full rounded border text-gray-600 border-gray-200 focus:border-gray-300 focus:ring-gray-300;
     }
 
@@ -126,5 +126,64 @@
 
     .lfb-checkbox-category-group-label {
         @apply block text-sm font-medium text-gray-800 mb-4;
+    }
+
+    .lfb-card-wrapper {
+        @apply bg-gray-100 rounded-md relative p-4 mt-2 flex items-center border border-gray-300 transition-all hover:shadow-md hover:-translate-y-0.5 shadow cursor-pointer;
+    }
+
+    .lfb-card-wrapper-state-active {
+        @apply  border-green-500 hover:-translate-y-0;
+    }
+
+    .lfb-card-wrapper-state-read-only {
+        @apply  text-gray-400 pointer-events-none;
+    }
+
+    .lfb-card-wrapper-state-read-only .lfb-card-icon {
+        @apply  text-green-600/40;
+    }
+    
+    .lfb-card-container {
+        @apply flex gap-2 items-center justify-between w-full
+    }
+    .lfb-card-container.with-icon .lfb-card-item{
+        @apply w-10/12;
+    }
+
+    .lfb-card-item {
+        @apply flex flex-col gap-1 items-start justify-center
+    }
+
+    .lfb-card-label {
+        @apply text-base leading-6;
+    }
+
+    .lfb-card-icon {
+        @apply w-2/12 flex justify-end items-center text-green-600;
+    }
+
+    .lfb-card-icon > div {
+        @apply w-10 h-10;
+    }
+
+    .lfb-card-message-container {
+        @apply flex;
+    }
+
+    .lfb-card-message-icon-container {
+        @apply bg-yellow-500 w-14 text-center p-2;
+    }
+
+    .lfb-card-message-icon-inner {
+        @apply flex justify-center h-full items-center;
+    }
+
+    .lfb-card-message-icon-inner > svg {
+        @apply h-6 w-6 text-white;
+    }
+
+    .lfb-card-message-text {
+        @apply bg-gray-100 border-r-4 border-yellow-500 w-full p-4 text-gray-600 text-sm;
     }
 }

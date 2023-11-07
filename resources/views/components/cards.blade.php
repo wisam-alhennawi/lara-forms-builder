@@ -4,39 +4,50 @@
 @endphp
 @error($key)
     <div class="{{$cardFieldErrorWrapperClass}}" role="alert">
-        <div class="flex">
-            <div class="bg-yellow-500 w-14 text-center p-2">
-                <div class="flex justify-center h-full items-center">
-                    <x-heroicon-o-exclamation-circle  class="h-6 w-6 text-white" />
+        <div class="lfb-card-message-container">
+            <div class="lfb-card-message-icon-container">
+                <div class="lfb-card-message-icon-inner">
+                    @if(isset($errorMessageIcon))  
+                        {!! $errorMessageIcon !!}
+                    @else 
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"></path>
+                        </svg>
+                    @endif
                 </div>
             </div>
-            <div class="bg-gray-100 border-r-4 border-yellow-500 w-full p-4">
+            <div class="lfb-card-message-text">
                 <div>
-                    <p class="text-gray-600 text-sm">{{ $message }}</p>
+                    {{ $message }}
                 </div>
             </div>
         </div>
     </div>
 @enderror
-<div wire:key="form-cards-component-{{ md5($key) }}" class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
-    @foreach ($selectOptions as $option)
-        <div wire:click="$set('{{ $key }}', '{{ $option['value'] }}')"
-        class="bg-c_gray-100 rounded-md relative p-4 mt-2 flex items-center border border-c_gray-300 {{ $this->$key == $option['value'] ? 'border-status-green hover:-translate-y-0' : 'border-c_gray-300' }} {{($readOnly)? 'text-c_gray-400/40 pointer-events-none':'transition-all hover:shadow-md hover:-translate-y-0.5 shadow cursor-pointer'}}">
-            <div class="flex gap-2 items-center justify-between w-full">
-                <div class="w-10/12">
-                    <div class="flex flex-col gap-1 items-start justify-center">
-                        <h4 class="text-base leading-6">
+<div>
+    <div wire:key="form-cards-component-{{ md5($key) }}" class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
+        @foreach ($selectOptions as $option)
+            <div wire:click="$set('{{ $key }}', '{{ $option['value'] }}')"
+            class="lfb-card-wrapper {{ $this->$key == $option['value'] ? 'lfb-card-wrapper-state-active' : '' }} {{($readOnly)? 'lfb-card-wrapper-state-read-only ':''}}">
+                <div class="lfb-card-container @if(isset($icon)) with-icon @endif">
+                    <div class="lfb-card-item">
+                        <h4 class="lfb-card-label">
                             {!! $option['label'] !!}
                         </h4>
                     </div>
-                </div>
-                <div class="w-2/12 flex justify-center items-center {{($readOnly)?'text-status-green/40':'text-status-green'}}">
-                    <x-heroicon-o-table-cells class="w-10 h-10" />
+                    @if(isset($icon))
+                    <div class="lfb-card-icon">
+                        <div>
+                            @svg($icon)
+                        </div>
+                    </div>
+                    @endif  
                 </div>
             </div>
-        </div>
-    @endforeach
+        @endforeach
+    </div>
+    @if(isset($helpText) && $helpText)
+        <p class="lfb-help-text">{{ $helpText }}</p>
+    @endif
 </div>
-@if(isset($helpText) && $helpText)
-    <p class="lfb-help-text">{{ $helpText }}</p>
-@endif
+

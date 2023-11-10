@@ -186,4 +186,75 @@
     .lfb-card-message-text {
         @apply bg-gray-100 border-r-4 border-yellow-500 w-full p-4 text-gray-600 text-sm;
     }
+
+    .lfb-tabs-wrapper {
+        @apply bg-white shadow rounded-md;
+    }
+
+    .lfb-tab-container {
+        @apply divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x;
+    }
+
+    .lfb-tab-nav-wrapper {
+        @apply py-4 lg:col-span-2;
+    }
+
+    .lfb-tab-nav-container {
+        @apply flex flex-col;
+    }
+
+    .lfb-tab-nav-title-wrapper {
+        @apply flex flex-shrink-0 items-center px-4 mb-6;
+    }
+
+    .lfb-tab-nav-title {
+        @apply text-3xl font-semibold text-gray-800;
+    }
+
+    .lfb-tab-nav-link {
+        @apply px-3 py-2 text-gray-800 border-transparent hover:bg-gray-200/50 hover:border-gray-300 border-l-4 flex items-center text-sm font-medium cursor-pointer transition-all duration-300;
+    }
+
+    .lfb-tab-nav-link-active {
+        @apply bg-gray-200/50 border-gray-300;
+    }
+
+    .lfb-tab-content-wrapper {
+        @apply lg:col-span-10 relative pb-4;
+    }
+
+    .lfb-tab-content-wrapper-loading-class {
+        @apply opacity-50;
+    }
+
+    .lfb-tab-content-container {
+        @apply relative border-b mb-4;
+    }
+
+    .lfb-tab-error-wrapper {
+        @apply shadow mx-4 mt-6 overflow-hidden rounded-md;
+    } 
+    .lfb-tab-error-container {
+        @apply flex;
+    }
+    .lfb-tab-error-icon {
+        @apply bg-cyan-500 w-14 text-center p-2;
+    }
+
+    .lfb-tab-error-icon > svg {
+        @apply h-6 w-6 text-white;
+    }
+
+    .lfb-tab-error-message  {
+        @apply bg-gray-100 border-r-4 border-cyan-500 w-full p-4 text-gray-600 text-sm;
+    } 
+
+    .lfb-tab-content-item   {
+        @apply  py-6 px-4;
+    }
+
+    .lfb-tab-content-item-title {
+        @apply text-xl font-normal leading-6 text-gray-800;
+    }
+
 }

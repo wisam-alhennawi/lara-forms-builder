@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.5.0 - 2023-11-20
+
+### What's Changed
+
+- Tabs: Refactor Inline Tailwind CSS Classes to a CSS File #31 by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/32
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.4.0...v1.5.0
+
 ## v1.4.0 - 2023-11-07
 
 ### What's Changed

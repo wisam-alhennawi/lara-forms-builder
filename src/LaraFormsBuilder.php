@@ -12,6 +12,8 @@ trait LaraFormsBuilder
 
     public $mode;
 
+    public $confirmBeforeSubmit = false;
+
     public $submitButtonLabel;
 
     public $cancelButtonLabel;
@@ -255,6 +257,14 @@ trait LaraFormsBuilder
             return false;
         }
 
+        if ($this->confirmBeforeSubmit && $this->mode != 'confirm') {
+            foreach ($validated_data as $key => $value) {
+                $this->model->$key = $value;
+            }
+            $this->mode = 'confirm';
+            return false;
+        }
+
         // create or update the model
         $this->success($validated_data);
 
@@ -286,6 +296,17 @@ trait LaraFormsBuilder
     protected function onUpdateModel($validated_data)
     {
         $this->model->update($validated_data);
+    }
+
+
+    /**
+     * Reset the value of a field
+     */
+    public function resetValue($fieldKey) {
+        $this->{$fieldKey} = null;
+        if ($this->model) {
+            $this->model->{$fieldKey} = null;
+        }
     }
 
     /**
@@ -334,6 +355,14 @@ trait LaraFormsBuilder
                 'message' => $message,
             ]);
         }
+    }
+
+    public function cancelOrBack() {
+        if ($this->mode == 'confirm') {
+            $this->mode = null;
+            return null;
+        }
+        return $this->cancel();
     }
 
     /**

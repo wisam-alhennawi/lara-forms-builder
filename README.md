@@ -147,6 +147,141 @@ php artisan make:lara-forms-builder UserForm User --langModelFileName=users
 php artisan make:lara-forms-builder Users.UserForm User --langModelFileName=users       //this will make a UserForm component inside Users directory.
 ```
 
+### Form Component Types and Attributes
+
+Forms are specified in a declarative manner as an array of the `fields` function in the form component class, e.g.
+
+```php
+protected function fields(): array
+    {
+        return [
+            [
+                'fields' => [
+                    'name' => [
+                        'type' => 'input',
+                        'label' => __('models/users.fields.name'),
+                    ],
+                    'email' => [
+                        'type' => 'input',
+                        'label' => __('models/users.fields.email'),
+                        'readOnly' => true
+                    ],
+                    'role' => [
+                        'type' => 'radio',
+                        'label' => __('models/users.fields.role'),
+                        'options' => [
+                            '1' => __('Employee'),
+                            '2' => __('Manager')
+                        ]
+                    ],
+                    'status' => [
+                        'type' => 'select',
+                        'label' => __('models/users.fields.status'),
+                        'options' => [
+                            [
+                                'value' => '1',
+                                'label' => __('Pending')
+                            ],
+                            [
+                                'value' => '2',
+                                'label' => __('Active')
+                            ],
+                            [
+                                'value' => '3',
+                                'label' => __('Retired')
+                            ]
+                        ]
+                    ],
+                    'last_update' => [
+                        'type' => 'date-picker',
+                        'label' => __('models/users.fields.last_update')
+                    ],
+                    'remark' => [
+                        'type' => 'textarea',
+                        'label' => __('models/users.fields.remark'),
+                        'field_wrapper_class' => 'col-span-2',
+                    ],
+                ]
+            ]
+        ];
+    }
+```
+
+The definition above is then rendered as displayed in this screenshot (with additional language dependent translations for the labels required):
+
+![Rendered Form according to code snippet](Example-Form.png)
+
+All form components have the following general properties:
+
+* `type` (mandatory): Specifies the kind of form component, see the following subsections for supported types and their individual properties
+* `label` (mandatory): Label text of the component
+* `helpText` (optional): Help text displayed at the bottom of the component
+* `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
+* `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
+
+#### Type `input`
+
+The `input` form field is a classic html input element. It has the following additional properties:
+
+* `inputType` (optional): Specifies the specific type of input, e.g. email, number, url. Default if not provided is text.
+
+#### Type `textarea`
+
+The `textarea` form field represents a text area and has the following additional properties:
+
+* `rows` (optional): Defines the number of rows of the text area, default if not set is 5.
+
+#### Type `select`
+
+The `select` form field is a select box for single selection. It has the following additional properties:
+
+* `options` (mandatory): Specifies the options to be displayed in the select box, provided as an array of objects with attributes `value` and `label` or a nested array of group label to array of objects with attributes `value` and `label` when grouped.
+* `isGrouped` (optional): Defines whether the options are grouped, default when not set is false.
+
+#### Type `radio`
+
+The `radio` form field represents radio buttons and has the following additional properties:
+
+* `options` (mandatory): Specifies the options for the radio button selection as a simple array `value => label`.
+
+#### Type `cards`
+
+The `cards` form field is a special layout element used to select among different options by clicking on one of several cards with rich content and an icon. It has the following additional properties:
+
+* `options` (mandatory): Specifies the options to be selected as an array of objects with attributes `value` and `label` (can be HTML).
+* `icon` (optional): SVG markup or URL to be displayed as icon in all cards, if not set, no icon is displayed.
+* `card_field_error_wrapper_class` (optional): CSS class(es) to be added to error message boxes.
+* `errorMessageIcon` (optional): Customized icon markup to be displayed in an error message, if not set, a default icon is used.
+
+#### Type `checkbox`
+
+The `checkbox` form field is a single checkbox and does not have any additional properties.
+
+#### Type `checkbox-group`
+
+The `checkbox-group` form field is a multi-select group of checkboxes. It has the following additional properties:
+
+* `options` (mandatory): Specifies the values and labels for the checkboxes, provided as an array of objects with attributes `value` and `label` or a nested array of category label to array of objects with attributes `value` and `label` when grouped by category.
+* `hasCategory` (optional): Defines whether the checkbox entries are grouped by category, default if not set is false.
+
+#### Type `date-picker`
+
+The `date-picker` form field adds a Pikaday date picker. It does not have any additional properties.
+
+#### Type `file`
+
+The `file` form field represents a file input for a single file upload. It has the following additional properties:
+
+* `removeIcon` (optional): Customized icon markup to be displayed as the icon to remove/reset a selected file before saving. If not set, a default icon is used.
+
+Since binary files are usually not directly stored as properties of an Eloquent model, but must be processed separately, this type of form field will in most cases need additional file handling logic in the implementing form. The implementation follows the principles of Livewire file uploads (https://laravel-livewire.com/docs/2.x/file-uploads) and essentially provides the view part of file upload. It is suggested to add the file handling in one of the callback or override functions, e.g. the `save...` function of the property such as the following code snippet for a property `attachment`:
+
+```php
+public function saveAttachment($attachmentValue) {
+    $attachmentValue->storeAs('attachments', $attachmentValue->getClientOriginalName());
+}
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

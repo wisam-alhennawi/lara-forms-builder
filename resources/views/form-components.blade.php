@@ -81,5 +81,15 @@
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
         ])
         @break
+    @case('file')
+        @include('lara-forms-builder::components.file-upload', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
+            'removeIcon' => isset($field['removeIcon']) ? $field['removeIcon'] : null,
+        ])
+        @break        
     @default
 @endswitch

@@ -262,6 +262,7 @@ trait LaraFormsBuilder
                 $this->model->$key = $value;
             }
             $this->mode = 'confirm';
+
             return false;
         }
 
@@ -298,11 +299,11 @@ trait LaraFormsBuilder
         $this->model->update($validated_data);
     }
 
-
     /**
      * Reset the value of a field
      */
-    public function resetValue($fieldKey) {
+    public function resetValue($fieldKey)
+    {
         $this->{$fieldKey} = null;
         if ($this->model) {
             $this->model->{$fieldKey} = null;
@@ -357,11 +358,14 @@ trait LaraFormsBuilder
         }
     }
 
-    public function cancelOrBack() {
+    public function cancelOrBack()
+    {
         if ($this->mode == 'confirm') {
             $this->mode = null;
+
             return null;
         }
+
         return $this->cancel();
     }
 

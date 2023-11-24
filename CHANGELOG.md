@@ -2,6 +2,18 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.6.0 - 2023-11-24
+
+### What's Changed
+
+- Feature/file upload field and confirm mode by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/34
+
+### New Contributors
+
+- @jpbu made their first contribution in https://github.com/wisam-alhennawi/lara-forms-builder/pull/34
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.5.0...v1.6.0
+
 ## v1.5.0 - 2023-11-20
 
 ### What's Changed

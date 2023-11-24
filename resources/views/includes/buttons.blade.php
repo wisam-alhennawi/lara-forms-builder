@@ -1,6 +1,6 @@
 <div class="{{ $this->getFooterButtonsWrapperClasses() }}">
     <div class="lfb-buttons">
-        <button wire:click="cancel" class="{{$this->getSecodaryButtonClasses()}}">
+        <button wire:click="cancelOrBack" class="{{$this->getSecodaryButtonClasses()}}">
             {{ $cancelButtonLabel }}
         </button>
         @if (isset($mode) && $mode == 'view')

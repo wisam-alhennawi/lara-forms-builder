@@ -7,7 +7,7 @@
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}" x-ref="field"
+            <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
             value="@if ($model->$key || is_numeric($model->$key) || $this->$key || is_numeric($this->$key)){{ $model->$key ?? $this->$key }}@else - @endif"
             class="lfb-input lfb-disabled" readonly disabled>
             @if(isset($formWarnings) && array_key_exists($key, $formWarnings))

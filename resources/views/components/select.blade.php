@@ -30,10 +30,12 @@
         <div class="lfb-input-wrapper">
             <input type="text" name="{{ $key }}" id="{{ $key }}"
                    value=@if($isGrouped && $optionKeyGroupLabel)
-                              {{ $selectOptions[$optionKeyGroupLabel][$optionKey]['label'] }}
+                            "{{ $selectOptions[$optionKeyGroupLabel][$optionKey]['label'] }}"
                           @elseif(is_numeric($optionKey) && array_key_exists($optionKey, $selectOptions))
-                              {{ $selectOptions[$optionKey]['label'] }}
-                          @else - @endif
+                            "{{ $selectOptions[$optionKey]['label'] }}"
+                          @else
+                            "-"
+                          @endif
                    class="lfb-input lfb-disabled" readonly disabled>
         </div>
     @else

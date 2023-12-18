@@ -18,8 +18,7 @@
         <div class="lfb-input-wrapper">
             <label class="block">
                 @if(!$model->$key && !$this->$key)
-                <button type="button" class="relative inline-flex items-center justify-center uppercase px-4 py-2 lfb-input
-                    @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
+                <button type="button" class="lfb-input lfb-upload-button @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
                     {{ __('Select File') }}
                     <input wire:key="form-input-component-{{ md5($key) }}" title="{{ __('Select File') }}"
                         name="{{ $key }}" id="{{ $key }}"
@@ -27,7 +26,7 @@
                         @if(isset($readOnly) && $readOnly) readonly @endif>
                 </button>
                 @else
-                    <span class="ml-2">
+                    <span class="lfb-file-uploaded">
                         {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
                         <a wire:click="resetValue('{{ $key}}')">
                         @if(isset($removeIcon))

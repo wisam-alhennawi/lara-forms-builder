@@ -242,7 +242,7 @@ trait LaraFormsBuilder
      *
      * @return bool
      */
-    protected function extraValidate()
+    protected function extraValidate($validated_data = [])
     {
         return true;
     }
@@ -253,7 +253,7 @@ trait LaraFormsBuilder
     protected function submit()
     {
         $validated_data = $this->validate();
-        if (! $this->extraValidate()) {
+        if (! $this->extraValidate($validated_data)) {
             return false;
         }
 

@@ -7,9 +7,15 @@
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
-            value="@if ($model->$key || $this->$key){{ $model->$key ? $model->$key->getClientOriginalName() : $this->$key->getClientOriginalName() }}@else - @endif"
-            class="lfb-input lfb-disabled" readonly disabled>
+            @if ((isset($preview) && $preview) && ($model->$key || $this->$key))
+                @if (isset($previewType) && $previewType == 'image')
+                    <img src="{{ $model->$key ? $model->$key : $this->$key }}">
+                @endif
+            @else
+                <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
+                value="@if ($model->$key || $this->$key){{ $model->$key ? $model->$key->getClientOriginalName() : $this->$key->getClientOriginalName() }}@else - @endif"
+                class="lfb-input lfb-disabled" readonly disabled>
+            @endif
             @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
                 <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
             @endif
@@ -27,7 +33,19 @@
                 </button>
                 @else
                     <span class="lfb-file-uploaded">
-                        {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                        @if (isset($preview) && $preview)
+                            @if (isset($previewType) && $previewType == 'image')
+                                @php
+                                    $imagePath = $model->$key ?? $this->$key;
+                                    if (is_object($imagePath)) {
+                                        $imagePath = $imagePath->temporaryUrl();
+                                    }
+                                @endphp
+                                <img src="{{ $imagePath }}">
+                            @endif
+                        @else
+                            {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                        @endif
                         <a wire:click="resetValue('{{ $key}}')">
                         @if(isset($removeIcon))
                             {!! $removeIcon !!}

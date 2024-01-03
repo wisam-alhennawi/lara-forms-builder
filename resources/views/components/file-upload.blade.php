@@ -7,9 +7,9 @@
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            @if ((isset($preview) && $preview) && ($model->$key || $this->$key))
-                @if (isset($previewType) && $previewType == 'image')
-                    <img src="{{ $model->$key ? $model->$key : $this->$key }}">
+            @if ((isset($preview) && $preview) && ($model->$key || isset($this->{$key . '_preview'})))
+                @if ($preview == 'image')
+                    <img src="{{ $model->$key ? $model->$key->temporaryUrl() : $this->{$key . '_preview'} }}">
                 @endif
             @else
                 <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
@@ -23,25 +23,33 @@
     @else
         <div class="lfb-input-wrapper">
             <label class="block">
-                @if(!$model->$key && !$this->$key)
-                <button type="button" class="lfb-input lfb-upload-button @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
+                @if(!$model->$key && !$this->$key && !isset($this->{$key . '_preview'}))
+                <button type="button" class="lfb-input lfb-upload-button relative @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
                     {{ __('Select File') }}
                     <input wire:key="form-input-component-{{ md5($key) }}" title="{{ __('Select File') }}"
                         name="{{ $key }}" id="{{ $key }}"
-                        class="absolute w-full h-full opacity-0 cursor-pointer" type="file" wire:model="{{ $key }}"
+                        class="absolute start-0 w-full h-full opacity-0 cursor-pointer" type="file" wire:model="{{ $key }}"
                         @if(isset($readOnly) && $readOnly) readonly @endif>
                 </button>
                 @else
                     <span class="lfb-file-uploaded">
                         @if (isset($preview) && $preview)
-                            @if (isset($previewType) && $previewType == 'image')
+                            @if ($preview == 'image')
                                 @php
-                                    $imagePath = $model->$key ?? $this->$key;
+                                    $imagePath = $this->{$key . '_preview'} ?? $this->$key;
                                     if (is_object($imagePath)) {
-                                        $imagePath = $imagePath->temporaryUrl();
+                                        try {
+                                            $imagePath = $imagePath->temporaryUrl();
+                                        } catch (Exception $e) {
+                                            $imagePath = null;
+                                        }
                                     }
                                 @endphp
-                                <img src="{{ $imagePath }}">
+                                @if (is_string($imagePath))
+                                    <img src="{{ $imagePath }}">
+                                @else
+                                    {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                                @endif
                             @endif
                         @else
                             {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}

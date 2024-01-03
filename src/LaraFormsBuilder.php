@@ -305,6 +305,7 @@ trait LaraFormsBuilder
     public function resetValue($fieldKey)
     {
         $this->{$fieldKey} = null;
+        $this->{$fieldKey . '_preview'} = null;
         if ($this->model) {
             $this->model->{$fieldKey} = null;
         }

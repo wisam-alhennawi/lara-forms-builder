@@ -89,8 +89,7 @@
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
             'removeIcon' => isset($field['removeIcon']) ? $field['removeIcon'] : null,
-            'preview' => isset($field['preview']) ? $field['preview'] : false,
-            'previewType' => isset($field['previewType']) ? $field['previewType'] : 'image',
+            'preview' => isset($field['preview']) ? $field['preview'] : null,
         ])
         @break
     @default

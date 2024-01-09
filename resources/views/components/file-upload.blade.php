@@ -7,9 +7,15 @@
     </label>
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
-            value="@if ($model->$key || $this->$key){{ $model->$key ? $model->$key->getClientOriginalName() : $this->$key->getClientOriginalName() }}@else - @endif"
-            class="lfb-input lfb-disabled" readonly disabled>
+            @if ((isset($preview) && $preview) && ($model->$key || isset($this->{$key . '_preview'})))
+                @if ($preview == 'image')
+                    <img src="{{ $model->$key ? $model->$key->temporaryUrl() : $this->{$key . '_preview'} }}">
+                @endif
+            @else
+                <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
+                value="@if ($model->$key || $this->$key){{ $model->$key ? $model->$key->getClientOriginalName() : $this->$key->getClientOriginalName() }}@else - @endif"
+                class="lfb-input lfb-disabled" readonly disabled>
+            @endif
             @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
                 <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
             @endif
@@ -17,17 +23,37 @@
     @else
         <div class="lfb-input-wrapper">
             <label class="block">
-                @if(!$model->$key && !$this->$key)
-                <button type="button" class="lfb-input lfb-upload-button @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
+                @if(!$model->$key && !$this->$key && !isset($this->{$key . '_preview'}))
+                <button type="button" class="lfb-input lfb-upload-button relative @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
                     {{ __('Select File') }}
                     <input wire:key="form-input-component-{{ md5($key) }}" title="{{ __('Select File') }}"
                         name="{{ $key }}" id="{{ $key }}"
-                        class="absolute w-full h-full opacity-0 cursor-pointer" type="file" wire:model="{{ $key }}"
+                        class="absolute start-0 w-full h-full opacity-0 cursor-pointer" type="file" wire:model="{{ $key }}"
                         @if(isset($readOnly) && $readOnly) readonly @endif>
                 </button>
                 @else
                     <span class="lfb-file-uploaded">
-                        {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                        @if (isset($preview) && $preview)
+                            @if ($preview == 'image')
+                                @php
+                                    $imagePath = $this->{$key . '_preview'} ?? $this->$key;
+                                    if (is_object($imagePath)) {
+                                        try {
+                                            $imagePath = $imagePath->temporaryUrl();
+                                        } catch (Exception $e) {
+                                            $imagePath = null;
+                                        }
+                                    }
+                                @endphp
+                                @if (is_string($imagePath))
+                                    <img src="{{ $imagePath }}">
+                                @else
+                                    {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                                @endif
+                            @endif
+                        @else
+                            {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                        @endif
                         <a wire:click="resetValue('{{ $key}}')">
                         @if(isset($removeIcon))
                             {!! $removeIcon !!}

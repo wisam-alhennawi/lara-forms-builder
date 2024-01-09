@@ -272,6 +272,7 @@ The `date-picker` form field adds a Pikaday date picker. It does not have any ad
 
 The `file` form field represents a file input for a single file upload. It has the following additional properties:
 
+* `preview` (optional): If set to the value `image`, a preview of the uploaded or existing file is displayed. In order to properly show a preview of an existing file (when editing an existing model), the URL to download the existing file must be set as an additional property `$this.{$key . '_preview'}`, e.g. `contact_photo_preview` for a field key `contact_property`. The preview URL can be determined and set in the `afterFormProperties` function.
 * `removeIcon` (optional): Customized icon markup to be displayed as the icon to remove/reset a selected file before saving. If not set, a default icon is used.
 
 Since binary files are usually not directly stored as properties of an Eloquent model, but must be processed separately, this type of form field will in most cases need additional file handling logic in the implementing form. The implementation follows the principles of Livewire file uploads (https://laravel-livewire.com/docs/2.x/file-uploads) and essentially provides the view part of file upload. It is suggested to add the file handling in one of the callback or override functions, e.g. the `save...` function of the property such as the following code snippet for a property `attachment`:

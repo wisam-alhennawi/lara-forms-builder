@@ -373,10 +373,11 @@ trait LaraFormsBuilder
     /**
      * Set the related value of selected search picker option
      */
-    public function setSearchPickerValue($value, $key) {
+    public function setSearchPickerValue($value, $key)
+    {
         $this->$key = $value;
-        if (isset($this->{Str::camel($key) . 'Options'})) {
-            $this->reset(Str::camel($key) . 'Options');
+        if (isset($this->{Str::camel($key).'Options'})) {
+            $this->reset(Str::camel($key).'Options');
         }
     }
 

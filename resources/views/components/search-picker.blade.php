@@ -69,9 +69,9 @@
                     <div
                         wire:click="setSearchPickerValue('{{ $result['key'] }}', '{{ $key }}')"
                         @click="showResults = false"
-                        class="p-3 hover:bg-primary hover:text-white cursor-pointer text-sm flex justify-between"
+                        class="p-3 hover:bg-primary hover:text-white cursor-pointer text-sm flex justify-between items-center"
                     >
-                        <span>{{ $result['value'] }}</span>
+                        <span>{!! $result['value'] !!}</span>
                         @if (isset($result['labels']))
                             <div>
                                 @foreach($result['labels'] as $label)

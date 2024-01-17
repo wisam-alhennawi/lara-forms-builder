@@ -205,6 +205,10 @@ trait LaraFormsBuilder
             } else {
                 $this->{$field['key']} = null;
             }
+            // define a property if field is search-picker (e.g.: foo -> foo_search_picker)
+            if($field['field']['type'] === 'search-picker') {
+                $this->{$field['key'] . '_search_picker'}  = null;
+            }
         }
     }
 
@@ -376,8 +380,27 @@ trait LaraFormsBuilder
     public function setSearchPickerValue($value, $key)
     {
         $this->$key = $value;
-        if (isset($this->{Str::camel($key).'Options'})) {
-            $this->reset(Str::camel($key).'Options');
+        $this->{$key . '_search_picker'} = null;
+        if (isset($this->{Str::camel($key) . 'Options'})) {
+            $this->reset(Str::camel($key) . 'Options');
+        }
+    }
+
+    public function updated($name, $value) {
+        // set empty string to null
+        if ($value === '') {
+            $this->{$name} = null;
+        }
+        // call proper get***Options() function if field is search-picker
+        if (str_contains($name, '_search_picker')) {
+            foreach ($this->getFieldsFlat() as $fieldFlat) {
+                if ($fieldFlat['field']['type'] === 'search-picker' && $fieldFlat['key'] . '_search_picker' === $name) {
+                    $functionName = 'get' . ucfirst(Str::camel($fieldFlat['key'])) . 'Options';
+                    if (method_exists($this, $functionName)) {
+                        $this->$functionName($value);
+                    }
+                }
+            }
         }
     }
 

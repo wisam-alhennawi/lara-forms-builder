@@ -30,16 +30,16 @@
     @else
         <div class="lfb-input-wrapper">
             @if($this->{$selectedItem})
-                <div class="p-2 rounded border w-full flex items-center">
-                        <span class="w-full">{{ $this->{$selectedItem} }}</span>
-                        <button wire:click.prevent="setSearchPickerValue(null, '{{ $key }}')">
-                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                      clip-rule="evenodd">
-                                </path>
-                            </svg>
-                        </button>
+                <div class="lfb-search-picker-selected-item">
+                    <span>{{ $this->{$selectedItem} }}</span>
+                    <button wire:click.prevent="setSearchPickerValue(null, '{{ $key }}')">
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                  clip-rule="evenodd">
+                            </path>
+                        </svg>
+                    </button>
                 </div>
             @else
                 <input
@@ -49,7 +49,7 @@
                     name="{{ $key }}"
                     id="{{ $key }}"
                     class="lfb-input @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
-                    wire:model="{{ $key }}"
+                    wire:model="{{ $key }}_search_picker"
                     @if(isset($readOnly) && $readOnly) readonly @endif
                     @keyup="showResults = true"
                 >
@@ -61,26 +61,28 @@
         </div>
 
         @if($this->{$searchPickerResultsProperty})
-            <div
-                x-show="showResults"
-                class="mt-1 w-full rounded border-2 border-secondary overflow-y-auto max-h-36"
-            >
-                @foreach($this->{$searchPickerResultsProperty} as $result)
-                    <div
-                        wire:click="setSearchPickerValue('{{ $result['key'] }}', '{{ $key }}')"
-                        @click="showResults = false"
-                        class="p-3 hover:bg-primary hover:text-white cursor-pointer text-sm flex justify-between items-center"
-                    >
-                        <span>{!! $result['value'] !!}</span>
-                        @if (isset($result['labels']))
-                            <div>
-                                @foreach($result['labels'] as $label)
-                                    <span class="py-0.5 rounded border px-2 text-sm border-gray-200 bg-gray-100 text-gray-500">{{ $label }}</span>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                @endforeach
+            <div class="relative">
+                <div
+                    x-show="showResults"
+                    class="lfb-search-picker-results-container"
+                >
+                    @foreach($this->{$searchPickerResultsProperty} as $result)
+                        <div
+                            wire:click="setSearchPickerValue('{{ $result['key'] }}', '{{ $key }}')"
+                            @click="showResults = false"
+                            class="lfb-search-picker-result"
+                        >
+                            <span>{!! $result['value'] !!}</span>
+                            @if (isset($result['labels']))
+                                <div class="lfb-search-picker-result-labels-container">
+                                    @foreach($result['labels'] as $label)
+                                        <span class="lfb-search-picker-result-label">{{ $label }}</span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @endif
 

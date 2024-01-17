@@ -283,6 +283,71 @@ public function saveAttachment($attachmentValue) {
 }
 ```
 
+#### Type `search-picker`
+
+```php
+public array $contactIdOptions = [];
+
+public function getContactIdOptions($searchPickerTerm)
+{
+    $searchPickerTerm = trim($searchPickerTerm);
+
+    if ($searchPickerTerm) {
+        $this->contactIdOptions = Contact::select('id', 'name')
+            ->where('name', 'like', '%' . $searchPickerTerm . '%')
+            ->get()
+            ->each(function($row){
+                $row->key = $row->id;
+                $row->value = $row->name;
+                $row->labels = collect(['White', 'Green', 'Blue', 'Red', 'Yellow'])->random(rand(0, 3))->toArray();
+            })
+            ->toArray();
+    } else {
+        $this->reset('contactIdOptions');
+    }
+}
+
+// will return ($contact_id_search_picker_selected_value) which used in blade to display the selected option
+public function getContactIdSearchPickerSelectedValueProperty()
+{
+    if ($this->contact_id) {
+        return Contact::find($this->contact_id)->name;
+    }
+    return null;
+}
+    
+protected function fields(): array
+{
+    return [
+        [
+            'fields' => [
+                    'contact_id' => [
+                    'type' => 'search-picker',
+                    'label' => 'Contact Person',
+                    'searchPickerResultsProperty' => 'contactIdOptions',
+                    'placeholder' => __('Search for contact person'),
+                    'field_wrapper_class' => 'col-span-1',
+                ]
+            ]
+        ]
+    ];
+}
+```
+
+The `search-picker` form field is an input field with search functionality which display the results as a list under the field. It has the following additional properties:
+
+* `placeholder` (optional): Specifies the placeholder of the input field.
+* `searchPickerResultsProperty` (mandatory): Refers to the defined array which has the search results. Every element in the array should have the following structure:
+    ```php
+    [
+        'id' => '',
+        'value' => '',
+        'labels' => [] // optional
+    ]
+    ```
+**Note:** `getContactIdOptions()`, `getContactIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `contact_id`.
+
+![Rendered Form according to code snippet](Search-Picker-Example.png)
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

@@ -290,10 +290,7 @@ public array $contactIdOptions = [];
 
 public function getContactIdOptions($searchPickerTerm)
 {
-    $searchPickerTerm = trim($searchPickerTerm);
-
-    if ($searchPickerTerm) {
-        $this->contactIdOptions = Contact::select('id', 'name')
+    return Contact::select('id', 'name')
             ->where('name', 'like', '%' . $searchPickerTerm . '%')
             ->get()
             ->each(function($row){
@@ -302,9 +299,6 @@ public function getContactIdOptions($searchPickerTerm)
                 $row->labels = collect(['White', 'Green', 'Blue', 'Red', 'Yellow'])->random(rand(0, 3))->toArray();
             })
             ->toArray();
-    } else {
-        $this->reset('contactIdOptions');
-    }
 }
 
 // will return ($contact_id_search_picker_selected_value) which used in blade to display the selected option
@@ -315,7 +309,7 @@ public function getContactIdSearchPickerSelectedValueProperty()
     }
     return null;
 }
-    
+
 protected function fields(): array
 {
     return [

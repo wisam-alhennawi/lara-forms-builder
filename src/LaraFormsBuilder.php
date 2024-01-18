@@ -386,23 +386,36 @@ trait LaraFormsBuilder
         }
     }
 
+    protected function searchPickerOptions($name, $value)
+    {
+        // call proper get***Options() function if field is search-picker
+        if (str_contains($name, '_search_picker')) {
+            foreach ($this->getFieldsFlat() as $fieldFlat) {
+                if ($fieldFlat['field']['type'] === 'search-picker' && $name === $fieldFlat['key'].'_search_picker') {
+                    $searchPickerTerm = trim($value);
+                    $searchOptionsPropertyName = Str::camel($fieldFlat['key']).'Options';
+                    if ($searchPickerTerm) {
+                        $functionName = 'get'.ucfirst($searchOptionsPropertyName);
+                        if (method_exists($this, $functionName)) {
+                            $this->$searchOptionsPropertyName = $this->$functionName($searchPickerTerm);
+                        }
+                    } else {
+                        $this->reset($searchOptionsPropertyName);
+                    }
+                }
+            }
+        }
+    }
+
     public function updated($name, $value)
     {
         // set empty string to null
         if ($value === '') {
             $this->{$name} = null;
         }
-        // call proper get***Options() function if field is search-picker
-        if (str_contains($name, '_search_picker')) {
-            foreach ($this->getFieldsFlat() as $fieldFlat) {
-                if ($fieldFlat['field']['type'] === 'search-picker' && $name === $fieldFlat['key'].'_search_picker') {
-                    $functionName = 'get'.ucfirst(Str::camel($fieldFlat['key'])).'Options';
-                    if (method_exists($this, $functionName)) {
-                        $this->$functionName($value);
-                    }
-                }
-            }
-        }
+
+        // search-picker
+        $this->searchPickerOptions($name, $value);
     }
 
     /**

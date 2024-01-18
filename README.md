@@ -340,7 +340,7 @@ The `search-picker` form field is an input field with search functionality which
 * `searchPickerResultsProperty` (mandatory): Refers to the defined array which has the search results. Every element in the array should have the following structure:
     ```php
     [
-        'id' => '',
+        'key' => '',
         'value' => '',
         'labels' => [] // optional
     ]

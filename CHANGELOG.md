@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.8.0 - 2024-01-19
+
+### What's Changed
+
+* Feature/search picker by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/38
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.7.0...v1.8.0
+
 ## v1.7.0 - 2024-01-09
 
 ### What's Changed

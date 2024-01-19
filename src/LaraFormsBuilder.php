@@ -92,9 +92,9 @@ trait LaraFormsBuilder
     }
 
     /**
-     * @param $field array
-     * @param $key string
-     * @param $modelRules array
+     * @param  $field  array
+     * @param  $key  string
+     * @param  $modelRules  array
      * @return string
      */
     private function getfieldRules($field, $key, $modelRules)
@@ -204,6 +204,10 @@ trait LaraFormsBuilder
                 $this->{$field['key']} = $field['field']['default'];
             } else {
                 $this->{$field['key']} = null;
+            }
+            // define a property if field is search-picker (e.g.: foo -> foo_search_picker)
+            if ($field['field']['type'] === 'search-picker') {
+                $this->{$field['key'].'_search_picker'} = null;
             }
         }
     }
@@ -368,6 +372,50 @@ trait LaraFormsBuilder
         }
 
         return $this->cancel();
+    }
+
+    /**
+     * Set the related value of selected search picker option
+     */
+    public function setSearchPickerValue($value, $key)
+    {
+        $this->$key = $value;
+        $this->{$key.'_search_picker'} = null;
+        if (isset($this->{Str::camel($key).'Options'})) {
+            $this->reset(Str::camel($key).'Options');
+        }
+    }
+
+    protected function searchPickerOptions($name, $value)
+    {
+        // call proper get***Options() function if field is search-picker
+        if (str_contains($name, '_search_picker')) {
+            foreach ($this->getFieldsFlat() as $fieldFlat) {
+                if ($fieldFlat['field']['type'] === 'search-picker' && $name === $fieldFlat['key'].'_search_picker') {
+                    $searchPickerTerm = trim($value);
+                    $searchOptionsPropertyName = Str::camel($fieldFlat['key']).'Options';
+                    if ($searchPickerTerm) {
+                        $functionName = 'get'.ucfirst($searchOptionsPropertyName);
+                        if (method_exists($this, $functionName)) {
+                            $this->$searchOptionsPropertyName = $this->$functionName($searchPickerTerm);
+                        }
+                    } else {
+                        $this->reset($searchOptionsPropertyName);
+                    }
+                }
+            }
+        }
+    }
+
+    public function updated($name, $value)
+    {
+        // set empty string to null
+        if ($value === '') {
+            $this->{$name} = null;
+        }
+
+        // search-picker
+        $this->searchPickerOptions($name, $value);
     }
 
     /**

@@ -265,4 +265,24 @@
         @apply text-xl font-normal leading-6 text-gray-800;
     }
 
+    .lfb-search-picker-selected-item {
+        @apply mt-1 p-2 px-3 rounded-md border w-full flex justify-between items-center text-sm text-gray-600 border-gray-300 hover:border-gray-400/80;
+    }
+
+    .lfb-search-picker-results-container {
+        @apply w-full mt-1 rounded border-2 border-secondary overflow-y-auto max-h-36 bg-white absolute z-10;
+    }
+
+    .lfb-search-picker-result {
+        @apply p-3 hover:bg-primary hover:text-white cursor-pointer text-sm flex justify-between items-center;
+    }
+
+    .lfb-search-picker-result-labels-container {
+
+    }
+
+    .lfb-search-picker-result-label {
+        @apply py-0.5 rounded border px-2 text-sm border-gray-200 bg-gray-100 text-gray-500
+    }
+
 }

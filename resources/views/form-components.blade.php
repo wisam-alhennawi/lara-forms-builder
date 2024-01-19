@@ -92,5 +92,16 @@
             'preview' => isset($field['preview']) ? $field['preview'] : null,
         ])
         @break
+    @case('search-picker')
+        @include('lara-forms-builder::components.search-picker', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'searchPickerResultsProperty' => $field['searchPickerResultsProperty'],
+            'placeholder' => isset($field['placeholder']) ? $field['placeholder'] : '',
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
+        ])
+        @break
     @default
 @endswitch

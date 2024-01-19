@@ -321,7 +321,7 @@ protected function fields(): array
                     'searchPickerResultsProperty' => 'contactIdOptions',
                     'placeholder' => __('Search for contact person'),
                     'field_wrapper_class' => 'col-span-1',
-                ]
+                ],
             ]
         ]
     ];

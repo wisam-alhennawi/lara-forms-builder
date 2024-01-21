@@ -97,7 +97,7 @@ trait LaraFormsBuilder
      * @param  $modelRules  array
      * @return string
      */
-    private function getfieldRules($field, $key, $modelRules)
+    private function getFieldRules($field, $key, $modelRules)
     {
         $fieldRules = '';
         // check if the field has rules or the model has rules for this field
@@ -124,12 +124,12 @@ trait LaraFormsBuilder
             if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $key => $field) {
-                        $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                        $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
+                        $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 } else {
-                    $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                    $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                    $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
+                    $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                 }
             } else {
                 // tabs
@@ -138,18 +138,26 @@ trait LaraFormsBuilder
                     // check if the field is tab
                     if ($tabKey == 'fields' && is_array($tabContent)) {
                         foreach ($tabContent as $key => $field) {
-                            $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                            $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                            $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
+                            $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                         }
                     } elseif (is_numeric($tabKey)) {
-                        $fieldRules[$key] = $this->getfieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                        $fieldRules[$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
+                        $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 }
             }
         }
 
         return [$fieldRules, $fieldValidationAttributes];
+    }
+
+    private function getFieldValidationAttribute($field, $key)
+    {
+        if (isset($field['validationAttribute'])) {
+            return $field['validationAttribute'];
+        }
+        return $field['label'] ?? $key;
     }
 
     /**
@@ -266,7 +274,7 @@ trait LaraFormsBuilder
                 $this->model->$key = $value;
             }
             $this->mode = 'confirm';
-
+            $this->emit('formMode', $this->mode);
             return false;
         }
 
@@ -367,7 +375,7 @@ trait LaraFormsBuilder
     {
         if ($this->mode == 'confirm') {
             $this->mode = null;
-
+            $this->emit('formMode', $this->mode);
             return null;
         }
 

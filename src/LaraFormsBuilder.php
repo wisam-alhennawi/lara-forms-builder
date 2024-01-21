@@ -157,6 +157,7 @@ trait LaraFormsBuilder
         if (isset($field['validationAttribute'])) {
             return $field['validationAttribute'];
         }
+
         return $field['label'] ?? $key;
     }
 
@@ -275,6 +276,7 @@ trait LaraFormsBuilder
             }
             $this->mode = 'confirm';
             $this->emit('formMode', $this->mode);
+
             return false;
         }
 
@@ -376,6 +378,7 @@ trait LaraFormsBuilder
         if ($this->mode == 'confirm') {
             $this->mode = null;
             $this->emit('formMode', $this->mode);
+
             return null;
         }
 

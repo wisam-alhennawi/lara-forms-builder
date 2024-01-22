@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.8.1 - 2024-01-22
+
+### What's Changed
+
+* Fixes and improvements by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/39
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.0...v1.8.1
+
 ## v1.8.0 - 2024-01-19
 
 ### What's Changed

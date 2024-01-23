@@ -11,12 +11,7 @@
 @endonce
 
 <div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
-    <label for="{{ $key }}" class="lfb-label">
-        {{ $label }}
-        @if ((!isset($mode) || (isset($mode) and $mode != 'view')) and isset($rules) and array_key_exists($key, $rules) && str_contains($rules[$key], 'required'))
-            <sup>*</sup>
-        @endif
-    </label>
+    @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
             <input type="text" name="{{ $key }}" id="{{ $key }}" x-ref="field"

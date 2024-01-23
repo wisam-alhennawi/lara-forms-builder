@@ -239,6 +239,8 @@ The `select` form field is a select box for single selection. It has the followi
 
 * `options` (mandatory): Specifies the options to be displayed in the select box, provided as an array of objects with attributes `value` and `label` or a nested array of group label to array of objects with attributes `value` and `label` when grouped.
 * `isGrouped` (optional): Defines whether the options are grouped, default when not set is false.
+* `styled` (optional, not combinable with `isGrouped`): When set to true, uses a stylable div based select component instead of the html select element.
+* `searchable` (optional, only when `styled` is `true`): When set to true, adds a search field that allows to filter the options for search expressions (simple case insensitive substring matching)
 
 #### Type `radio`
 

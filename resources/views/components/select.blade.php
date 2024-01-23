@@ -35,6 +35,78 @@
         </div>
     @else
         <div class="lfb-input-wrapper">
+            @if($styled)
+            @include('lara-forms-builder::includes.select-script')
+            <div
+                x-data="lfbStyledSelect({ data: {{ json_encode($selectOptions) }}, preselected: '@if(is_numeric($optionKey) && array_key_exists($optionKey, $selectOptions)){{ $selectOptions[$optionKey]['label'] }}@endif' })"
+                wire:model="{{ $key }}"
+                class="relative lfb-input"
+                wire:key="form-select-component-{{ md5($key) }}"
+            >
+                <div
+                    class="lfb-styled-select-input"
+                    :class="show ? 'lfb-styled-select-input-expanded': 'lfb-styled-select-input-collapsed'"
+                >
+                    <div class="flex flex-grow py-2 px-3" x-on:click="open()">
+                        <div x-text="selected">&nbsp;</div>
+                        <div x-show="selected.length == 0" x-text="placeholder" class="text-gray-400">&nbsp;</div>
+                    </div>
+                    <div class="flex">
+                        <div x-on:click="toggle()" class="pt-2.5 px-3">
+                            <div x-show="!show && !selected" class="w-4 h-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </div>
+                            <div x-cloak x-show="show && !selected" class="w-4 h-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                </svg>
+                            </div>
+                        </div>
+                        <button x-cloak x-show="selected.length > 0" x-on:click="removeSelected(), $dispatch('input', null)" class="px-3">
+                            <!-- heroicon:x-mark -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div x-cloak x-show="show" x-on:click.outside="close()" class="absolute z-10 lfb-styled-select-options">
+                    @if ($searchable)
+                    <div class="lfb-styled-select-search-container">
+                        <div class="lfb-styled-select-search-icon-wrapper">
+                            <div class="lfb-styled-select-search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <input
+                            type="text"
+                            x-model="search"
+                            class="lfb-styled-select-search-input"
+                            placeholder="{{ __('Search') }}"
+                        >
+                        <button class="lfb-styled-select-search-button" x-on:click="resetSearch()">
+                            <div x-show="search.length > 0"  class="w-4 h-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                        </button>
+                    </div>
+                    @endif
+                    <ul>
+                        <template x-for="item in filteredOptions" :key="item.value">
+                            <li x-on:click="selectOption(item.label); $dispatch('input', item.value)"
+                                x-text="item.label">
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+            @else
             <select id="{{ $key }}" name="{{ $key }}" class="lfb-input"
                     wire:model="{{ $key }}">
                 <option value>{{ __('Please select...') }}</option>
@@ -52,6 +124,7 @@
                     @endforeach
                 @endif
             </select>
+            @endif
         </div>
         @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
         @if(isset($helpText))

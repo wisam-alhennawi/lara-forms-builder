@@ -18,6 +18,8 @@
             'isGrouped' => isset($field['isGrouped']) ? $field['isGrouped'] : false,
             'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'styled' => isset($field['styled']) ? $field['styled'] : false,
+            'searchable' => isset($field['searchable']) ? $field['searchable'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break

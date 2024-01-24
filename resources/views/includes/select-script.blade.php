@@ -1,24 +1,34 @@
 <script>
 
 document.addEventListener('alpine:init', () => {
-    Alpine.data('lfbStyledSelect', (config) => ({
+    Alpine.data('lfbStyledSelect', (options) => ({
         search: '',
-        selected: config.preselected,
+        selectedLabel() {
+            if (this.value) {
+                const selectedItem = this.options.find((item) => {
+                    return item.value === this.value;
+                });
+                if (selectedItem) {
+                    return selectedItem.label;
+                }
+            }
+            return '';
+        },
         placeholder: '{{ __('Please select...') }}',
-        data: config.data,
+        options: options,
         show: false,
         filteredOptions() {
-            return this.data.filter((item) => {
+            return this.options.filter((item) => {
                 return item.label.toLowerCase().includes(this.search.toLowerCase());
             });
         },
-        selectOption(value) {
-            this.selected = value;
+        selectOption(item) {
+            this.value = item.value;
             this.resetSearch();
             this.close();
         },
         removeSelected() {
-            this.selected = '';
+            this.value = null;
         },
         resetSearch() {
             this.search = '';

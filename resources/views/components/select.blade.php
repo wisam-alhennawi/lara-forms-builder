@@ -38,33 +38,34 @@
             @if($styled)
             @include('lara-forms-builder::includes.select-script')
             <div
-                x-data="lfbStyledSelect({ data: {{ json_encode($selectOptions) }}, preselected: '@if(is_numeric($optionKey) && array_key_exists($optionKey, $selectOptions)){{ $selectOptions[$optionKey]['label'] }}@endif' })"
-                wire:model="{{ $key }}"
+                x-data="{ ...lfbStyledSelect({{ json_encode($selectOptions) }}), value: @entangle($key) }"
                 class="relative lfb-input"
                 wire:key="form-select-component-{{ md5($key) }}"
+                name="{{ $key }}"
+                id="{{ $key }}"
             >
                 <div
                     class="lfb-styled-select-input"
                     :class="show ? 'lfb-styled-select-input-expanded': 'lfb-styled-select-input-collapsed'"
                 >
                     <div class="flex flex-grow py-2 px-3" x-on:click="open()">
-                        <div x-text="selected">&nbsp;</div>
-                        <div x-show="selected.length == 0" x-text="placeholder" class="text-gray-400">&nbsp;</div>
+                        <div x-text="selectedLabel">&nbsp;</div>
+                        <div x-show="!value" x-text="placeholder" class="text-gray-400">&nbsp;</div>
                     </div>
                     <div class="flex">
                         <div x-on:click="toggle()" class="pt-2.5 px-3">
-                            <div x-show="!show && !selected" class="w-4 h-4">
+                            <div x-show="!show && !value" class="w-4 h-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                                 </svg>
                             </div>
-                            <div x-cloak x-show="show && !selected" class="w-4 h-4">
+                            <div x-cloak x-show="show && !value" class="w-4 h-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                                 </svg>
                             </div>
                         </div>
-                        <button x-cloak x-show="selected.length > 0" x-on:click="removeSelected(), $dispatch('input', null)" class="px-3">
+                        <button x-cloak x-show="value" x-on:click="removeSelected()" class="px-3">
                             <!-- heroicon:x-mark -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -99,7 +100,7 @@
                     @endif
                     <ul>
                         <template x-for="item in filteredOptions" :key="item.value">
-                            <li x-on:click="selectOption(item.label); $dispatch('input', item.value)"
+                            <li x-on:click="selectOption(item)"
                                 x-text="item.label">
                             </li>
                         </template>

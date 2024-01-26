@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.8.2 - 2024-01-26
+
+### What's Changed
+
+* Html in labels, div-based select by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/40
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.1...v1.8.2
+
 ## v1.8.1 - 2024-01-22
 
 ### What's Changed

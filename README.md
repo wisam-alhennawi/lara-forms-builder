@@ -214,7 +214,7 @@ The definition above is then rendered as displayed in this screenshot (with addi
 All form components have the following general properties:
 
 * `type` (mandatory): Specifies the kind of form component, see the following subsections for supported types and their individual properties
-* `label` (mandatory): Label text of the component
+* `label` (mandatory): Label text of the component, can also include HTML tags (please handle responsibly and do not allow user input to be used as labels)
 * `validationAttribute` (optional): If set, the value will be used as the attribute label for validation messages. If not set, the `label` is also used as a field name for validation messages.
 * `helpText` (optional): Help text displayed at the bottom of the component
 * `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
@@ -239,6 +239,8 @@ The `select` form field is a select box for single selection. It has the followi
 
 * `options` (mandatory): Specifies the options to be displayed in the select box, provided as an array of objects with attributes `value` and `label` or a nested array of group label to array of objects with attributes `value` and `label` when grouped.
 * `isGrouped` (optional): Defines whether the options are grouped, default when not set is false.
+* `styled` (optional, not combinable with `isGrouped`): When set to true, uses a stylable div based select component instead of the html select element.
+* `searchable` (optional, only when `styled` is `true`): When set to true, adds a search field that allows to filter the options for search expressions (simple case insensitive substring matching)
 
 #### Type `radio`
 

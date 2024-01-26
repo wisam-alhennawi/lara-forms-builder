@@ -285,4 +285,47 @@
         @apply py-0.5 rounded border px-2 text-sm border-gray-200 bg-gray-100 text-gray-500
     }
 
+    .lfb-styled-select-input {
+        @apply flex border;
+    }
+
+    .lfb-styled-select-input-collapsed {
+        @apply border-transparent;
+    }
+
+    .lfb-styled-select-input-expanded {
+        @apply border-primary ring-1 ring-primary rounded-md rounded-b-none shadow-sm;
+    }
+
+    .lfb-styled-select-options {
+        @apply bg-white w-full border border-t-0 border-primary ring-1 ring-primary rounded-md rounded-t-none;
+    }
+
+    .lfb-styled-select-options ul {
+        @apply text-sm divide-y max-h-24 overflow-x-hidden overflow-y-auto;
+    }
+
+    .lfb-styled-select-options li {
+        @apply cursor-pointer rounded py-1 px-3 hover:bg-gray-50;
+    }
+
+    .lfb-styled-select-search-container {
+        @apply flex bg-gray-100 rounded-b;
+    }
+
+    .lfb-styled-select-search-icon-wrapper {
+        @apply flex pt-2.5 pl-3;
+    }
+
+    .lfb-styled-select-search-icon {
+        @apply text-gray-500 w-4 h-4;
+    }
+
+    .lfb-styled-select-search-input {
+        @apply flex flex-grow border-0 bg-transparent py-2 pl-3 text-sm focus:outline-none focus:ring-0;
+    }
+
+    .lfb-styled-select-search-button {
+        @apply flex border-t pt-2.5 px-3 focus:outline-none;
+    }
 }

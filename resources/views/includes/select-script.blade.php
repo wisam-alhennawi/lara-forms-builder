@@ -1,6 +1,6 @@
 <script>
 
-document.addEventListener('alpine:init', () => {
+const initStyledSelect = () => {
     Alpine.data('lfbStyledSelect', (options) => ({
         search: '',
         selectedLabel() {
@@ -44,5 +44,11 @@ document.addEventListener('alpine:init', () => {
             this.show = !this.show;
         },
     }))
-})
+};
+
+if (typeof Alpine !== 'undefined') {
+    initStyledSelect();
+} else {
+    document.addEventListener('alpine:init', initStyledSelect);
+}
 </script>

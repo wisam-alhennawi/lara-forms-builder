@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.8.3 - 2024-01-29
+
+### What's Changed
+
+* Bugfix styled select JavaScript init by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/41
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.2...v1.8.3
+
 ## v1.8.2 - 2024-01-26
 
 ### What's Changed

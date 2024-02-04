@@ -1,3 +1,4 @@
+@once
 <script>
 
 const initStyledSelect = () => {
@@ -52,3 +53,4 @@ if (typeof Alpine !== 'undefined') {
     document.addEventListener('alpine:init', initStyledSelect);
 }
 </script>
+@endonce

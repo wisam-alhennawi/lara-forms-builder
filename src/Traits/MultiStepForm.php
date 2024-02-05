@@ -11,7 +11,7 @@ trait MultiStepForm
     /**
      * Initialize the steps
      *
-     * @param array $steps
+     * @param  array  $steps
      */
     protected function initSteps($steps = [])
     {
@@ -20,7 +20,7 @@ trait MultiStepForm
                 return [
                     'key' => $tab['tab']['key'],
                     'title' => $tab['tab']['title'],
-                    'fields' => $tab['tab']['content']['fields']
+                    'fields' => $tab['tab']['content']['fields'],
                 ];
             })->toArray();
         } else {
@@ -31,7 +31,7 @@ trait MultiStepForm
     /**
      * Set the active step number
      *
-     * @param $value
+     * @param  $value
      */
     protected function setActiveStepNumber($stepKey)
     {
@@ -46,30 +46,24 @@ trait MultiStepForm
 
     /**
      * Check if the form is a multi step form
-     *
-     * @return bool
      */
-    public function isMultiStepForm() : bool
+    public function isMultiStepForm(): bool
     {
         return $this->isMultiStep;
     }
 
     /**
      * Get the active step number
-     *
-     * @return int
      */
-    public function activeStepNumber() : int
+    public function activeStepNumber(): int
     {
         return $this->activeStepNumber;
     }
 
     /**
      * Total steps in the form
-     *
-     * @return int
      */
-    public function totalSteps() : int
+    public function totalSteps(): int
     {
         return count($this->steps);
     }
@@ -90,7 +84,7 @@ trait MultiStepForm
     {
         // validate the current step
         $validated_data = $this->validate(array_intersect_key($this->rules, array_flip(array_keys($this->steps[$this->activeStepNumber - 1]['fields']))));
-        if (!$this->extraValidate($validated_data)) {
+        if (! $this->extraValidate($validated_data)) {
             return false;
         }
         $this->activeStepNumber = $this->activeStepNumber + 1;

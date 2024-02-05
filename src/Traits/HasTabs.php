@@ -15,6 +15,9 @@ trait HasTabs
         if (method_exists($this, $functionName)) {
             $this->{$functionName}($value);
         }
+        if ($this->isMultiStepForm()) {
+            $this->setActiveStepNumber($value);
+        }
     }
 
     protected function updatedActiveTab($value)

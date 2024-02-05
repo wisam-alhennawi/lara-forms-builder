@@ -5,9 +5,12 @@ namespace WisamAlhennawi\LaraFormsBuilder;
 use Illuminate\Support\Str;
 use Lang;
 use Route;
+use WisamAlhennawi\LaraFormsBuilder\Traits\MultiStepForm;
 
 trait LaraFormsBuilder
 {
+    use MultiStepForm;
+
     public $model;
 
     public $mode;
@@ -29,6 +32,10 @@ trait LaraFormsBuilder
     public array $rules;
 
     public array $validationAttributes;
+
+    public string $customSuccessMessage = '';
+
+    public bool $isMultiStep = false;
 
     /**
      * get field keys from fields array
@@ -189,6 +196,10 @@ trait LaraFormsBuilder
         $this->afterFormProperties();
 
         $this->fields = $this->fields();
+
+        if ($this->isMultiStep) {
+            $this->initSteps();
+        }
     }
 
     /**
@@ -349,17 +360,21 @@ trait LaraFormsBuilder
      */
     protected function successMessage()
     {
-        // if you want to customize the success message, you should add the custom message key entry to the lang file (Example: "A new forestryPoolMember has benn created successfully.") or override the method
-        $modelName = Str::lcfirst(class_basename(get_class($this->model)));
-        $customMessageKey = 'A new '.$modelName.' has been created successfully.';
-        $message = trans('A new entry has been created successfully.');
-        if ($this->mode == 'update') {
-            $customMessageKey = 'The '.$modelName.' has been updated successfully.';
-            $message = trans('Changes were saved successfully.');
-        }
+        if ($this->customSuccessMessage != '') {
+            $message = $this->customSuccessMessage;
+        } else {
+            // if you want to customize the success message, you should add the custom message key entry to the lang file (Example: "A new forestryPoolMember has benn created successfully.") or override the method
+            $modelName = Str::lcfirst(class_basename(get_class($this->model)));
+            $customMessageKey = 'A new '.$modelName.' has been created successfully.';
+            $message = trans('A new entry has been created successfully.');
+            if ($this->mode == 'update') {
+                $customMessageKey = 'The '.$modelName.' has been updated successfully.';
+                $message = trans('Changes were saved successfully.');
+            }
 
-        if (Lang::has($customMessageKey)) {
-            $message = trans($customMessageKey);
+            if (Lang::has($customMessageKey)) {
+                $message = trans($customMessageKey);
+            }
         }
 
         if ($this->hasSession) {

@@ -1,5 +1,5 @@
 <div class="{{ $this->getFooterButtonsWrapperClasses() }}">
-    <div class="lfb-buttons @if($isMultiStep && $this->activeStepNumber() > 1)lfb-mutli-step-buttons @endif">
+    <div class="lfb-buttons @if($isMultiStep && $this->activeStepNumber() > 1)lfb-multi-step-buttons @endif">
         @if ($isMultiStep)
             @if ($this->activeStepNumber() > 1)
                 <button wire:click="previousStep" class="{{$this->getPreviousButtonClasses()}}">

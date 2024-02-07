@@ -12,12 +12,12 @@
                     @foreach($fields as $field)
                         <div class="lfb-tab-nav-link-item">
                             @if($isMultiStep)
-                                <div x-bind:class="[ tab == '{{ $field['tab']['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link">
-                                    {{ $field['tab']['title'] }}
+                                <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link">
+                                    {{ $field['title'] }}
                                 </div>
                             @else
-                                <a x-bind:class="[ tab == '{{ $field['tab']['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link" x-on:click.prevent="tab='{{ $field['tab']['key'] }}'">
-                                    {{ $field['tab']['title'] }}
+                                <a x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link" x-on:click.prevent="tab='{{ $field['key'] }}'">
+                                    {{ $field['title'] }}
                                 </a>
                             @endif
                         </div>
@@ -48,11 +48,11 @@
                     </div>
                 @enderror
                 @foreach($fields as $fieldKey => $field)
-                    <div x-show="tab == '{{ $field['tab']['key'] }}'" wire:key="{{ 'tab-'. md5($field['tab']['key']) }}" x-cloak class="lfb-tab-content-item">
-                            <h2 class="lfb-tab-content-item-title">{{ $field['tab']['title'] }}</h2>
+                    <div x-show="tab == '{{ $field['key'] }}'" wire:key="{{ 'tab-'. md5($field['key']) }}" x-cloak class="lfb-tab-content-item">
+                            <h2 class="lfb-tab-content-item-title">{{ $field['title'] }}</h2>
                             @include('lara-forms-builder::includes.fields', [
                                     'fields' => [
-                                        $fieldKey => $field['tab']['content']
+                                        $fieldKey => $field['content']
                                     ]
                                 ]
                             )

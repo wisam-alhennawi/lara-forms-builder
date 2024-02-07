@@ -5,12 +5,9 @@ namespace WisamAlhennawi\LaraFormsBuilder;
 use Illuminate\Support\Str;
 use Lang;
 use Route;
-use WisamAlhennawi\LaraFormsBuilder\Traits\MultiStepForm;
 
 trait LaraFormsBuilder
 {
-    use MultiStepForm;
-
     public $model;
 
     public $mode;
@@ -75,7 +72,7 @@ trait LaraFormsBuilder
                 }
             } else {
                 // tabs
-                $tabFields = $field['tab']['content'] ?? [];
+                $tabFields = $field['content'] ?? [];
                 foreach ($tabFields as $tabFieldKey => $tabFieldValue) {
                     // check if the field is tab
                     if ($tabFieldKey == 'fields' && is_array($tabFieldValue)) {
@@ -140,7 +137,7 @@ trait LaraFormsBuilder
                 }
             } else {
                 // tabs
-                $tabContents = $field['tab']['content'] ?? [];
+                $tabContents = $field['content'] ?? [];
                 foreach ($tabContents as $tabKey => $tabContent) {
                     // check if the field is tab
                     if ($tabKey == 'fields' && is_array($tabContent)) {

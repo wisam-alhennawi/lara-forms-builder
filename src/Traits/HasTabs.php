@@ -4,6 +4,8 @@ namespace WisamAlhennawi\LaraFormsBuilder\Traits;
 
 trait HasTabs
 {
+    use MultiStepForm;
+
     public $activeTab = '';
 
     public $hasTabs = true;

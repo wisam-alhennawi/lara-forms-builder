@@ -18,9 +18,9 @@ trait MultiStepForm
         if (empty($steps)) {
             $this->steps = collect($this->fields)->map(function ($tab) {
                 return [
-                    'key' => $tab['tab']['key'],
-                    'title' => $tab['tab']['title'],
-                    'fields' => $tab['tab']['content']['fields'],
+                    'key' => $tab['key'],
+                    'title' => $tab['title'],
+                    'fields' => $tab['content']['fields'],
                 ];
             })->toArray();
         } else {

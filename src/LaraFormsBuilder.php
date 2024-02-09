@@ -32,8 +32,6 @@ trait LaraFormsBuilder
 
     public string $customSuccessMessage = '';
 
-    public bool $isMultiStep = false;
-
     /**
      * get field keys from fields array
      *
@@ -360,7 +358,6 @@ trait LaraFormsBuilder
         if ($this->customSuccessMessage != '') {
             $message = $this->customSuccessMessage;
         } else {
-            // if you want to customize the success message, you should add the custom message key entry to the lang file (Example: "A new forestryPoolMember has benn created successfully.") or override the method
             $modelName = Str::lcfirst(class_basename(get_class($this->model)));
             $customMessageKey = 'A new '.$modelName.' has been created successfully.';
             $message = trans('A new entry has been created successfully.');

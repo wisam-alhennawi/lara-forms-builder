@@ -10,6 +10,8 @@ trait HasTabs
 
     public $hasTabs = true;
 
+    public bool $isMultiStep = false;
+
     protected function initActiveTab($value)
     {
         // example of value: 'user-details' => 'InitUserDetailsTab'

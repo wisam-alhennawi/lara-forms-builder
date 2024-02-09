@@ -75,6 +75,9 @@ trait MultiStepForm
     {
         $this->activeStepNumber--;
         $this->activeTab = $this->steps[$this->activeStepNumber - 1]['key'];
+        if ($this->mode == 'confirm') {
+            $this->mode = null;
+        }
     }
 
     /**

@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.9.0 - 2024-02-09
+
+### What's Changed
+
+* Multi-Step Form + Bugfix Style Select JavaScript  by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/42
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.3...v1.9.0
+
 ## v1.8.3 - 2024-01-29
 
 ### What's Changed

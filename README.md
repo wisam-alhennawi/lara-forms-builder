@@ -57,11 +57,14 @@ This command will do the following:
     This is the contents of the published config file:
     ```php
     return [
-        'default_group_wrapper_class' => 'grid grid-cols-2 gap-6',
-        'default_field_wrapper_class' => 'col-span-1 sm:col-span-1',
+        'default_group_wrapper_class' => 'lfb-group-wrapper',
+        'default_field_wrapper_class' => 'lfb-field-wrapper',
         'card_field_error_wrapper_classes' => 'shadow mb-4 overflow-hidden rounded-md col-span-2 sm:col-span-2',
-        'primary_button_classes' => 'btn btn-primary disabled:bg-c_gray-300',
-        'secondary_button_classes' => 'btn btn-secondary',
+        'primary_button_classes' => 'lfb-primary-button',
+        'secondary_button_classes' => 'lfb-secondary-button',
+        'footer_buttons_wrapper_classes' => 'lfb-buttons-wrapper',
+        'previous_button_classes' => 'lfb-secondary-button',
+        'next_button_classes' => 'lfb-primary-button',
     ];
     ```
 
@@ -346,6 +349,115 @@ The `search-picker` form field is an input field with search functionality which
 **Note:** `getContactIdOptions()`, `getContactIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `contact_id`.
 
 ![Rendered Form according to code snippet](Search-Picker-Example.png)
+
+### Form Layout
+
+#### Tabs
+- A custom layout for components that utilize tabs to organize content.
+- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
+
+#### Multi-Step
+- The Multi-Step feature is designed to facilitate the creation of multi-step forms with a Tabs Layout. It provides methods to initialize steps, set the active step number, navigate between steps, and retrieve information about the form's multi-step structure.
+- Usage
+    - It works for now only with `Tabs Layout` and it is deactivated by default.
+    - To enable the `multi-step` functionality, set the `isMultiStep` property to true when configuring the form.
+
+* Example:
+    ```php
+    use WisamAlhennawi\LaraFormsBuilder\LaraFormComponent;
+    use WisamAlhennawi\LaraFormsBuilder\Traits\HasTabs;
+
+    class CustomerForm extends LaraFormComponent
+    {
+        use HasTabs;
+
+        public function mount(Customer $customer)
+        {
+            $this->mountForm($customer, [
+                'activeTab' => 'address-data',
+                'hasTabs' => true,
+                'isMultiStep' => true, // Optional if you want to use the multi-step form feature
+            ]);
+        }
+
+        protected function fields(): array
+        {
+            return [
+                [
+                    'key' => 'address-data',
+                    'title' => __('Address Data'),
+                    'content' => [
+                        'group_info' => [
+                            'group_wrapper_class' => 'grid grid-cols-4 gap-6',
+                            'default_group_wrapper_class' => false
+                        ],
+                        'fields' => [
+                            // Fields for the 'Address Data' tab
+                            // Example:
+                            'company' => [
+                                'type' => 'input',
+                                'label' => __('models/customers.fields.company'),
+                                'field_wrapper_class' => 'col-span-4',
+                            ],
+                            // ... other fields
+                        ],
+                    ],
+                ],
+                [
+                    'key' => 'contact-data',
+                    'title' => __('Contact Data'),
+                    'content' => [
+                        'group_info' => [
+                            'group_wrapper_class' => 'grid grid-cols-6 gap-6',
+                            'default_group_wrapper_class' => false
+                        ],
+                        'fields' => [
+                            // Fields for the 'Contact Data' tab
+                            // Example:
+                            'phone' => [
+                                'type' => 'input',
+                                'label' => __('customers.fields.phone'),
+                                'field_wrapper_class' => 'col-span-2',
+                            ],
+                            // ... other fields
+                        ],
+                    ],
+                ],
+                // .. other tabs
+            ];
+        }
+
+        // ... other component properties and methods
+    }
+    ```php
+
+### Form Methods
+
+* `protected function successMessage()`
+    * Purpose:
+        - The `successMessage()` function is responsible for generating a success message based on the outcome of a form submission.
+    * Custom Success Message:
+        - If a custom success message is provided through the `$customSuccessMessage` property, it will be used.
+    * Default Success Messages:
+        - If no custom success message is set, default success messages are used for create and update modes.
+            ```php
+            trans('A new entry has been created successfully.')
+            trans('Changes were saved successfully.')
+            ```
+        - These default messages can be further customized by adding translation keys in the language file.
+            ```php
+            'A new '.$modelName.' has been created successfully.'
+            'The '.$modelName.' has been updated successfully.'
+            ```
+            Example:
+            ```php
+            'A new user has been created successfully.'
+            'The user has been updated successfully.'
+            ```
+    * Displaying the Success Message:
+        - The success message is displayed to the user either as a flash message or through a browser event. The display method depends on the value of the `$hasSession` property, which is true by default.
+    * Another way to customize the success message is to override the `successMessage()` method in the component class.
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.

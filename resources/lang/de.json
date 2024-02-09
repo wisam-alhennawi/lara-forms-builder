@@ -37,5 +37,7 @@
     "Previous Month": "Vormonat",
     "Next Month": "Folgemonat",
     "Select File": "Datei auswählen",
-    "Search": "Suche"
+    "Search": "Suche",
+    "Previous Step": "Vorheriger Schritt",
+    "Next Step": "Nächster Schritt"
 }

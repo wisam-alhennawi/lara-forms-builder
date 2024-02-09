@@ -8,4 +8,6 @@ return [
     'primary_button_classes' => 'lfb-primary-button',
     'secondary_button_classes' => 'lfb-secondary-button',
     'footer_buttons_wrapper_classes' => 'lfb-buttons-wrapper',
+    'previous_button_classes' => 'lfb-secondary-button',
+    'next_button_classes' => 'lfb-primary-button',
 ];

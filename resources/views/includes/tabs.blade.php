@@ -1,30 +1,40 @@
 <div x-data="{ tab: @entangle('activeTab') }" class="lfb-tabs-wrapper">
     <div class="lfb-tab-container">
         {{-- Tabs Links --}}
-        <aside class="lfb-tab-nav-wrapper">
-            <div class="lfb-tab-nav-container">
-                @if(!empty($formTitle))
-                    <div class="lfb-tab-nav-title-wrapper">
-                        <div class="lfb-tab-nav-title">{{ $formTitle }}</div>
-                    </div>
-                @endif
-                <nav class="lfb-tab-nav-links" x-model="tab">
-                    @foreach($fields as $field)
-                        <div class="lfb-tab-nav-link-item">
-                            @if($isMultiStep)
-                                <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link">
+        @if($isMultiStep)
+            <aside class="lfb-steps-nav-wrapper">
+                <div class="lfb-steps-nav-container">
+                    <nav class="lfb-steps-nav">
+                        @foreach($fields as $field)
+                            <div class="lfb-step-nav">
+                                <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-step-nav-title-active' : '']" class="lfb-step-nav-title">
                                     {{ $field['title'] }}
                                 </div>
-                            @else
+                            </div>
+                        @endforeach
+                    </nav>
+                </div>
+            </aside>
+        @else
+            <aside class="lfb-tab-nav-wrapper">
+                <div class="lfb-tab-nav-container">
+                    @if(!empty($formTitle))
+                        <div class="lfb-tab-nav-title-wrapper">
+                            <div class="lfb-tab-nav-title">{{ $formTitle }}</div>
+                        </div>
+                    @endif
+                    <nav class="lfb-tab-nav-links" x-model="tab">
+                        @foreach($fields as $field)
+                            <div class="lfb-tab-nav-link-item">
                                 <a x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link" x-on:click.prevent="tab='{{ $field['key'] }}'">
                                     {{ $field['title'] }}
                                 </a>
-                            @endif
-                        </div>
-                    @endforeach
-                </nav>
-            </div>
-        </aside>
+                            </div>
+                        @endforeach
+                    </nav>
+                </div>
+            </aside>
+        @endif
 
         {{-- Tabs Content --}}
         <div class="lfb-tab-content-wrapper" wire:target="save" wire:loading.class="lfb-tab-content-wrapper-loading-class">

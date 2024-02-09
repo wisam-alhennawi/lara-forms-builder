@@ -233,6 +233,26 @@
         @apply bg-gray-200/50 border-gray-300;
     }
 
+    .lfb-steps-nav-wrapper {
+        @apply lg:col-span-2;
+    }
+
+    .lfb-steps-nav-container {
+        @apply flex flex-col;
+    }
+
+    .lfb-step-nav-title {
+        @apply px-3 py-2 text-gray-800 border-transparent border-l-4 flex items-center text-sm font-medium transition-all duration-300;
+    }
+
+    .lfb-step-nav:first-child .lfb-step-nav-title {
+        @apply rounded-tl-md;
+    }
+
+    .lfb-step-nav-title-active {
+        @apply bg-gray-200/50 border-gray-300;
+    }
+
     .lfb-tab-content-wrapper {
         @apply lg:col-span-10 relative pb-4;
     }

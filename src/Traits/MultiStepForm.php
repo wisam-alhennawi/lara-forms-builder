@@ -45,14 +45,6 @@ trait MultiStepForm
     }
 
     /**
-     * Check if the form is a multi step form
-     */
-    public function isMultiStepForm(): bool
-    {
-        return $this->isMultiStep;
-    }
-
-    /**
      * Get the active step number
      */
     public function activeStepNumber(): int

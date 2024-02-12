@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.9.1 - 2024-02-12
+
+### What's Changed
+
+* Non multi step forms: Fix Property isMultiStep not found by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/43
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.9.0...v1.9.1
+
 ## v1.9.0 - 2024-02-09
 
 ### What's Changed

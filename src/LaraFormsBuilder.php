@@ -164,6 +164,14 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Check if the form is a multi step form
+     */
+    public function isMultiStepForm(): bool
+    {
+        return isset($this->isMultiStep) && $this->isMultiStep;
+    }
+
+    /**
      * It should be called in mount method which runs once, immediately after the component is instantiated, but before render() is called. This is only called once on initial page load and never called again, even on component refreshes
      * It will set the model, mode, submitButtonLabel, cancelButtonLabel, form properties
      */
@@ -192,7 +200,7 @@ trait LaraFormsBuilder
 
         $this->fields = $this->fields();
 
-        if ($this->isMultiStep) {
+        if ($this->isMultiStepForm()) {
             $this->initSteps();
         }
     }

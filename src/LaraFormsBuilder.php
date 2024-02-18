@@ -12,6 +12,8 @@ trait LaraFormsBuilder
 
     public $mode;
 
+    public $confirmBeforeSubmit = false;
+
     public $submitButtonLabel;
 
     public $cancelButtonLabel;
@@ -27,6 +29,8 @@ trait LaraFormsBuilder
     public array $rules;
 
     public array $validationAttributes;
+
+    public string $customSuccessMessage = '';
 
     /**
      * get field keys from fields array
@@ -66,7 +70,7 @@ trait LaraFormsBuilder
                 }
             } else {
                 // tabs
-                $tabFields = $field['tab']['content'] ?? [];
+                $tabFields = $field['content'] ?? [];
                 foreach ($tabFields as $tabFieldKey => $tabFieldValue) {
                     // check if the field is tab
                     if ($tabFieldKey == 'fields' && is_array($tabFieldValue)) {
@@ -90,12 +94,12 @@ trait LaraFormsBuilder
     }
 
     /**
-     * @param $field array
-     * @param $key string
-     * @param $modelRules array
+     * @param  $field  array
+     * @param  $key  string
+     * @param  $modelRules  array
      * @return string
      */
-    private function getfieldRules($field, $key, $modelRules)
+    private function getFieldRules($field, $key, $modelRules)
     {
         $fieldRules = '';
         // check if the field has rules or the model has rules for this field
@@ -122,32 +126,49 @@ trait LaraFormsBuilder
             if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $key => $field) {
-                        $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                        $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
+                        $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 } else {
-                    $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                    $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                    $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
+                    $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                 }
             } else {
                 // tabs
-                $tabContents = $field['tab']['content'] ?? [];
+                $tabContents = $field['content'] ?? [];
                 foreach ($tabContents as $tabKey => $tabContent) {
                     // check if the field is tab
                     if ($tabKey == 'fields' && is_array($tabContent)) {
                         foreach ($tabContent as $key => $field) {
-                            $fieldRules[$key] = $this->getfieldRules($field, $key, $modelRules);
-                            $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                            $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
+                            $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                         }
                     } elseif (is_numeric($tabKey)) {
-                        $fieldRules[$key] = $this->getfieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes[$key] = $field['label'] ?? $key;
+                        $fieldRules[$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
+                        $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 }
             }
         }
 
         return [$fieldRules, $fieldValidationAttributes];
+    }
+
+    private function getFieldValidationAttribute($field, $key)
+    {
+        if (isset($field['validationAttribute'])) {
+            return $field['validationAttribute'];
+        }
+
+        return $field['label'] ?? $key;
+    }
+
+    /**
+     * Check if the form is a multi step form
+     */
+    public function isMultiStepForm(): bool
+    {
+        return isset($this->isMultiStep) && $this->isMultiStep;
     }
 
     /**
@@ -178,6 +199,10 @@ trait LaraFormsBuilder
         $this->afterFormProperties();
 
         $this->fields = $this->fields();
+
+        if ($this->isMultiStepForm()) {
+            $this->initSteps();
+        }
     }
 
     /**
@@ -202,6 +227,10 @@ trait LaraFormsBuilder
                 $this->{$field['key']} = $field['field']['default'];
             } else {
                 $this->{$field['key']} = null;
+            }
+            // define a property if field is search-picker (e.g.: foo -> foo_search_picker)
+            if ($field['field']['type'] === 'search-picker') {
+                $this->{$field['key'].'_search_picker'} = null;
             }
         }
     }
@@ -240,7 +269,7 @@ trait LaraFormsBuilder
      *
      * @return bool
      */
-    protected function extraValidate()
+    protected function extraValidate($validated_data = [])
     {
         return true;
     }
@@ -251,7 +280,17 @@ trait LaraFormsBuilder
     protected function submit()
     {
         $validated_data = $this->validate();
-        if (! $this->extraValidate()) {
+        if (! $this->extraValidate($validated_data)) {
+            return false;
+        }
+
+        if ($this->confirmBeforeSubmit && $this->mode != 'confirm') {
+            foreach ($validated_data as $key => $value) {
+                $this->model->$key = $value;
+            }
+            $this->mode = 'confirm';
+            $this->emit('formMode', $this->mode);
+
             return false;
         }
 
@@ -289,6 +328,18 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Reset the value of a field
+     */
+    public function resetValue($fieldKey)
+    {
+        $this->{$fieldKey} = null;
+        $this->{$fieldKey.'_preview'} = null;
+        if ($this->model) {
+            $this->model->{$fieldKey} = null;
+        }
+    }
+
+    /**
      * After clicking on the submit button (submit the form, show success message and callback)
      */
     public function checkAndSave()
@@ -312,17 +363,20 @@ trait LaraFormsBuilder
      */
     protected function successMessage()
     {
-        // if you want to customize the success message, you should add the custom message key entry to the lang file (Example: "A new forestryPoolMember has benn created successfully.") or override the method
-        $modelName = Str::lcfirst(class_basename(get_class($this->model)));
-        $customMessageKey = 'A new '.$modelName.' has been created successfully.';
-        $message = trans('A new entry has been created successfully.');
-        if ($this->mode == 'update') {
-            $customMessageKey = 'The '.$modelName.' has been updated successfully.';
-            $message = trans('Changes were saved successfully.');
-        }
+        if ($this->customSuccessMessage != '') {
+            $message = $this->customSuccessMessage;
+        } else {
+            $modelName = Str::lcfirst(class_basename(get_class($this->model)));
+            $customMessageKey = 'A new '.$modelName.' has been created successfully.';
+            $message = trans('A new entry has been created successfully.');
+            if ($this->mode == 'update') {
+                $customMessageKey = 'The '.$modelName.' has been updated successfully.';
+                $message = trans('Changes were saved successfully.');
+            }
 
-        if (Lang::has($customMessageKey)) {
-            $message = trans($customMessageKey);
+            if (Lang::has($customMessageKey)) {
+                $message = trans($customMessageKey);
+            }
         }
 
         if ($this->hasSession) {
@@ -334,6 +388,62 @@ trait LaraFormsBuilder
                 'message' => $message,
             ]);
         }
+    }
+
+    public function cancelOrBack()
+    {
+        if ($this->mode == 'confirm') {
+            $this->mode = null;
+            $this->emit('formMode', $this->mode);
+
+            return null;
+        }
+
+        return $this->cancel();
+    }
+
+    /**
+     * Set the related value of selected search picker option
+     */
+    public function setSearchPickerValue($value, $key)
+    {
+        $this->$key = $value;
+        $this->{$key.'_search_picker'} = null;
+        if (isset($this->{Str::camel($key).'Options'})) {
+            $this->reset(Str::camel($key).'Options');
+        }
+    }
+
+    protected function searchPickerOptions($name, $value)
+    {
+        // call proper get***Options() function if field is search-picker
+        if (str_contains($name, '_search_picker')) {
+            foreach ($this->getFieldsFlat() as $fieldFlat) {
+                if ($fieldFlat['field']['type'] === 'search-picker' && $name === $fieldFlat['key'].'_search_picker') {
+                    $searchPickerTerm = trim($value);
+                    $searchOptionsPropertyName = Str::camel($fieldFlat['key']).'Options';
+                    if ($searchPickerTerm) {
+                        $functionName = 'get'.ucfirst($searchOptionsPropertyName);
+                        if (method_exists($this, $functionName)) {
+                            $this->$searchOptionsPropertyName = $this->$functionName($searchPickerTerm);
+                        }
+                    } else {
+                        $this->reset($searchOptionsPropertyName);
+                    }
+                }
+            }
+        }
+    }
+
+    public function updated($name, $value)
+    {
+        // set empty string to null
+        if ($value === '') {
+            $this->{$name} = null;
+        }
+
+        // search-picker
+        $this->searchPickerOptions($name, $value);
     }
 
     /**
@@ -354,6 +464,16 @@ trait LaraFormsBuilder
     protected function getDefaultFieldWrapperClass()
     {
         return config('lara-forms-builder.default_field_wrapper_class');
+    }
+
+    /**
+     * Get the css classes for footer buttons wrapper
+     *
+     * @return string
+     */
+    protected function getFooterButtonsWrapperClasses()
+    {
+        return config('lara-forms-builder.footer_buttons_wrapper_classes');
     }
 
     /**

@@ -57,11 +57,14 @@ This command will do the following:
     This is the contents of the published config file:
     ```php
     return [
-        'default_group_wrapper_class' => 'grid grid-cols-2 gap-6',
-        'default_field_wrapper_class' => 'col-span-1 sm:col-span-1',
+        'default_group_wrapper_class' => 'lfb-group-wrapper',
+        'default_field_wrapper_class' => 'lfb-field-wrapper',
         'card_field_error_wrapper_classes' => 'shadow mb-4 overflow-hidden rounded-md col-span-2 sm:col-span-2',
-        'primary_button_classes' => 'btn btn-primary disabled:bg-c_gray-300',
-        'secondary_button_classes' => 'btn btn-secondary',
+        'primary_button_classes' => 'lfb-primary-button',
+        'secondary_button_classes' => 'lfb-secondary-button',
+        'footer_buttons_wrapper_classes' => 'lfb-buttons-wrapper',
+        'previous_button_classes' => 'lfb-secondary-button',
+        'next_button_classes' => 'lfb-primary-button',
     ];
     ```
 
@@ -146,6 +149,314 @@ Examples:
 php artisan make:lara-forms-builder UserForm User --langModelFileName=users
 php artisan make:lara-forms-builder Users.UserForm User --langModelFileName=users       //this will make a UserForm component inside Users directory.
 ```
+
+### Form Component Types and Attributes
+
+Forms are specified in a declarative manner as an array of the `fields` function in the form component class, e.g.
+
+```php
+protected function fields(): array
+    {
+        return [
+            [
+                'fields' => [
+                    'name' => [
+                        'type' => 'input',
+                        'label' => __('models/users.fields.name'),
+                    ],
+                    'email' => [
+                        'type' => 'input',
+                        'label' => __('models/users.fields.email'),
+                        'readOnly' => true
+                    ],
+                    'role' => [
+                        'type' => 'radio',
+                        'label' => __('models/users.fields.role'),
+                        'options' => [
+                            '1' => __('Employee'),
+                            '2' => __('Manager')
+                        ]
+                    ],
+                    'status' => [
+                        'type' => 'select',
+                        'label' => __('models/users.fields.status'),
+                        'options' => [
+                            [
+                                'value' => '1',
+                                'label' => __('Pending')
+                            ],
+                            [
+                                'value' => '2',
+                                'label' => __('Active')
+                            ],
+                            [
+                                'value' => '3',
+                                'label' => __('Retired')
+                            ]
+                        ]
+                    ],
+                    'last_update' => [
+                        'type' => 'date-picker',
+                        'label' => __('models/users.fields.last_update')
+                    ],
+                    'remark' => [
+                        'type' => 'textarea',
+                        'label' => __('models/users.fields.remark'),
+                        'field_wrapper_class' => 'col-span-2',
+                    ],
+                ]
+            ]
+        ];
+    }
+```
+
+The definition above is then rendered as displayed in this screenshot (with additional language dependent translations for the labels required):
+
+![Rendered Form according to code snippet](Example-Form.png)
+
+All form components have the following general properties:
+
+* `type` (mandatory): Specifies the kind of form component, see the following subsections for supported types and their individual properties
+* `label` (mandatory): Label text of the component, can also include HTML tags (please handle responsibly and do not allow user input to be used as labels)
+* `validationAttribute` (optional): If set, the value will be used as the attribute label for validation messages. If not set, the `label` is also used as a field name for validation messages.
+* `helpText` (optional): Help text displayed at the bottom of the component
+* `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
+* `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
+* `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
+
+#### Type `input`
+
+The `input` form field is a classic html input element. It has the following additional properties:
+
+* `inputType` (optional): Specifies the specific type of input, e.g. email, number, url. Default if not provided is text.
+
+#### Type `textarea`
+
+The `textarea` form field represents a text area and has the following additional properties:
+
+* `rows` (optional): Defines the number of rows of the text area, default if not set is 5.
+
+#### Type `select`
+
+The `select` form field is a select box for single selection. It has the following additional properties:
+
+* `options` (mandatory): Specifies the options to be displayed in the select box, provided as an array of objects with attributes `value` and `label` or a nested array of group label to array of objects with attributes `value` and `label` when grouped.
+* `isGrouped` (optional): Defines whether the options are grouped, default when not set is false.
+* `styled` (optional, not combinable with `isGrouped`): When set to true, uses a stylable div based select component instead of the html select element.
+* `searchable` (optional, only when `styled` is `true`): When set to true, adds a search field that allows to filter the options for search expressions (simple case insensitive substring matching)
+
+#### Type `radio`
+
+The `radio` form field represents radio buttons and has the following additional properties:
+
+* `options` (mandatory): Specifies the options for the radio button selection as a simple array `value => label`.
+
+#### Type `cards`
+
+The `cards` form field is a special layout element used to select among different options by clicking on one of several cards with rich content and an icon. It has the following additional properties:
+
+* `options` (mandatory): Specifies the options to be selected as an array of objects with attributes `value` and `label` (can be HTML).
+* `icon` (optional): SVG markup or URL to be displayed as icon in all cards, if not set, no icon is displayed.
+* `card_field_error_wrapper_class` (optional): CSS class(es) to be added to error message boxes.
+* `errorMessageIcon` (optional): Customized icon markup to be displayed in an error message, if not set, a default icon is used.
+
+#### Type `checkbox`
+
+The `checkbox` form field is a single checkbox and does not have any additional properties.
+
+#### Type `checkbox-group`
+
+The `checkbox-group` form field is a multi-select group of checkboxes. It has the following additional properties:
+
+* `options` (mandatory): Specifies the values and labels for the checkboxes, provided as an array of objects with attributes `value` and `label` or a nested array of category label to array of objects with attributes `value` and `label` when grouped by category.
+* `hasCategory` (optional): Defines whether the checkbox entries are grouped by category, default if not set is false.
+
+#### Type `date-picker`
+
+The `date-picker` form field adds a Pikaday date picker. It does not have any additional properties.
+
+#### Type `file`
+
+The `file` form field represents a file input for a single file upload. It has the following additional properties:
+
+* `preview` (optional): If set to the value `image`, a preview of the uploaded or existing file is displayed. In order to properly show a preview of an existing file (when editing an existing model), the URL to download the existing file must be set as an additional property `$this.{$key . '_preview'}`, e.g. `contact_photo_preview` for a field key `contact_property`. The preview URL can be determined and set in the `afterFormProperties` function.
+* `removeIcon` (optional): Customized icon markup to be displayed as the icon to remove/reset a selected file before saving. If not set, a default icon is used.
+
+Since binary files are usually not directly stored as properties of an Eloquent model, but must be processed separately, this type of form field will in most cases need additional file handling logic in the implementing form. The implementation follows the principles of Livewire file uploads (https://laravel-livewire.com/docs/2.x/file-uploads) and essentially provides the view part of file upload. It is suggested to add the file handling in one of the callback or override functions, e.g. the `save...` function of the property such as the following code snippet for a property `attachment`:
+
+```php
+public function saveAttachment($attachmentValue) {
+    $attachmentValue->storeAs('attachments', $attachmentValue->getClientOriginalName());
+}
+```
+
+#### Type `search-picker`
+
+```php
+public array $contactIdOptions = [];
+
+public function getContactIdOptions($searchPickerTerm)
+{
+    return Contact::select('id', 'name')
+            ->where('name', 'like', '%' . $searchPickerTerm . '%')
+            ->get()
+            ->each(function($row){
+                $row->key = $row->id;
+                $row->value = $row->name;
+                $row->labels = collect(['White', 'Green', 'Blue', 'Red', 'Yellow'])->random(rand(0, 3))->toArray();
+            })
+            ->toArray();
+}
+
+// will return ($contact_id_search_picker_selected_value) which used in blade to display the selected option
+public function getContactIdSearchPickerSelectedValueProperty()
+{
+    if ($this->contact_id) {
+        return Contact::find($this->contact_id)->name;
+    }
+    return null;
+}
+
+protected function fields(): array
+{
+    return [
+        [
+            'fields' => [
+                    'contact_id' => [
+                    'type' => 'search-picker',
+                    'label' => 'Contact Person',
+                    'searchPickerResultsProperty' => 'contactIdOptions',
+                    'placeholder' => __('Search for contact person'),
+                    'field_wrapper_class' => 'col-span-1',
+                ],
+            ]
+        ]
+    ];
+}
+```
+
+The `search-picker` form field is an input field with search functionality which display the results as a list under the field. It has the following additional properties:
+
+* `placeholder` (optional): Specifies the placeholder of the input field.
+* `searchPickerResultsProperty` (mandatory): Refers to the defined array which has the search results. Every element in the array should have the following structure:
+    ```php
+    [
+        'key' => '',
+        'value' => '',
+        'labels' => [] // optional
+    ]
+    ```
+**Note:** `getContactIdOptions()`, `getContactIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `contact_id`.
+
+![Rendered Form according to code snippet](Search-Picker-Example.png)
+
+### Form Layout
+
+#### Tabs
+- A custom layout for components that utilize tabs to organize content.
+- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
+
+#### Multi-Step
+- The Multi-Step feature is designed to facilitate the creation of multi-step forms with a Tabs Layout. It provides methods to initialize steps, set the active step number, navigate between steps, and retrieve information about the form's multi-step structure.
+- Usage
+    - It works for now only with `Tabs Layout` and it is deactivated by default.
+    - To enable the `multi-step` functionality, set the `isMultiStep` property to true when configuring the form.
+
+* Example:
+    ```php
+    use WisamAlhennawi\LaraFormsBuilder\LaraFormComponent;
+    use WisamAlhennawi\LaraFormsBuilder\Traits\HasTabs;
+
+    class CustomerForm extends LaraFormComponent
+    {
+        use HasTabs;
+
+        public function mount(Customer $customer)
+        {
+            $this->mountForm($customer, [
+                'activeTab' => 'address-data',
+                'hasTabs' => true,
+                'isMultiStep' => true, // Optional if you want to use the multi-step form feature
+            ]);
+        }
+
+        protected function fields(): array
+        {
+            return [
+                [
+                    'key' => 'address-data',
+                    'title' => __('Address Data'),
+                    'content' => [
+                        'group_info' => [
+                            'group_wrapper_class' => 'grid grid-cols-4 gap-6',
+                            'default_group_wrapper_class' => false
+                        ],
+                        'fields' => [
+                            // Fields for the 'Address Data' tab
+                            // Example:
+                            'company' => [
+                                'type' => 'input',
+                                'label' => __('models/customers.fields.company'),
+                                'field_wrapper_class' => 'col-span-4',
+                            ],
+                            // ... other fields
+                        ],
+                    ],
+                ],
+                [
+                    'key' => 'contact-data',
+                    'title' => __('Contact Data'),
+                    'content' => [
+                        'group_info' => [
+                            'group_wrapper_class' => 'grid grid-cols-6 gap-6',
+                            'default_group_wrapper_class' => false
+                        ],
+                        'fields' => [
+                            // Fields for the 'Contact Data' tab
+                            // Example:
+                            'phone' => [
+                                'type' => 'input',
+                                'label' => __('customers.fields.phone'),
+                                'field_wrapper_class' => 'col-span-2',
+                            ],
+                            // ... other fields
+                        ],
+                    ],
+                ],
+                // .. other tabs
+            ];
+        }
+
+        // ... other component properties and methods
+    }
+    ```php
+
+### Form Methods
+
+* `protected function successMessage()`
+    * Purpose:
+        - The `successMessage()` function is responsible for generating a success message based on the outcome of a form submission.
+    * Custom Success Message:
+        - If a custom success message is provided through the `$customSuccessMessage` property, it will be used.
+    * Default Success Messages:
+        - If no custom success message is set, default success messages are used for create and update modes.
+            ```php
+            trans('A new entry has been created successfully.')
+            trans('Changes were saved successfully.')
+            ```
+        - These default messages can be further customized by adding translation keys in the language file.
+            ```php
+            'A new '.$modelName.' has been created successfully.'
+            'The '.$modelName.' has been updated successfully.'
+            ```
+            Example:
+            ```php
+            'A new user has been created successfully.'
+            'The user has been updated successfully.'
+            ```
+    * Displaying the Success Message:
+        - The success message is displayed to the user either as a flash message or through a browser event. The display method depends on the value of the `$hasSession` property, which is true by default.
+    * Another way to customize the success message is to override the `successMessage()` method in the component class.
 
 ## Changelog
 

@@ -18,6 +18,8 @@
             'isGrouped' => isset($field['isGrouped']) ? $field['isGrouped'] : false,
             'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'styled' => isset($field['styled']) ? $field['styled'] : false,
+            'searchable' => isset($field['searchable']) ? $field['searchable'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
@@ -66,6 +68,8 @@
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
             'cardFieldErrorWrapperClass' => isset($field['card_field_error_wrapper_class']) ? $field['card_field_error_wrapper_class'] : $defaultCardFieldErrorWrapperClasses,
+            'icon' => isset($field['icon']) ? $field['icon'] : null,
+            'errorMessageIcon' => isset($field['errorMessageIcon']) ? $field['errorMessageIcon'] : null,
         ])
         @break
     @case('checkbox-group')
@@ -77,6 +81,28 @@
             'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
             'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
             'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
+        ])
+        @break
+    @case('file')
+        @include('lara-forms-builder::components.file-upload', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass,
+            'removeIcon' => isset($field['removeIcon']) ? $field['removeIcon'] : null,
+            'preview' => isset($field['preview']) ? $field['preview'] : null,
+        ])
+        @break
+    @case('search-picker')
+        @include('lara-forms-builder::components.search-picker', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'searchPickerResultsProperty' => $field['searchPickerResultsProperty'],
+            'placeholder' => isset($field['placeholder']) ? $field['placeholder'] : '',
+            'helpText' => isset($field['helpText']) ? $field['helpText'] : '',
+            'readOnly' => isset($field['readOnly']) ? $field['readOnly'] : false,
+            'fieldWrapperClass' => isset($field['field_wrapper_class']) ? $field['field_wrapper_class'] : $defaultFieldWrapperClass
         ])
         @break
     @default

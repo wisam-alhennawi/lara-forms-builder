@@ -35,8 +35,17 @@
         @apply relative;
     }
 
-    .lfb-input {
+    .lfb-input,
+    .lfb-textarea {
         @apply mt-1 block w-full rounded border text-gray-600 border-gray-200 focus:border-gray-300 focus:ring-gray-300;
+    }
+
+    .lfb-upload-button {
+        @apply relative inline-flex items-center justify-center uppercase px-4 py-2;
+    }
+
+    .lfb-file-uploaded {
+        @apply ml-2;
     }
 
     .lfb-checkbox,
@@ -112,8 +121,12 @@
         @apply px-4 flex justify-end gap-2;
     }
 
+    .lfb-multi-step-buttons {
+        @apply justify-between;
+    }
+
     .lfb-secondary-button {
-        @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:text-gray-500  active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition print:hidden;
+        @apply inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 tracking-widest shadow-sm hover:text-gray-500 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition print:hidden;
     }
 
     .lfb-primary-button {
@@ -126,5 +139,219 @@
 
     .lfb-checkbox-category-group-label {
         @apply block text-sm font-medium text-gray-800 mb-4;
+    }
+
+    .lfb-card-wrapper {
+        @apply bg-gray-100 rounded-md relative p-4 mt-2 flex items-center border border-gray-300 transition-all hover:shadow-md hover:-translate-y-0.5 shadow cursor-pointer;
+    }
+
+    .lfb-card-wrapper-state-active {
+        @apply border-green-500 hover:-translate-y-0;
+    }
+
+    .lfb-card-wrapper-state-read-only {
+        @apply text-gray-400 pointer-events-none;
+    }
+
+    .lfb-card-wrapper-state-read-only .lfb-card-icon {
+        @apply text-green-600/40;
+    }
+
+    .lfb-card-container {
+        @apply flex gap-2 items-center justify-between w-full
+    }
+
+    .lfb-card-container.with-icon .lfb-card-item {
+        @apply w-10/12;
+    }
+
+    .lfb-card-item {
+        @apply flex flex-col gap-1 items-start justify-center
+    }
+
+    .lfb-card-label {
+        @apply text-base leading-6;
+    }
+
+    .lfb-card-icon {
+        @apply w-2/12 flex justify-end items-center text-green-600;
+    }
+
+    .lfb-card-icon>div {
+        @apply w-10 h-10;
+    }
+
+    .lfb-card-message-container {
+        @apply flex;
+    }
+
+    .lfb-card-message-icon-container {
+        @apply bg-yellow-500 w-14 text-center p-2;
+    }
+
+    .lfb-card-message-icon-inner {
+        @apply flex justify-center h-full items-center;
+    }
+
+    .lfb-card-message-icon-inner>svg {
+        @apply h-6 w-6 text-white;
+    }
+
+    .lfb-card-message-text {
+        @apply bg-gray-100 border-r-4 border-yellow-500 w-full p-4 text-gray-600 text-sm;
+    }
+
+    .lfb-tabs-wrapper {
+        @apply bg-white shadow rounded-md;
+    }
+
+    .lfb-tab-container {
+        @apply divide-y divide-gray-200 lg:grid lg:grid-cols-12 lg:divide-y-0 lg:divide-x;
+    }
+
+    .lfb-tab-nav-wrapper {
+        @apply py-4 lg:col-span-2;
+    }
+
+    .lfb-tab-nav-container {
+        @apply flex flex-col;
+    }
+
+    .lfb-tab-nav-title-wrapper {
+        @apply flex flex-shrink-0 items-center px-4 mb-6;
+    }
+
+    .lfb-tab-nav-title {
+        @apply text-3xl font-semibold text-gray-800;
+    }
+
+    .lfb-tab-nav-link {
+        @apply px-3 py-2 text-gray-800 border-transparent hover:bg-gray-200/50 hover:border-gray-300 border-l-4 flex items-center text-sm font-medium cursor-pointer transition-all duration-300;
+    }
+
+    .lfb-tab-nav-link-active {
+        @apply bg-gray-200/50 border-gray-300;
+    }
+
+    .lfb-steps-nav-wrapper {
+        @apply lg:col-span-2;
+    }
+
+    .lfb-steps-nav-container {
+        @apply flex flex-col;
+    }
+
+    .lfb-step-nav-title {
+        @apply px-3 py-2 text-gray-800 border-transparent border-l-4 flex items-center text-sm font-medium transition-all duration-300;
+    }
+
+    .lfb-step-nav:first-child .lfb-step-nav-title {
+        @apply rounded-tl-md;
+    }
+
+    .lfb-step-nav-title-active {
+        @apply bg-gray-200/50 border-gray-300;
+    }
+
+    .lfb-tab-content-wrapper {
+        @apply lg:col-span-10 relative pb-4;
+    }
+
+    .lfb-tab-content-wrapper-loading-class {
+        @apply opacity-50;
+    }
+
+    .lfb-tab-content-container {
+        @apply relative border-b mb-4;
+    }
+
+    .lfb-tab-error-wrapper {
+        @apply shadow mx-4 mt-6 overflow-hidden rounded-md;
+    }
+
+    .lfb-tab-error-container {
+        @apply flex;
+    }
+
+    .lfb-tab-error-icon {
+        @apply bg-cyan-500 w-14 text-center p-2;
+    }
+
+    .lfb-tab-error-icon>svg {
+        @apply h-6 w-6 text-white;
+    }
+
+    .lfb-tab-error-message {
+        @apply bg-gray-100 border-r-4 border-cyan-500 w-full p-4 text-gray-600 text-sm;
+    }
+
+    .lfb-tab-content-item {
+        @apply py-6 px-4;
+    }
+
+    .lfb-tab-content-item-title {
+        @apply text-xl font-normal leading-6 text-gray-800;
+    }
+
+    .lfb-search-picker-selected-item {
+        @apply mt-1 p-2 px-3 rounded-md border w-full flex justify-between items-center text-sm text-gray-600 border-gray-300 hover:border-gray-400/80;
+    }
+
+    .lfb-search-picker-results-container {
+        @apply w-full mt-1 rounded border-2 border-secondary overflow-y-auto max-h-36 bg-white absolute z-10;
+    }
+
+    .lfb-search-picker-result {
+        @apply p-3 hover:bg-primary hover:text-white cursor-pointer text-sm flex justify-between items-center;
+    }
+
+    .lfb-search-picker-result-labels-container {}
+
+    .lfb-search-picker-result-label {
+        @apply py-0.5 rounded border px-2 text-sm border-gray-200 bg-gray-100 text-gray-500
+    }
+
+    .lfb-styled-select-input {
+        @apply flex border;
+    }
+
+    .lfb-styled-select-input-collapsed {
+        @apply border-transparent;
+    }
+
+    .lfb-styled-select-input-expanded {
+        @apply border-primary ring-1 ring-primary rounded-md rounded-b-none shadow-sm;
+    }
+
+    .lfb-styled-select-options {
+        @apply bg-white w-full border border-t-0 border-primary ring-1 ring-primary rounded-md rounded-t-none;
+    }
+
+    .lfb-styled-select-options ul {
+        @apply text-sm divide-y max-h-24 overflow-x-hidden overflow-y-auto;
+    }
+
+    .lfb-styled-select-options li {
+        @apply cursor-pointer rounded py-1 px-3 hover:bg-gray-50;
+    }
+
+    .lfb-styled-select-search-container {
+        @apply flex bg-gray-100 rounded-b;
+    }
+
+    .lfb-styled-select-search-icon-wrapper {
+        @apply flex pt-2.5 pl-3;
+    }
+
+    .lfb-styled-select-search-icon {
+        @apply text-gray-500 w-4 h-4;
+    }
+
+    .lfb-styled-select-search-input {
+        @apply flex flex-grow border-0 bg-transparent py-2 pl-3 text-sm focus:outline-none focus:ring-0;
+    }
+
+    .lfb-styled-select-search-button {
+        @apply flex border-t pt-2.5 px-3 focus:outline-none;
     }
 }

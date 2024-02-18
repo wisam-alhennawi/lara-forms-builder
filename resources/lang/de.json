@@ -5,6 +5,7 @@
     "Back": "Zurück",
     "Save": "Speichern",
     "Cancel": "Abbrechen",
+    "Confirm": "Bestätigen",
     "A new entry has been created successfully.": "Ein neuer Eintrag wurde erfolgreich erstellt.",
     "Changes were saved successfully.": "Die Änderungen wurden erfolgreich gespeichert.",
     "January": "Januar",
@@ -34,5 +35,9 @@
     "Sat": "Sa",
     "Sun": "So",
     "Previous Month": "Vormonat",
-    "Next Month": "Folgemonat"
+    "Next Month": "Folgemonat",
+    "Select File": "Datei auswählen",
+    "Search": "Suche",
+    "Previous Step": "Vorheriger Schritt",
+    "Next Step": "Nächster Schritt"
 }

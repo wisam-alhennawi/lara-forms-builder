@@ -3,10 +3,11 @@
 namespace WisamAlhennawi\LaraFormsBuilder;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 abstract class LaraFormComponent extends Component
 {
-    use LaraFormsBuilder;
+    use LaraFormsBuilder, WithFileUploads;
 
     abstract protected function fields(): array;
 

@@ -2,6 +2,95 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v1.9.1 - 2024-02-12
+
+### What's Changed
+
+* Non multi step forms: Fix Property isMultiStep not found by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/43
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.9.0...v1.9.1
+
+## v1.9.0 - 2024-02-09
+
+### What's Changed
+
+* Multi-Step Form + Bugfix Style Select JavaScript  by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/42
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.3...v1.9.0
+
+## v1.8.3 - 2024-01-29
+
+### What's Changed
+
+* Bugfix styled select JavaScript init by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/41
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.2...v1.8.3
+
+## v1.8.2 - 2024-01-26
+
+### What's Changed
+
+* Html in labels, div-based select by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/40
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.1...v1.8.2
+
+## v1.8.1 - 2024-01-22
+
+### What's Changed
+
+* Fixes and improvements by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/39
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.8.0...v1.8.1
+
+## v1.8.0 - 2024-01-19
+
+### What's Changed
+
+* Feature/search picker by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/38
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.7.0...v1.8.0
+
+## v1.7.0 - 2024-01-09
+
+### What's Changed
+
+* Feature file upload styling by @florianbinderme in https://github.com/wisam-alhennawi/lara-forms-builder/pull/35
+* Feature/improvements extra validation and components by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/36
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.6.0...v1.7.0
+
+## v1.6.0 - 2023-11-24
+
+### What's Changed
+
+- Feature/file upload field and confirm mode by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/34
+
+### New Contributors
+
+- @jpbu made their first contribution in https://github.com/wisam-alhennawi/lara-forms-builder/pull/34
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.5.0...v1.6.0
+
+## v1.5.0 - 2023-11-20
+
+### What's Changed
+
+- Tabs: Refactor Inline Tailwind CSS Classes to a CSS File #31 by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/32
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.4.0...v1.5.0
+
+## v1.4.0 - 2023-11-07
+
+### What's Changed
+
+- Feature/cards footer buttons layout by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/28
+
+### New Contributors
+
+- @sheol77 made their first contribution in https://github.com/wisam-alhennawi/lara-forms-builder/pull/28
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.3.0...v1.4.0
+
 ## v1.3.0 - 2023-10-27
 
 ### What's Changed

@@ -48,7 +48,7 @@
                     @if(isset($readOnly) && $readOnly) readonly @endif
                     @keyup="showResults = true"
                 >
-                @error("formProperties." .  $key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
+                @include('lara-forms-builder::includes.field-error-message')
                 @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
                     <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
                 @endif
@@ -82,7 +82,5 @@
         @endif
 
     @endif
-    @if(isset($helpText) && $helpText)
-        <p class="lfb-help-text">{{ $helpText }}</p>
-    @endif
+    @include('lara-forms-builder::includes.field-help-text')
 </div>

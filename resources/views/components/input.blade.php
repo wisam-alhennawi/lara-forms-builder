@@ -13,13 +13,11 @@
         <div class="lfb-input-wrapper">
             <input wire:key="form-input-component-{{ md5($key) }}" type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}" class="lfb-input @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
                 wire:model.live="formProperties.{{ $key }}" @if(isset($readOnly) && $readOnly) readonly @endif>
-            @error("formProperties." .  $key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
+            @include('lara-forms-builder::includes.field-error-message')
             @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
                 <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
             @endif
         </div>
     @endif
-    @if(isset($helpText) && $helpText)
-        <p class="lfb-help-text">{{ $helpText }}</p>
-    @endif
+    @include('lara-forms-builder::includes.field-help-text')
 </div>

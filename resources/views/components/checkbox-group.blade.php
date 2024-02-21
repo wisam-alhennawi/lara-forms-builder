@@ -20,8 +20,6 @@
             @endif
         </div>
     </div>
-    @error("formProperties." .  $key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
-    @if(isset($helpText) && $helpText)
-        <p class="lfb-help-text">{{ $helpText }}</p>
-    @endif
+    @include('lara-forms-builder::includes.field-error-message')
+    @include('lara-forms-builder::includes.field-help-text')
 </div>

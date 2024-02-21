@@ -44,11 +44,11 @@
                     name="{{ $key }}"
                     id="{{ $key }}"
                     class="lfb-input @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
-                    wire:model="{{ $key }}_search_picker"
+                    wire:model.live="formProperties.{{ $key }}_search_picker"
                     @if(isset($readOnly) && $readOnly) readonly @endif
                     @keyup="showResults = true"
                 >
-                @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
+                @error("formProperties." .  $key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
                 @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
                     <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
                 @endif

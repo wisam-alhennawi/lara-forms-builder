@@ -20,7 +20,7 @@
             @endif
         </div>
     </div>
-    @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
+    @error("formProperties." .  $key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
     @if(isset($helpText) && $helpText)
         <p class="lfb-help-text">{{ $helpText }}</p>
     @endif

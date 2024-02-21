@@ -17,7 +17,7 @@
         } else {
             $optionKey = array_search($fieldValue, array_column($selectOptions, 'value'));
             if (!is_numeric($optionKey) && $optionKey == false) {
-                $optionKey = array_search($this->$key, array_column($selectOptions, 'value'));
+                $optionKey = array_search($this->formProperties[$key], array_column($selectOptions, 'value'));
             }
         }
     @endphp
@@ -38,7 +38,7 @@
             @if($styled)
             @include('lara-forms-builder::includes.select-script')
             <div
-                x-data="{ ...lfbStyledSelect({{ json_encode($selectOptions) }}), value: @entangle($key) }"
+                x-data="{ ...lfbStyledSelect({{ json_encode($selectOptions) }}), value: @entangle('formProperties.'.$key).live }"
                 class="relative lfb-input"
                 wire:key="form-select-component-{{ md5($key) }}"
                 name="{{ $key }}"
@@ -109,7 +109,7 @@
             </div>
             @else
             <select id="{{ $key }}" name="{{ $key }}" class="lfb-input"
-                    wire:model="{{ $key }}">
+                    wire:model.live="formProperties.{{ $key }}">
                 <option value>{{ __('Please select...') }}</option>
                 @if($isGrouped)
                     @foreach($selectOptions as $groupLabel => $options)
@@ -127,7 +127,7 @@
             </select>
             @endif
         </div>
-        @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
+        @error("formProperties." .  $key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
         @if(isset($helpText))
             <p class="lfb-help-text">{{ $helpText }}</p>
         @endif

@@ -14,7 +14,7 @@
                 @include('lara-forms-builder::includes.submit-button')
             @endif
         @else
-            <button wire:click="cancelOrBack" class="{{$this->getSecodaryButtonClasses()}}">
+            <button wire:click="cancelOrBack" class="{{$this->getSecondaryButtonClasses()}}">
                 {{ (isset($mode) && $mode == 'confirm') ? __('Back') : $cancelButtonLabel }}
             </button>
             @if (isset($mode) && $mode == 'view')

@@ -2,9 +2,9 @@
 
 namespace WisamAlhennawi\LaraFormsBuilder;
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 trait LaraFormsBuilder
 {
@@ -36,8 +36,6 @@ trait LaraFormsBuilder
 
     /**
      * get field keys from fields array
-     *
-     * @return array
      */
     public function getFieldKeys(): array
     {
@@ -49,8 +47,6 @@ trait LaraFormsBuilder
 
     /**
      * get all fields from fields array as flat array
-     *
-     * @return array
      */
     public function getFieldsFlat(): array
     {
@@ -99,7 +95,6 @@ trait LaraFormsBuilder
      * @param  $field  array
      * @param  $key  string
      * @param  $modelRules  array
-     * @return string
      */
     private function getFieldRules(array $field, string $key, array $modelRules): string
     {
@@ -115,9 +110,6 @@ trait LaraFormsBuilder
         return $fieldRules;
     }
 
-    /**
-     * @return array
-     */
     private function getFieldRulesAndValidationAttributes(): array
     {
         $modelRules = get_class($this->model)::$rules ?? [];
@@ -127,13 +119,13 @@ trait LaraFormsBuilder
             if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $key => $field) {
-                        $fieldRules['formProperties.' . $key] = $this->getFieldRules($field, $key, $modelRules);
-                        $fieldValidationAttributes['formProperties.' . $key] = $this->getFieldValidationAttribute($field, $key);
+                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
+                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 } else {
                     // TODO: Check with Wisam ???
-                    $fieldRules['formProperties.' . $key] = $this->getFieldRules($field, $key, $modelRules);
-                    $fieldValidationAttributes['formProperties.' . $key] = $this->getFieldValidationAttribute($field, $key);
+                    $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
+                    $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                 }
             } else {
                 // TODO: Edit & Check with Livewire 3
@@ -211,7 +203,9 @@ trait LaraFormsBuilder
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
-    protected function beforeFormProperties(): void {}
+    protected function beforeFormProperties(): void
+    {
+    }
 
     /**
      * Set form properties
@@ -231,7 +225,7 @@ trait LaraFormsBuilder
             }
             // define a property in formProperties array if field is search-picker (e.g.: foo -> foo_search_picker)
             if ($field['field']['type'] === 'search-picker') {
-                $this->formProperties[$field['key'] . '_search_picker'] = null;
+                $this->formProperties[$field['key'].'_search_picker'] = null;
             }
         }
     }
@@ -239,7 +233,9 @@ trait LaraFormsBuilder
     /**
      * It can be used to change options, values, formats, etc. after setting the form properties
      */
-    protected function afterFormProperties(): void {}
+    protected function afterFormProperties(): void
+    {
+    }
 
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
@@ -265,9 +261,6 @@ trait LaraFormsBuilder
 
     /**
      * It can be used to add extra validation rules
-     *
-     * @param array $validatedData
-     * @return bool
      */
     protected function extraValidate(array $validatedData = []): bool
     {
@@ -457,8 +450,6 @@ trait LaraFormsBuilder
 
     /**
      * Get the default css classes for the wrapper of group of fields
-     *
-     * @return string
      */
     protected function getDefaultGroupWrapperClass(): string
     {
@@ -467,8 +458,6 @@ trait LaraFormsBuilder
 
     /**
      * Get the default css classes for the wrapper of field
-     *
-     * @return string
      */
     protected function getDefaultFieldWrapperClass(): string
     {
@@ -477,8 +466,6 @@ trait LaraFormsBuilder
 
     /**
      * Get the css classes for footer buttons wrapper
-     *
-     * @return string
      */
     protected function getFooterButtonsWrapperClasses(): string
     {
@@ -487,8 +474,6 @@ trait LaraFormsBuilder
 
     /**
      * Get the css classes for primary button
-     *
-     * @return string
      */
     protected function getPrimaryButtonClasses(): string
     {
@@ -497,8 +482,6 @@ trait LaraFormsBuilder
 
     /**
      * Get the css classes for secondary button
-     *
-     * @return string
      */
     protected function getSecondaryButtonClasses(): string
     {
@@ -507,8 +490,6 @@ trait LaraFormsBuilder
 
     /**
      * Get the css classes for the wrapper of error messages of card fields
-     *
-     * @return string
      */
     protected function getDefaultCardFieldErrorWrapperClasses(): string
     {

@@ -35,7 +35,7 @@ class Confirmation extends Component
 
     public function confirm()
     {
-        $this->emit('modalConfirmed', $this->callback);
+        $this->dispatch('modalConfirmed', $this->callback);
         $this->hideConfirmationModal();
     }
 

@@ -285,7 +285,7 @@ trait LaraFormsBuilder
                 $this->model->$key = $value;
             }
             $this->mode = 'confirm';
-            $this->emit('formMode', $this->mode);
+            $this->dispatch('formMode', $this->mode);
 
             return false;
         }
@@ -379,10 +379,10 @@ trait LaraFormsBuilder
             session()->flash('flash.banner', $message);
             session()->flash('flash.bannerStyle', 'success');
         } else {
-            $this->dispatchBrowserEvent('banner-message', [
-                'style' => 'success',
-                'message' => $message,
-            ]);
+            $this->dispatch('banner-message',
+                style: 'success',
+                message: $message,
+            );
         }
     }
 
@@ -390,7 +390,7 @@ trait LaraFormsBuilder
     {
         if ($this->mode == 'confirm') {
             $this->mode = null;
-            $this->emit('formMode', $this->mode);
+            $this->dispatch('formMode', $this->mode);
 
             return null;
         }

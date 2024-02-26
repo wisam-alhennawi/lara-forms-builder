@@ -123,7 +123,6 @@ trait LaraFormsBuilder
                         $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 } else {
-                    // TODO: Check with Wisam ???
                     $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
                     $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                 }
@@ -431,15 +430,17 @@ trait LaraFormsBuilder
         }
     }
 
-    public function updated($name, $value): void
+    public function updated($name, $value)
     {
+        $propertyName = explode('.', $name)[1];
+
         // set empty string to null
         if ($value === '') {
-            $this->{$name} = null;
+            $this->formProperties[$propertyName] = null;
         }
 
-        $propertyName = Str::camel(explode('.', $name)[1]);
-        $updatedFunctionName = 'updated'.ucfirst($propertyName);
+        $propertyNameInCamelCase = Str::camel($propertyName);
+        $updatedFunctionName = 'updated'.ucfirst($propertyNameInCamelCase);
         if (method_exists($this, $updatedFunctionName)) {
             $this->$updatedFunctionName($value);
         }

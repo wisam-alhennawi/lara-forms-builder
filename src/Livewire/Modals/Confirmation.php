@@ -1,6 +1,6 @@
 <?php
 
-namespace WisamAlhennawi\LaraFormsBuilder\Http\Livewire\Modals;
+namespace WisamAlhennawi\LaraFormsBuilder\Livewire\Modals;
 
 use Livewire\Component;
 

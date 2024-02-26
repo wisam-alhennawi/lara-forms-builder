@@ -1,26 +1,22 @@
 @php
     $selectedItem = $key . '_search_picker_selected_value';
 @endphp
-
-<div x-data="{
-                showResults: true,
-             }"
+<div x-data="{ showResults: true, }"
      @click.outside="showResults = false"
      class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif"
 >
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            <input
-                type="text"
-                name="{{ $key }}"
-                id="{{ $key }}"
-                value="@if ($this->{$selectedItem}){{ $this->{$selectedItem} }}@else - @endif"
-                class="lfb-input lfb-disabled" readonly disabled
+            <input id="formProperties-{{ $key }}"
+                   name="formProperties.{{ $key }}"
+                   type="text"
+                   value="@if ($this->{$selectedItem}){{ $this->{$selectedItem} }}@else - @endif"
+                   class="lfb-input lfb-disabled"
+                   readonly
+                   disabled
             >
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @else
         <div class="lfb-input-wrapper">
@@ -37,35 +33,32 @@
                     </button>
                 </div>
             @else
-                <input
-                    wire:key="form-input-component-{{ md5($key) }}"
-                    type="text"
-                    placeholder="{{ $placeholder }}"
-                    name="{{ $key }}"
-                    id="{{ $key }}"
-                    class="lfb-input @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
-                    wire:model.live="formProperties.{{ $key }}_search_picker"
-                    @if(isset($readOnly) && $readOnly) readonly @endif
-                    @keyup="showResults = true"
+                <input wire:key="form-input-component-{{ md5($key) }}"
+                       wire:model.live="formProperties.{{ $key }}_search_picker"
+                       @keyup="showResults = true"
+                       id="formProperties-{{ $key }}"
+                       name="formProperties.{{ $key }}"
+                       type="text"
+                       placeholder="{{ $placeholder }}"
+                       @class([
+                           'lfb-input',
+                           'lfb-readonly' => $readOnly
+                       ])
+                       @readonly($readOnly)
                 >
                 @include('lara-forms-builder::includes.field-error-message')
-                @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                    <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-                @endif
+                @include('lara-forms-builder::includes.field-form-warning')
             @endif
         </div>
-
         @if($this->{$searchPickerResultsProperty})
             <div class="relative">
-                <div
-                    x-show="showResults"
-                    class="lfb-search-picker-results-container"
+                <div x-show="showResults"
+                     class="lfb-search-picker-results-container"
                 >
                     @foreach($this->{$searchPickerResultsProperty} as $result)
-                        <div
-                            wire:click="setSearchPickerValue('{{ $result['key'] }}', '{{ $key }}')"
-                            @click="showResults = false"
-                            class="lfb-search-picker-result"
+                        <div wire:click="setSearchPickerValue('{{ $result['key'] }}', '{{ $key }}')"
+                             @click="showResults = false"
+                             class="lfb-search-picker-result"
                         >
                             <span>{!! $result['value'] !!}</span>
                             @if (isset($result['labels']))
@@ -80,7 +73,6 @@
                 </div>
             </div>
         @endif
-
     @endif
     @include('lara-forms-builder::includes.field-help-text')
 </div>

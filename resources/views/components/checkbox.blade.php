@@ -2,9 +2,15 @@
     <fieldset class="lfb-fieldset">
         <div class="lfb-fieldset-container">
             <div class="lfb-fieldset-item">
-                <input wire:key="form-checkbox-component-{{ md5($key) }}" type="checkbox" id="{{ $key }}" name="{{ $key }}" wire:model.live="formProperties.{{ $key }}" class="lfb-checkbox"
-                @if (isset($mode) && ($mode == 'view' || $mode == 'confirm')) disabled @endif>
-                <label class="lfb-label lfb-label-spacing print:text-xs" for="{{ $key }}">{!! $label !!}
+                <input wire:key="form-checkbox-component-{{ md5($key) }}"
+                       wire:model.live="formProperties.{{ $key }}"
+                       id="formProperties-{{ $key }}"
+                       name="formProperties.{{ $key }}"
+                       type="checkbox"
+                       class="lfb-checkbox"
+                       @disabled(isset($mode) && ($mode == 'view' || $mode == 'confirm'))
+                >
+                <label class="lfb-label lfb-label-spacing print:text-xs" for="formProperties-{{ $key }}">{!! $label !!}
                 @if ((!isset($mode) || (isset($mode) and $mode != 'view')) and isset($rules) and array_key_exists('formProperties.' .  $key, $rules) && str_contains($rules['formProperties.' .  $key], 'required'))
                     <sup>*</sup>
                 @endif

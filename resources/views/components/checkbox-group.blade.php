@@ -5,7 +5,7 @@
             @if($hasCategory)
                 @foreach($checkboxGroupOptions as $category => $options)
                     <div class="lfb-checkbox-category-group">
-                        <label for="{{ $key }}" class="lfb-checkbox-category-group-label">
+                        <label for="formProperties-{{ $key }}" class="lfb-checkbox-category-group-label">
                             {{ $category }}
                         </label>
                         @foreach($options as $option)

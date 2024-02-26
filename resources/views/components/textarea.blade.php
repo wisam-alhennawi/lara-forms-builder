@@ -2,27 +2,33 @@
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            <textarea name="form-textarea-component-{{ $key }}" id="form-textarea-component-{{ $key }}"
-                wire:model.live="formProperties.{{ $key }}"
-                rows="{{$rows}}"
-                class="lfb-textarea lfb-disabled" readonly disabled>
+            <textarea wire:model.live="formProperties.{{ $key }}"
+                      id="formProperties-{{ $key }}"
+                      name="formProperties.{{ $key }}"
+                      rows="{{$rows}}"
+                      class="lfb-textarea lfb-disabled"
+                      readonly
+                      disabled
+            >
             </textarea>
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @else
         <div class="lfb-input-wrapper">
-            <textarea wire:key="form-textarea-component-{{ md5($key) }}" name="{{ $key }}" id="form-textarea-component-{{ $key }}"
-                class="lfb-textarea @if(isset($readOnly) && $readOnly) lfb-readonly @endif"
-                wire:model.live="formProperties.{{ $key }}"
-                rows="{{$rows}}"
-                @if(isset($readOnly) && $readOnly) readonly @endif>
+            <textarea wire:key="form-textarea-component-{{ md5($key) }}"
+                      wire:model.live="formProperties.{{ $key }}"
+                      id="formProperties-{{ $key }}"
+                      name="formProperties.{{ $key }}"
+                      rows="{{$rows}}"
+                      @class([
+                          'lfb-textarea',
+                          'lfb-readonly' => $readOnly
+                      ])
+                      @readonly($readOnly)
+            >
             </textarea>
             @include('lara-forms-builder::includes.field-error-message')
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @endif
     @include('lara-forms-builder::includes.field-help-text')

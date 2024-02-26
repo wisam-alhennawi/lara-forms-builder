@@ -23,7 +23,9 @@
     @endphp
     @if ((isset($mode) && ($mode == 'view' || $mode == 'confirm')) || isset($readOnly) && $readOnly)
         <div class="lfb-input-wrapper">
-            <input type="text" name="{{ $key }}" id="{{ $key }}"
+            <input id="{{ $key }}"
+                   name="{{ $key }}"
+                   type="text"
                    value=@if($isGrouped && $optionKeyGroupLabel)
                             "{{ $selectOptions[$optionKeyGroupLabel][$optionKey]['label'] }}"
                           @elseif(is_numeric($optionKey) && array_key_exists($optionKey, $selectOptions))
@@ -31,18 +33,23 @@
                           @else
                             "-"
                           @endif
-                   class="lfb-input lfb-disabled" readonly disabled>
+                   class="lfb-input lfb-disabled"
+                   readonly
+                   disabled
+            >
         </div>
     @else
         <div class="lfb-input-wrapper">
             @if($styled)
             @include('lara-forms-builder::includes.select-script')
-            <div
-                x-data="{ ...lfbStyledSelect({{ json_encode($selectOptions) }}), value: @entangle('formProperties.'.$key).live }"
-                class="relative lfb-input"
-                wire:key="form-select-component-{{ md5($key) }}"
-                name="{{ $key }}"
-                id="{{ $key }}"
+            <div x-data="{
+                             ...lfbStyledSelect({{ json_encode($selectOptions) }}),
+                             value: @entangle('formProperties.'.$key).live
+                         }"
+                 wire:key="form-select-component-{{ md5($key) }}"
+                 id="formProperties-{{ $key }}"
+                 name="formProperties.{{ $key }}"
+                 class="relative lfb-input"
             >
                 <div
                     class="lfb-styled-select-input"
@@ -108,8 +115,11 @@
                 </div>
             </div>
             @else
-            <select id="{{ $key }}" name="{{ $key }}" class="lfb-input"
-                    wire:model.live="formProperties.{{ $key }}">
+            <select wire:model.live="formProperties.{{ $key }}"
+                    id="formProperties-{{ $key }}"
+                    name="formProperties.{{ $key }}"
+                    class="lfb-input"
+            >
                 <option value>{{ __('Please select...') }}</option>
                 @if($isGrouped)
                     @foreach($selectOptions as $groupLabel => $options)

@@ -153,8 +153,11 @@ php artisan make:lara-forms-builder Users.UserForm User --langModelFileName=user
 ### Form Component Types and Attributes
 
 Forms are specified in a declarative manner as an array of the `fields` function in the form component class.
+
 `beforeFormProperties()`, `afterFormProperties()` functions used to set options, values, etc. before/after setting the form properties (e.g. developers options in the following example).
+
 `saveDevelopers()` function used to make operation after create/update a model (e.g. developers ids & project id will be saved in pivot table in the following example).
+
 **Note:** `saveDevelopers()`functions should follow the naming convention of the form field name `developers`.
 
 

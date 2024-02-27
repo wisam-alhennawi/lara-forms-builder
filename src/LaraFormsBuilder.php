@@ -127,19 +127,18 @@ trait LaraFormsBuilder
                     $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                 }
             } else {
-                // TODO: Edit & Check with Livewire 3
                 // tabs
                 $tabContents = $field['content'] ?? [];
                 foreach ($tabContents as $tabKey => $tabContent) {
                     // check if the field is tab
                     if ($tabKey == 'fields' && is_array($tabContent)) {
                         foreach ($tabContent as $key => $field) {
-                            $fieldRules[$key] = $this->getFieldRules($field, $key, $modelRules);
-                            $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
+                            $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
+                            $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                         }
                     } elseif (is_numeric($tabKey)) {
-                        $fieldRules[$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes[$key] = $this->getFieldValidationAttribute($field, $key);
+                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
+                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                     }
                 }
             }
@@ -432,21 +431,23 @@ trait LaraFormsBuilder
 
     public function updated($name, $value)
     {
-        $propertyName = explode('.', $name)[1];
+        if ($name !== 'activeTab') {
+            $propertyName = explode('.', $name)[1];
 
-        // set empty string to null
-        if ($value === '') {
-            $this->formProperties[$propertyName] = null;
+            // set empty string to null
+            if ($value === '') {
+                $this->formProperties[$propertyName] = null;
+            }
+
+            $propertyNameInCamelCase = Str::camel($propertyName);
+            $updatedFunctionName = 'updated'.ucfirst($propertyNameInCamelCase);
+            if (method_exists($this, $updatedFunctionName)) {
+                $this->$updatedFunctionName($value);
+            }
+
+            // search-picker
+            $this->searchPickerOptions($name, $value);
         }
-
-        $propertyNameInCamelCase = Str::camel($propertyName);
-        $updatedFunctionName = 'updated'.ucfirst($propertyNameInCamelCase);
-        if (method_exists($this, $updatedFunctionName)) {
-            $this->$updatedFunctionName($value);
-        }
-
-        // search-picker
-        $this->searchPickerOptions($name, $value);
     }
 
     /**

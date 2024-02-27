@@ -1,4 +1,4 @@
-<div x-data="{ tab: @entangle('activeTab') }" class="lfb-tabs-wrapper">
+<div x-data="{ tab: @entangle('activeTab').live }" class="lfb-tabs-wrapper">
     <div class="lfb-tab-container">
         {{-- Tabs Links --}}
         @if($isMultiStep)

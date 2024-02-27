@@ -32,6 +32,22 @@ The following dependencies are required to use the package:
 composer require wisam-alhennawi/lara-forms-builder
 ```
 
+## Upgrade Guide
+If you want to use the package in an existing project that use v1 the following changed are required.
+
+all placed uses `$this->property` should be replaced with `$this->formProperties['property']`
+```bash
+     // V1
+     $this->email
+     // V2
+     $this->formProperties['email']
+     
+     // V1
+     $this->rules['email']
+     // V2
+     $this->rules['formProperties.email']
+```
+
 ## Auto Setup & Configuration
 ```bash
 php artisan make:lara-forms-builder-setup

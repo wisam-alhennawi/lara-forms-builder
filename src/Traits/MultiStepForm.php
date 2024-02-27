@@ -10,8 +10,6 @@ trait MultiStepForm
 
     /**
      * Initialize the steps
-     *
-     * @param array $steps
      */
     protected function initSteps(array $steps = []): void
     {
@@ -30,8 +28,6 @@ trait MultiStepForm
 
     /**
      * Set the active step number
-     *
-     * @param $stepKey
      */
     protected function setActiveStepNumber($stepKey): void
     {
@@ -82,7 +78,7 @@ trait MultiStepForm
             array_intersect_key(
                 $this->rules,
                 array_flip(
-                    array_map(fn ($element) => 'formProperties.' . $element,
+                    array_map(fn ($element) => 'formProperties.'.$element,
                         array_keys($this->steps[$this->activeStepNumber - 1]['fields'])
                     )
                 )
@@ -97,8 +93,6 @@ trait MultiStepForm
 
     /**
      * Get the css classes for the previous button
-     *
-     * @return string
      */
     protected function getPreviousButtonClasses(): string
     {
@@ -107,8 +101,6 @@ trait MultiStepForm
 
     /**
      * Get the css classes for the next button
-     *
-     * @return string
      */
     protected function getNextButtonClasses(): string
     {

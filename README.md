@@ -254,7 +254,6 @@ protected function fields(): array
                         'type' => 'checkbox-group',
                         'label' => __('models/projects.fields.developers'),
                         'options' => $this->developersOptions,
-                        'default' => []
                     ],
                     'document' => [
                         'type' => 'file',

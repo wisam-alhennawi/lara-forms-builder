@@ -7,7 +7,7 @@
             foreach ($selectOptions as $groupLabel => $options) {
                 $optionKey = array_search($fieldValue, array_column($options, 'value'));
                 if (!is_numeric($optionKey) && $optionKey == false) {
-                    $optionKey = array_search($this->$key, array_column($options, 'value'));
+                    $optionKey = array_search($this->formProperties[$key], array_column($options, 'value'));
                 }
                 if (is_numeric($optionKey)) {
                     $optionKeyGroupLabel = $groupLabel;

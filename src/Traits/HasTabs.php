@@ -6,9 +6,9 @@ trait HasTabs
 {
     use MultiStepForm;
 
-    public $activeTab = '';
+    public string $activeTab = '';
 
-    public $hasTabs = true;
+    public bool $hasTabs = true;
 
     public bool $isMultiStep = false;
 
@@ -24,7 +24,7 @@ trait HasTabs
         }
     }
 
-    protected function updatedActiveTab($value)
+    public function updatedActiveTab($value)
     {
         $this->initActiveTab($value);
     }

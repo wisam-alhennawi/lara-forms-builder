@@ -14,37 +14,46 @@
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            <input type="text" name="{{ $key }}" id="{{ $key }}" x-ref="field"
-            value="{{ $this->$key }}"
-            class="lfb-input lfb-disabled" readonly disabled>
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            <input x-ref="field"
+                   id="formProperties-{{ $key }}"
+                   name="formProperties.{{ $key }}"
+                   type="text"
+                   value="{{ $this->formProperties[$key] }}"
+                   class="lfb-input lfb-disabled"
+                   readonly
+                   disabled
+            >
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @else
         <div class="lfb-input-wrapper">
-            <div
-                wire:key="form-date-picker-component-{{ md5($key) }}"
-                name="form-date-picker-component-{{ $key }}"
-                id="form-date-picker-component-{{ $key }}"
-                x-data="{ value: @entangle($key) }"
-                x-on:change="value = $event.target.value"
-                x-init="new Pikaday({ field: $refs.input, format: 'DD.MM.YYYY', firstDay: 1, showWeekNumber: true, i18n: pikadayTranslations, theme: 'pikaday-white' });"
+            <div x-data="{ value: @entangle('formProperties.'.$key).live }"
+                 x-init="new Pikaday({
+                                         field: $refs.input,
+                                         format: 'DD.MM.YYYY',
+                                         firstDay: 1,
+                                         showWeekNumber: true,
+                                         i18n: pikadayTranslations,
+                                         theme: 'pikaday-white'
+                                      });"
+                 x-on:change="value = $event.target.value"
+                 wire:key="form-date-picker-component-{{ md5($key) }}"
+                 id="form-date-picker-component-{{ $key }}"
+                 name="form-date-picker-component-{{ $key }}"
             >
-                <input
-                    x-ref="input"
-                    x-bind:value="value"
-                    type="text"
-                    @if(isset($readOnly) && $readOnly) readonly @endif
-                    class="lfb-input @if(isset($readOnly) && $readOnly) lfb-readonly @endif" >
+                <input x-ref="input"
+                       x-bind:value="value"
+                       type="text"
+                       @class([
+                           'lfb-input',
+                           'lfb-readonly' => $readOnly
+                       ])
+                       @readonly($readOnly)
+                >
             </div>
-            @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            @include('lara-forms-builder::includes.field-error-message')
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @endif
-    @if(isset($helpText) && $helpText)
-        <p class="lfb-help-text">{{ $helpText }}</p>
-    @endif
+    @include('lara-forms-builder::includes.field-help-text')
 </div>

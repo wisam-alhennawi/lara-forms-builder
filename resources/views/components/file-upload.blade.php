@@ -7,31 +7,46 @@
                     <img src="{{ $model->$key ? $model->$key->temporaryUrl() : $this->{$key . '_preview'} }}">
                 @endif
             @else
-                <input type="@if(isset($inputType)){{$inputType}}@else{{'text'}}@endif" name="{{ $key }}" id="{{ $key }}"
-                value="@if ($model->$key || $this->$key){{ $model->$key ? $model->$key->getClientOriginalName() : $this->$key->getClientOriginalName() }}@else - @endif"
-                class="lfb-input lfb-disabled" readonly disabled>
+                <input id="formProperties-{{ $key }}"
+                       name="formProperties.{{ $key }}"
+                       type="{{ $inputType ?? 'text' }}"
+                       value="@if ($model->$key || $this->formProperties[$key]){{ $model->$key ? $model->$key->getClientOriginalName() : $this->formProperties[$key]->getClientOriginalName() }}@else - @endif"
+                       class="lfb-input lfb-disabled"
+                       readonly
+                       disabled
+                >
             @endif
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @else
         <div class="lfb-input-wrapper">
             <label class="block">
-                @if(!$model->$key && !$this->$key && !isset($this->{$key . '_preview'}))
-                <button type="button" class="lfb-input lfb-upload-button relative @if(isset($readOnly) && $readOnly) lfb-readonly @endif">
+                @if(!$model->$key && !$this->formProperties[$key] && !isset($this->{$key . '_preview'}))
+                <button type="button"
+                        @class([
+                            'lfb-input',
+                            'lfb-upload-button',
+                            'relative',
+                            'lfb-readonly' => $readOnly
+                        ])
+                >
                     {{ __('Select File') }}
-                    <input wire:key="form-input-component-{{ md5($key) }}" title="{{ __('Select File') }}"
-                        name="{{ $key }}" id="{{ $key }}"
-                        class="absolute start-0 w-full h-full opacity-0 cursor-pointer" type="file" wire:model="{{ $key }}"
-                        @if(isset($readOnly) && $readOnly) readonly @endif>
+                    <input wire:key="form-input-component-{{ md5($key) }}"
+                           wire:model.live="formProperties.{{ $key }}"
+                           id="formProperties-{{ $key }}"
+                           name="formProperties.{{ $key }}"
+                           title="{{ __('Select File') }}"
+                           type="file"
+                           class="absolute start-0 w-full h-full opacity-0 cursor-pointer"
+                           @readonly($readOnly)
+                    >
                 </button>
                 @else
                     <span class="lfb-file-uploaded">
                         @if (isset($preview) && $preview)
                             @if ($preview == 'image')
                                 @php
-                                    $imagePath = $this->{$key . '_preview'} ?? $this->$key;
+                                    $imagePath = $this->{$key . '_preview'} ?? $this->formProperties[$key];
                                     if (is_object($imagePath)) {
                                         try {
                                             $imagePath = $imagePath->temporaryUrl();
@@ -43,13 +58,13 @@
                                 @if (is_string($imagePath))
                                     <img src="{{ $imagePath }}">
                                 @else
-                                    {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                                    {{ ($model->$key ?? $this->formProperties[$key])->getClientOriginalName() }}
                                 @endif
                             @endif
                         @else
-                            {{ ($model->$key ?? $this->$key)->getClientOriginalName() }}
+                            {{ ($model->$key ?? $this->formProperties[$key])->getClientOriginalName() }}
                         @endif
-                        <a wire:click="resetValue('{{ $key}}')">
+                        <a wire:click="resetValue('{{ $key }}')">
                         @if(isset($removeIcon))
                             {!! $removeIcon !!}
                         @else
@@ -62,13 +77,9 @@
                     </span>
                 @endif
             </label>
-            @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
-            @if(isset($formWarnings) && array_key_exists($key, $formWarnings))
-                <span class="lfb-alert lfb-alert-warning">{{ $formWarnings[$key] }}</span>
-            @endif
+            @include('lara-forms-builder::includes.field-error-message')
+            @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @endif
-    @if(isset($helpText) && $helpText)
-        <p class="lfb-help-text">{{ $helpText }}</p>
-    @endif
+    @include('lara-forms-builder::includes.field-help-text')
 </div>

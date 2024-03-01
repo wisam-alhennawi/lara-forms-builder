@@ -3,7 +3,7 @@
 @endphp
 <div x-data="{ showResults: true, }"
      @click.outside="showResults = false"
-     class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif"
+     class="{{ $fieldWrapperClass }}"
 >
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))

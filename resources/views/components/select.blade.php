@@ -1,4 +1,4 @@
-<div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
+<div class="{{ $fieldWrapperClass }}">
     @include('lara-forms-builder::includes.field-label')
     @php
         $fieldValue = $model->$key->value ?? $model->$key;

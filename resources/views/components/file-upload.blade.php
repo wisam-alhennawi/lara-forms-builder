@@ -2,8 +2,8 @@
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">
-            @if ((isset($preview) && $preview) && ($model->$key || isset($this->{$key . '_preview'})))
-                @if ($preview == 'image')
+            @if ((isset($preview) && $preview) && ($model->$key || !empty($this->{$key . '_preview'})))
+            @if ($preview == 'image')
                     <img src="{{ $model->$key ? $model->$key->temporaryUrl() : $this->{$key . '_preview'} }}">
                 @endif
             @else
@@ -21,7 +21,8 @@
     @else
         <div class="lfb-input-wrapper">
             <label class="block">
-                @if(!$model->$key && !$this->formProperties[$key] && !isset($this->{$key . '_preview'}))
+                @if(!$model->$key && !$this->formProperties[$key] && empty($this->{$key . '_preview'}))
+
                 <button type="button"
                         @class([
                             'lfb-input',
@@ -46,7 +47,9 @@
                         @if (isset($preview) && $preview)
                             @if ($preview == 'image')
                                 @php
-                                    $imagePath = $this->{$key . '_preview'} ?? $this->formProperties[$key];
+                                    $imagePath = !empty($this->{$key . '_preview'})
+                                        ? $this->{$key . '_preview'}
+                                        : $this->formProperties[$key];
                                     if (is_object($imagePath)) {
                                         try {
                                             $imagePath = $imagePath->temporaryUrl();

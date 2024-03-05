@@ -10,7 +10,7 @@
     </script>
 @endonce
 
-<div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
+<div class="{{ $fieldWrapperClass }}">
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly">

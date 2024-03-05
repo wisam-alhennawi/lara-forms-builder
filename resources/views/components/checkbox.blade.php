@@ -1,4 +1,4 @@
-<div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
+<div class="{{ $fieldWrapperClass }}">
     <fieldset class="lfb-fieldset">
         <div class="lfb-fieldset-container">
             <div class="lfb-fieldset-item">

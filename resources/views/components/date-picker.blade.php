@@ -1,4 +1,5 @@
 @once
+    @script
     <script>
         window.pikadayTranslations =  {
             previousMonth : '{{ __('Previous Month') }}',
@@ -8,6 +9,7 @@
             weekdaysShort : ['{{ __('Sun') }}','{{ __('Mon') }}','{{ __('Tue') }}','{{ __('Wed') }}','{{ __('Thu') }}','{{ __('Fri') }}','{{ __('Sat') }}']
         };
     </script>
+    @endscript
 @endonce
 
 <div class="{{ $fieldWrapperClass }}">

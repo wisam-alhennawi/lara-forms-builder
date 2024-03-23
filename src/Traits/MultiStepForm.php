@@ -84,6 +84,9 @@ trait MultiStepForm
                 )
             )
         );
+
+        $validatedData = $validatedData['formProperties'];
+
         if (! $this->extraValidate($validatedData)) {
             return false;
         }

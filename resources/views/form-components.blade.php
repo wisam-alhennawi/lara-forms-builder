@@ -28,6 +28,7 @@
             'label' => $field['label'],
             'radioOptions' => $field['options'],
             'helpText' => $field['helpText'] ?? '',
+            'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
         ])
         @break
@@ -36,6 +37,7 @@
             'key' => $fieldKey,
             'label' => $field['label'],
             'helpText' => $field['helpText'] ?? '',
+            'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
         ])
         @break

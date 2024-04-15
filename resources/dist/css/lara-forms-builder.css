@@ -69,6 +69,11 @@
         @apply read-only:bg-gray-100 read-only:pointer-events-none read-only:select-none;
     }
 
+    .lfb-checkbox.lfb-readonly,
+    .lfb-radio.lfb-readonly {
+        @apply read-only:bg-gray-300;
+    }
+
     .lfb-fieldset {
         @apply mt-4;
     }

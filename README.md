@@ -391,7 +391,7 @@ The `search-picker` form field is an input field with search functionality which
 
 #### Tabs
 - A custom layout for components that utilize tabs to organize content.
-- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
+- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `key` represents an internal technical key uniquely identifying the tab. The `title` property is used as label for both the tab navigation and the heading of the form; if an alternative (usually shortened) title for the navigation should be used, this can be specified with the optional property `navTitle`. The `'content'` array includes information about the form fields, their types, labels, options, and styling. 
 
 #### Multi-Step
 - The Multi-Step feature is designed to facilitate the creation of multi-step forms with a Tabs Layout. It provides methods to initialize steps, set the active step number, navigate between steps, and retrieve information about the form's multi-step structure.

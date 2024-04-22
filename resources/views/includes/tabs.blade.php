@@ -8,7 +8,7 @@
                         @foreach($fields as $field)
                             <div class="lfb-step-nav">
                                 <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-step-nav-title-active' : '']" class="lfb-step-nav-title">
-                                    {{ $field['title'] }}
+                                    {{ $field['navTitle'] ?? $field['title'] }}
                                 </div>
                             </div>
                         @endforeach
@@ -27,7 +27,7 @@
                         @foreach($fields as $field)
                             <div class="lfb-tab-nav-link-item">
                                 <a x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-tab-nav-link-active' : '']" class="lfb-tab-nav-link" x-on:click.prevent="tab='{{ $field['key'] }}'">
-                                    {{ $field['title'] }}
+                                    {{ $field['navTitle'] ?? $field['title'] }}
                                 </a>
                             </div>
                         @endforeach

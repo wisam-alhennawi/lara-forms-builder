@@ -6,7 +6,9 @@
             'inputType' => $field['inputType'] ?? 'text',
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
+            'secretValueToggle' => $field['secretValueToggle'] ?? false
         ])
         @break
     @case('select')
@@ -19,7 +21,8 @@
             'readOnly' => $field['readOnly'] ?? false,
             'styled' => $field['styled'] ?? false,
             'searchable' => $field['searchable'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('radio')
@@ -29,7 +32,8 @@
             'radioOptions' => $field['options'],
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('checkbox')
@@ -38,7 +42,8 @@
             'label' => $field['label'],
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('textarea')
@@ -48,7 +53,8 @@
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
-            'rows' => $field['rows'] ?? 5
+            'rows' => $field['rows'] ?? 5,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('date-picker')
@@ -57,7 +63,8 @@
             'label' => $field['label'],
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('cards')
@@ -81,7 +88,8 @@
             'hasCategory' => $field['hasCategory'] ?? false,
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('file')
@@ -93,6 +101,7 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'removeIcon' => $field['removeIcon'] ?? null,
             'preview' => $field['preview'] ?? null,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @case('search-picker')
@@ -103,7 +112,8 @@
             'placeholder' => $field['placeholder'] ?? '',
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
-            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
     @default

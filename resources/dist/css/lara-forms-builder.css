@@ -359,4 +359,24 @@
     .lfb-styled-select-search-button {
         @apply flex border-t pt-2.5 px-3 focus:outline-none;
     }
+
+    .lfb-tooltip-container {
+        @apply relative w-max inline-flex;
+    }
+
+    .lfb-tooltip-icon {
+        @apply w-5 h-5;
+    }
+
+    .lfb-tooltip-area {
+        @apply pointer-events-none absolute bottom-[120%] left-1/2 -translate-x-2/4 w-max max-w-[200px] rounded bg-gray-900 px-2 py-1 text-xs font-medium text-gray-50;
+    }
+
+    .lfb-secret-value-toggle-container {
+        @apply absolute inset-y-0 right-0 flex items-center pr-3;
+    }
+
+    .lfb-secret-value-toggle-icon {
+        @apply h-5 w-5 text-gray-400;
+    }
 }

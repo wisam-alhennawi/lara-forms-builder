@@ -4,4 +4,7 @@
         and array_key_exists('formProperties.' .  $key, $rules) && str_contains($rules['formProperties.' .  $key], 'required'))
         <sup>*</sup>
     @endif
+    @if(isset($tooltip) && $tooltip)
+        @include('lara-forms-builder::includes.tooltip', ['message' => $tooltip])
+    @endif
 </label>

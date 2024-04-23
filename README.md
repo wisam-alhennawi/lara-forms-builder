@@ -305,12 +305,14 @@ All form components have the following general properties:
 * `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
 * `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
 * `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
+* `tooltip` (optional): if set, the value is displayed as text in a tooltip on hover over a question mark icon rendered next to the label text
 
 #### Type `input`
 
 The `input` form field is a classic html input element. It has the following additional properties:
 
 * `inputType` (optional): Specifies the specific type of input, e.g. email, number, url. Default if not provided is text.
+* `secretValueToggle` (optional): Flag relevant for input type password, if set to true, an icon is displayed at the right end of the input field that allows to toggle the visilibity of the masked value on click.
 
 #### Type `textarea`
 

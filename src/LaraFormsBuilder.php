@@ -250,9 +250,8 @@ trait LaraFormsBuilder
         // saveFoo(), for all fields
         foreach ($this->getFieldKeys() as $fieldKey) {
             $function = 'save'.Str::of($fieldKey)->studly();
-            $validatedData = $this->formProperties[$fieldKey];
-            if (method_exists($this, $function)) {
-                $this->$function($validatedData);
+            if (method_exists($this, $function) && array_key_exists($fieldKey, $this->formProperties)) {
+                $this->$function($this->formProperties[$fieldKey]);
             }
         }
     }

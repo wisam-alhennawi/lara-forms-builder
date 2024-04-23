@@ -19,7 +19,7 @@
     @else
         <div @class([
             'lfb-input-wrapper',
-            'relative' => $secretValueToggle
+            'relative' => isset($secretValueToggle) && $secretValueToggle
             ])
             x-data="{ showSecretValue: false }">
             <input wire:key="form-input-component-{{ md5($key) }}"
@@ -34,7 +34,7 @@
                    ])
                    @readonly($readOnly)
             >
-            @if(isset($inputType) && $inputType == 'password' && $secretValueToggle)
+            @if(isset($inputType) && $inputType == 'password' && isset($secretValueToggle) && $secretValueToggle)
                 @include('lara-forms-builder::includes.secret-value-toggle')
             @endif
             @include('lara-forms-builder::includes.field-error-message')

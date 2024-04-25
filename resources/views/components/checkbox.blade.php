@@ -9,9 +9,9 @@
                     type="checkbox"
                     @class([
                         'lfb-checkbox',
-                        'lfb-readonly' => $readOnly
+                        'lfb-readonly' => (isset($mode) && ($mode == 'view' || $mode == 'confirm')) || $readOnly,
                     ])
-                    @readonly($readOnly)
+                    @readonly((isset($mode) && ($mode == 'view' || $mode == 'confirm')) || $readOnly)
                     @disabled((isset($mode) && ($mode == 'view' || $mode == 'confirm')) || $readOnly)
                 >
                 <label class="lfb-label lfb-label-spacing print:text-xs" for="formProperties-{{ $key }}">{!! $label !!}

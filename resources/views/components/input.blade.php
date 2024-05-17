@@ -23,7 +23,11 @@
             ])
             x-data="{ showSecretValue: false }">
             <input wire:key="form-input-component-{{ md5($key) }}"
-                   wire:model.live="formProperties.{{ $key }}"
+                @if(isset($typingAttributes['type']) && isset($typingAttributes['value']))
+                    wire:model.live.{{ $typingAttributes['type'] }}.{{ $typingAttributes['value'] }}ms="formProperties.{{ $key }}"
+                @else
+                    wire:model.live="formProperties.{{ $key }}"
+                @endif
                    id="formProperties-{{ $key }}"
                    name="formProperties.{{ $key }}"
                    type="{{ $inputType ?? 'text' }}"

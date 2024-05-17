@@ -8,7 +8,8 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'secretValueToggle' => $field['secretValueToggle'] ?? false
+            'secretValueToggle' => $field['secretValueToggle'] ?? false,
+            'typingAttributes' =>  $field['typingAttributes'] ?? null,
         ])
         @break
     @case('select')

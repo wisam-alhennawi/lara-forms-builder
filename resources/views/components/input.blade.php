@@ -41,5 +41,9 @@
             @include('lara-forms-builder::includes.field-form-warning')
         </div>
     @endif
-    @include('lara-forms-builder::includes.field-help-text')
+    @if(isset($htmlHelpText) && $htmlHelpText)
+        @include('lara-forms-builder::includes.field-html-help-text')
+    @else
+        @include('lara-forms-builder::includes.field-help-text')
+    @endif
 </div>

@@ -302,6 +302,7 @@ All form components have the following general properties:
 * `label` (mandatory): Label text of the component, can also include HTML tags (please handle responsibly and do not allow user input to be used as labels)
 * `validationAttribute` (optional): If set, the value will be used as the attribute label for validation messages. If not set, the `label` is also used as a field name for validation messages.
 * `helpText` (optional): Help text displayed at the bottom of the component
+* `htmlHelpText` (optional): Html elements displayed at the bottom of the component
 * `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
 * `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
 * `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component

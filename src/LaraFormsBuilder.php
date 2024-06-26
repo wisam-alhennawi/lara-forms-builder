@@ -496,4 +496,12 @@ trait LaraFormsBuilder
     {
         return config('lara-forms-builder.card_field_error_wrapper_classes');
     }
+
+    /**
+     * Get the css classes for the wrapper error fields
+     */
+    protected function getDefaultFieldErrorWrapperClasses(): string 
+    {
+        return config('lara-forms-builder.field_error_wrapper_classes');
+    }
 }

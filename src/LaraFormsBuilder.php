@@ -265,10 +265,26 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Check if the user is authorized to submit the form
+     * @return bool
+     */
+    protected function canSubmit(): bool
+    {
+        return ($this->model->exists)
+            ? auth()->user()->can('update', $this->model)
+            : auth()->user()->can('create', $this->model::class);
+    }
+
+    /**
      * Submit the form (validation, create or update the model, etc.)
      */
     protected function submit(): bool
     {
+        if (! $this->canSubmit()) {
+            $this->addError('formSubmit', __('You are not authorized to perform this action.'));
+            return false;
+        }
+
         $validatedData = $this->validate();
 
         $validatedData = $validatedData['formProperties'];
@@ -495,5 +511,26 @@ trait LaraFormsBuilder
     protected function getDefaultCardFieldErrorWrapperClasses(): string
     {
         return config('lara-forms-builder.card_field_error_wrapper_classes');
+    }
+
+    protected function extraCheckRequiredField($fieldKey): bool
+    {
+        return false;
+    }
+
+    /**
+     * Check if the field is required
+     */
+    protected function isFieldRequired($fieldKey): bool
+    {
+        return
+            isset($this->rules)
+            && array_key_exists('formProperties.' . $fieldKey, $this->rules)
+            && ((
+                    str_contains($this->rules['formProperties.' . $fieldKey], 'required')
+                    && !str_contains($this->rules['formProperties.' . $fieldKey], 'required_')
+                )
+                || $this->extraCheckRequiredField($fieldKey)
+            );
     }
 }

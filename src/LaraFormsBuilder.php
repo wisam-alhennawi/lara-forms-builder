@@ -201,9 +201,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
-    protected function beforeFormProperties(): void
-    {
-    }
+    protected function beforeFormProperties(): void {}
 
     /**
      * Set form properties
@@ -231,9 +229,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to change options, values, formats, etc. after setting the form properties
      */
-    protected function afterFormProperties(): void
-    {
-    }
+    protected function afterFormProperties(): void {}
 
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
@@ -266,7 +262,6 @@ trait LaraFormsBuilder
 
     /**
      * Check if the user is authorized to submit the form
-     * @return bool
      */
     protected function canSubmit(): bool
     {
@@ -282,6 +277,7 @@ trait LaraFormsBuilder
     {
         if (! $this->canSubmit()) {
             $this->addError('formSubmit', __('You are not authorized to perform this action.'));
+
             return false;
         }
 
@@ -528,12 +524,12 @@ trait LaraFormsBuilder
     {
         return
             isset($this->rules)
-            && array_key_exists('formProperties.' . $fieldKey, $this->rules)
+            && array_key_exists('formProperties.'.$fieldKey, $this->rules)
             && ((
-                    str_contains($this->rules['formProperties.' . $fieldKey], 'required')
-                    && !str_contains($this->rules['formProperties.' . $fieldKey], 'required_')
-                )
-                || $this->extraCheckRequiredField($fieldKey)
+                str_contains($this->rules['formProperties.'.$fieldKey], 'required')
+                && ! str_contains($this->rules['formProperties.'.$fieldKey], 'required_')
+            )
+            || $this->extraCheckRequiredField($fieldKey)
             );
     }
 }

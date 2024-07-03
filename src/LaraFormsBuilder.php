@@ -520,6 +520,9 @@ trait LaraFormsBuilder
 
     /**
      * Check if the field is required
+     *
+     * @param string $fieldKey
+     * @return bool
      */
     protected function isFieldRequired($fieldKey): bool
     {

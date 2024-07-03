@@ -41,7 +41,7 @@ all placed uses `$this->property` should be replaced with `$this->formProperties
      $this->email
      // V2
      $this->formProperties['email']
-     
+
      // V1
      $this->rules['email']
      // V2
@@ -182,7 +182,7 @@ Forms are specified in a declarative manner as an array of the `fields` function
 
 public array $developersOptions = []; // For 'checkbox-group' options
 public array $userIdOptions = []; // For 'user_id' options
-    
+
 public function beforeFormProperties(): void
 {
     $this->developersOptions = User::all(['id as value', 'name as label'])->toArray();
@@ -192,7 +192,7 @@ public function afterFormProperties(): void
 {
     $this->formProperties['developers'] = $this->model->developers->pluck('id');
 }
-    
+
 protected function fields(): array
     {
         return [
@@ -393,7 +393,7 @@ The `search-picker` form field is an input field with search functionality which
 
 #### Tabs
 - A custom layout for components that utilize tabs to organize content.
-- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `key` represents an internal technical key uniquely identifying the tab. The `title` property is used as label for both the tab navigation and the heading of the form; if an alternative (usually shortened) title for the navigation should be used, this can be specified with the optional property `navTitle`. The `'content'` array includes information about the form fields, their types, labels, options, and styling. 
+- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `key` represents an internal technical key uniquely identifying the tab. The `title` property is used as label for both the tab navigation and the heading of the form; if an alternative (usually shortened) title for the navigation should be used, this can be specified with the optional property `navTitle`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
 
 #### Multi-Step
 - The Multi-Step feature is designed to facilitate the creation of multi-step forms with a Tabs Layout. It provides methods to initialize steps, set the active step number, navigate between steps, and retrieve information about the form's multi-step structure.
@@ -496,6 +496,16 @@ The `search-picker` form field is an input field with search functionality which
     * Displaying the Success Message:
         - The success message is displayed to the user either as a flash message or through a browser event. The display method depends on the value of the `$hasSession` property, which is true by default.
     * Another way to customize the success message is to override the `successMessage()` method in the component class.
+
+* `protected function canSubmit(): bool`
+    * Purpose: Check if the user is authorized to submit the form
+
+* `protected function isFieldRequired($fieldKey): bool`
+    * Purpose: Check if the field is required based on the field rules
+
+* `protected function extraCheckRequiredField($fieldKey): bool`
+    * Purpose: Add additional/custom logic to determine whether the field is required or not
+
 
 ## Changelog
 

@@ -508,27 +508,4 @@ trait LaraFormsBuilder
     {
         return config('lara-forms-builder.card_field_error_wrapper_classes');
     }
-
-    protected function extraCheckRequiredField($fieldKey): bool
-    {
-        return false;
-    }
-
-    /**
-     * Check if the field is required
-     *
-     * @param  string  $fieldKey
-     */
-    protected function isFieldRequired($fieldKey): bool
-    {
-        return
-            isset($this->rules)
-            && array_key_exists('formProperties.'.$fieldKey, $this->rules)
-            && ((
-                str_contains($this->rules['formProperties.'.$fieldKey], 'required')
-                && ! str_contains($this->rules['formProperties.'.$fieldKey], 'required_')
-            )
-            || $this->extraCheckRequiredField($fieldKey)
-            );
-    }
 }

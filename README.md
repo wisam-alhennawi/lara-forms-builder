@@ -500,12 +500,21 @@ The `search-picker` form field is an input field with search functionality which
 * `protected function canSubmit(): bool`
     * Purpose: Check if the user is authorized to submit the form
 
-* `protected function isFieldRequired($fieldKey): bool`
-    * Purpose: Check if the field is required based on the field rules
-
-* `protected function extraCheckRequiredField($fieldKey): bool`
-    * Purpose: Add additional/custom logic to determine whether the field is required or not
-
+* `protected function fieldIndicator($fieldKey): ?string`
+    * Purpose:
+        - Display an indicator (*) for a required field in the form based on `required` rule in the rules array
+    * Customization:
+        - An indicator can be displayed based on a custom check (eg. conditional required rules like required_if), to do that `shouldDisplayIndicatorBasedOnCustomCheck($key)` should be overwritten:
+        Example:
+        ```php
+            protected function shouldDisplayIndicatorBasedOnCustomCheck($key): bool
+            {
+                if ($key == 'email' && $this->formProperties['type'] == 'email') {
+                    return true;
+                }
+                return false;
+            }
+        ```
 
 ## Changelog
 

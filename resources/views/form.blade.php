@@ -25,4 +25,7 @@
     @if (!isset($hasTabs) || (isset($hasTabs) && !$hasTabs))
         @include('lara-forms-builder::includes.buttons')
     @endif
+    @if($scrollToFirstError)
+       @include('lara-forms-builder::includes.scroll-to-first-error-script')
+    @endif 
 </div>

@@ -34,6 +34,8 @@ trait LaraFormsBuilder
 
     public array $formProperties = [];
 
+    public $scrollToFirstError = false;
+
     /**
      * get field keys from fields array
      */
@@ -269,6 +271,10 @@ trait LaraFormsBuilder
      */
     protected function submit(): bool
     {
+        if ($this->scrollToFirstError) {
+            $this->dispatch('scroll-to-first-error');
+        } 
+
         $validatedData = $this->validate();
 
         $validatedData = $validatedData['formProperties'];

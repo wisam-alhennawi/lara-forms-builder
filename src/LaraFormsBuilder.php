@@ -203,9 +203,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
-    protected function beforeFormProperties(): void
-    {
-    }
+    protected function beforeFormProperties(): void {}
 
     /**
      * Set form properties
@@ -233,9 +231,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to change options, values, formats, etc. after setting the form properties
      */
-    protected function afterFormProperties(): void
-    {
-    }
+    protected function afterFormProperties(): void {}
 
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
@@ -506,7 +502,7 @@ trait LaraFormsBuilder
     /**
      * Get the css classes for the wrapper error fields
      */
-    protected function getDefaultFieldErrorWrapperClasses(): string 
+    protected function getDefaultFieldErrorWrapperClasses(): string
     {
         return config('lara-forms-builder.field_error_wrapper_classes');
     }

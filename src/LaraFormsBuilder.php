@@ -208,9 +208,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
-    protected function beforeFormProperties()
-    {
-    }
+    protected function beforeFormProperties() {}
 
     /**
      * Set form properties
@@ -238,9 +236,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to change options, values, formats, etc. after setting the form properties
      */
-    protected function afterFormProperties()
-    {
-    }
+    protected function afterFormProperties() {}
 
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.

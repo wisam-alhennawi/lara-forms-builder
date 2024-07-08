@@ -277,9 +277,6 @@ trait LaraFormsBuilder
      */
     protected function submit(): bool
     {
-        if ($this->scrollToFirstError) {
-            $this->dispatch('scroll-to-first-error');
-        } 
         
         if (! $this->canSubmit()) {
             $this->addError('formSubmit', __('You are not authorized to perform this action.'));
@@ -287,6 +284,10 @@ trait LaraFormsBuilder
             return false;
         }
 
+        if ($this->scrollToFirstError) {
+            $this->dispatch('scroll-to-first-error');
+        } 
+        
         $validatedData = $this->validate();
 
         $validatedData = $validatedData['formProperties'];

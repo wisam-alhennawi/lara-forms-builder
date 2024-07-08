@@ -263,6 +263,16 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Check if the user is authorized to submit the form
+     */
+    protected function canSubmit(): bool
+    {
+        return ($this->model->exists)
+            ? auth()->user()->can('update', $this->model)
+            : auth()->user()->can('create', $this->model::class);
+    }
+
+    /**
      * Submit the form (validation, create or update the model, etc.)
      */
     protected function submit(): bool
@@ -270,6 +280,12 @@ trait LaraFormsBuilder
         if ($this->scrollToFirstError) {
             $this->dispatch('scroll-to-first-error');
         } 
+        
+        if (! $this->canSubmit()) {
+            $this->addError('formSubmit', __('You are not authorized to perform this action.'));
+
+            return false;
+        }
 
         $validatedData = $this->validate();
 

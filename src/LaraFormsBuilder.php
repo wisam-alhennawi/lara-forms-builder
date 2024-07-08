@@ -269,7 +269,7 @@ trait LaraFormsBuilder
     {
         if ($this->scrollToFirstError) {
             $this->dispatch('scroll-to-first-error');
-        } 
+        }
 
         $validatedData = $this->validate();
 

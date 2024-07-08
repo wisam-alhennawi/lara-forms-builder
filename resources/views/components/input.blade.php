@@ -1,4 +1,4 @@
-<div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{$defaultFieldErrorWrapperClasses}}@enderror">
+<div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{ $fieldErrorWrapperClass }}@enderror">
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         <div class="lfb-input-wrapper lfb-input-readonly" x-data="{ showSecretValue: false }">

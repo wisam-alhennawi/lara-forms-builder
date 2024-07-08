@@ -1,4 +1,4 @@
-<div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{$defaultFieldErrorWrapperClasses}}@enderror">
+<div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{ $fieldErrorWrapperClass }}@enderror">
     @include('lara-forms-builder::includes.field-label')
     @php
         $fieldValue = $model->$key->value ?? $model->$key;

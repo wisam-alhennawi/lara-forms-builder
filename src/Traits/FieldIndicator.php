@@ -9,8 +9,7 @@ trait FieldIndicator
     /**
      * Check if indicator should be displayed for the field or not based on the rules array or custom check
      *
-     * @param string $fieldKey
-     * @return bool
+     * @param  string  $fieldKey
      */
     private function shouldDisplayIndicator($fieldKey): bool
     {
@@ -27,8 +26,7 @@ trait FieldIndicator
     /**
      * Display an indicator (*) for a required field in the form
      *
-     * @param string $fieldKey
-     * @return string|null
+     * @param  string  $fieldKey
      */
     protected function fieldIndicator($fieldKey): ?string
     {

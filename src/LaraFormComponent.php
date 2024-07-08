@@ -8,7 +8,7 @@ use WisamAlhennawi\LaraFormsBuilder\Traits\FieldIndicator;
 
 abstract class LaraFormComponent extends Component
 {
-    use LaraFormsBuilder, WithFileUploads, FieldIndicator;
+    use FieldIndicator, LaraFormsBuilder, WithFileUploads;
 
     abstract protected function fields(): array;
 

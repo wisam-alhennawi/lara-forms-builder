@@ -201,9 +201,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
-    protected function beforeFormProperties(): void
-    {
-    }
+    protected function beforeFormProperties(): void {}
 
     /**
      * Set form properties
@@ -231,9 +229,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to change options, values, formats, etc. after setting the form properties
      */
-    protected function afterFormProperties(): void
-    {
-    }
+    protected function afterFormProperties(): void {}
 
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
@@ -265,10 +261,26 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Check if the user is authorized to submit the form
+     */
+    protected function canSubmit(): bool
+    {
+        return ($this->model->exists)
+            ? auth()->user()->can('update', $this->model)
+            : auth()->user()->can('create', $this->model::class);
+    }
+
+    /**
      * Submit the form (validation, create or update the model, etc.)
      */
     protected function submit(): bool
     {
+        if (! $this->canSubmit()) {
+            $this->addError('formSubmit', __('You are not authorized to perform this action.'));
+
+            return false;
+        }
+
         $validatedData = $this->validate();
 
         $validatedData = $validatedData['formProperties'];

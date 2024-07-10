@@ -379,4 +379,19 @@
     .lfb-secret-value-toggle-icon {
         @apply h-5 w-5 text-gray-400;
     }
+
+    .lfb-trix-editor-wrapper {
+        @apply mt-2;
+    }
+
+    .lfb-trix-editor-readonly trix-toolbar
+    {
+        @apply hidden;
+    }
+
+    .lfb-trix-editor-readonly
+    {
+        @apply lfb-readonly;
+    }
+
 }

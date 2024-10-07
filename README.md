@@ -389,6 +389,21 @@ The `search-picker` form field is an input field with search functionality which
     ```
 **Note:** `getUserIdOptions()`, `getUserIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `user_id`.
 
+#### Type `trix-editor`
+
+The `trix-editor` form field is a rich text editor which uses [Trix](https://trix-editor.org/) under the hood. It has the general properties mentioned above excluding `readOnly`.
+
+In order to use the trix-editor form field you have to add the following to your blade:
+
+```
+<head>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+  <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+</head>
+```
+
+Please see the full documentation on the official [Trix page](https://github.com/basecamp/trix)  .
+
 ### Form Layout
 
 #### Tabs

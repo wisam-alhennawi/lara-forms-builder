@@ -125,5 +125,14 @@
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
+    @case('trix-editor')
+        @include('lara-forms-builder::components.trix-editor', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'helpText' => $field['helpText'] ?? '',
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
+        ])
+        @break
     @default
 @endswitch

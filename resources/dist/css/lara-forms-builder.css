@@ -380,10 +380,22 @@
         @apply h-5 w-5 text-gray-400;
     }
 
-    .lfb-field-error-wrapper input.lfb-input, 
+    .lfb-trix-editor-wrapper {
+        @apply mt-2;
+    }
+
+    .lfb-trix-editor-readonly trix-toolbar {
+        @apply hidden;
+    }
+
+    .lfb-trix-editor-readonly {
+        @apply lfb-readonly;
+    }
+
+    .lfb-field-error-wrapper input.lfb-input,
     .lfb-field-error-wrapper textarea.lfb-textarea,
     .lfb-field-error-wrapper select.lfb-input,
-    .lfb-field-error-wrapper button.lfb-upload-button  {
+    .lfb-field-error-wrapper button.lfb-upload-button {
         @apply border-red-500 focus:border-red-500 focus:ring-red-500 ring-0;
     }
 }

@@ -12,16 +12,16 @@ The main functionality of this package is:
 ## Requirements
 The following dependencies are required to use the package:
 
-| Dependency  | Version                                        |     |
-|:------------|:-----------------------------------------------|:----|
-| PHP         | [8.x](https://www.php.net/releases/8.0/en.php) |     |
-| Laravel     | [10.x, 9.x](https://laravel.com/docs/10.x)     |     |
-| Jetstream   | [3.x](https://jetstream.laravel.com/)          | 💡  |
-| Livewire    | [2.x](https://laravel-livewire.com/docs/2.x)   | 💡  |
-| Alpine.js   | [3.x](https://alpinejs.dev/)                   | 💡  |
-| TailwindCSS | [3.x](https://tailwindcss.com/docs)            | 💡  |
-| Pikaday     | [1.x](https://github.com/Pikaday/Pikaday)      | 💡  |
-| Moment      | [2.x](https://momentjs.com/docs/)              | 💡  |
+| Dependency  | Version                                             |     |
+|:------------|:----------------------------------------------------|:----|
+| PHP         | [8.x](https://www.php.net/releases/8.0/en.php)      |     |
+| Laravel     | [10.x](https://laravel.com/docs/10.x)               |     |
+| Jetstream   | [4.x](https://jetstream.laravel.com/)               | 💡  |
+| Livewire    | [3.x](https://livewire.laravel.com/docs/quickstart) | 💡  |
+| Alpine.js   | [3.x](https://alpinejs.dev/)                        | 💡  |
+| TailwindCSS | [3.x](https://tailwindcss.com/docs)                 | 💡  |
+| Pikaday     | [1.x](https://github.com/Pikaday/Pikaday)           | 💡  |
+| Moment      | [2.x](https://momentjs.com/docs/)                   | 💡  |
 
 💡 => You can install it with Auto Setup & Configuration.
 > Note that (pikaday & moment) npm packages is required only if you have a date field within your form.
@@ -32,13 +32,29 @@ The following dependencies are required to use the package:
 composer require wisam-alhennawi/lara-forms-builder
 ```
 
+## Upgrade Guide
+If you want to use the package in an existing project that use v1 the following changed are required.
+
+all placed uses `$this->property` should be replaced with `$this->formProperties['property']`
+```bash
+     // V1
+     $this->email
+     // V2
+     $this->formProperties['email']
+
+     // V1
+     $this->rules['email']
+     // V2
+     $this->rules['formProperties.email']
+```
+
 ## Auto Setup & Configuration
 ```bash
 php artisan make:lara-forms-builder-setup
 ```
 
 This command will do the following:
-- Install `"laravel/jetstream": "^3.0"` with `"livewire/livewire": "^2.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
+- Install `"laravel/jetstream": "^4.0"` with `"livewire/livewire": "^3.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
 - Install `"pikaday": "^1.0"` and `"moment": "^2.0"` npm packages and make required configuration.
 - Add confirmation modal component to `app.blade.php` layout.
 - publish `lara-forms-builder.php` config file and make required configuration.
@@ -152,34 +168,46 @@ php artisan make:lara-forms-builder Users.UserForm User --langModelFileName=user
 
 ### Form Component Types and Attributes
 
-Forms are specified in a declarative manner as an array of the `fields` function in the form component class, e.g.
+Forms are specified in a declarative manner as an array of the `fields` function in the form component class.
+
+`beforeFormProperties()`, `afterFormProperties()` functions used to set options, values, etc. before/after setting the form properties (e.g. developers options in the following example).
+
+`saveDevelopers()` function used to make operation after create/update a model (e.g. developers ids & project id will be saved in pivot table in the following example).
+
+**Note:** `saveDevelopers()`functions should follow the naming convention of the form field name `developers`.
+
+
 
 ```php
+
+public array $developersOptions = []; // For 'checkbox-group' options
+public array $userIdOptions = []; // For 'user_id' options
+
+public function beforeFormProperties(): void
+{
+    $this->developersOptions = User::all(['id as value', 'name as label'])->toArray();
+}
+
+public function afterFormProperties(): void
+{
+    $this->formProperties['developers'] = $this->model->developers->pluck('id');
+}
+
 protected function fields(): array
     {
         return [
             [
                 'fields' => [
-                    'name' => [
+                    'title' => [
                         'type' => 'input',
-                        'label' => __('models/users.fields.name'),
-                    ],
-                    'email' => [
-                        'type' => 'input',
-                        'label' => __('models/users.fields.email'),
+                        'label' => __('models/projects.fields.title'),
                         'readOnly' => true
-                    ],
-                    'role' => [
-                        'type' => 'radio',
-                        'label' => __('models/users.fields.role'),
-                        'options' => [
-                            '1' => __('Employee'),
-                            '2' => __('Manager')
-                        ]
                     ],
                     'status' => [
                         'type' => 'select',
-                        'label' => __('models/users.fields.status'),
+                        'label' => __('models/projects.fields.status'),
+                        'styled' => true,
+                        'searchable' => true,
                         'options' => [
                             [
                                 'value' => '1',
@@ -191,28 +219,82 @@ protected function fields(): array
                             ],
                             [
                                 'value' => '3',
-                                'label' => __('Retired')
+                                'label' => __('Completed')
                             ]
                         ]
                     ],
-                    'last_update' => [
-                        'type' => 'date-picker',
-                        'label' => __('models/users.fields.last_update')
+                    'type' => [
+                        'type' => 'radio',
+                        'label' => __('models/projects.fields.type'),
+                        'options' => [
+                            '1' => __('Public'),
+                            '2' => __('Private')
+                        ]
                     ],
-                    'remark' => [
+                    'starting_date' => [
+                        'type' => 'date-picker',
+                        'label' => __('models/projects.fields.starting_date'),
+                    ],
+                    'user_id' => [
+                        'type' => 'search-picker',
+                        'label' => __('models/projects.fields.user_id'),
+                        'searchPickerResultsProperty' => 'userIdOptions',
+                        'placeholder' => __('Search for Team Leader'),
+                    ],
+                    'is_accepted' => [
+                        'type' => 'checkbox',
+                        'label' => __('models/projects.fields.is_accepted'),
+                    ],
+                    'description' => [
                         'type' => 'textarea',
-                        'label' => __('models/users.fields.remark'),
+                        'label' => __('models/projects.fields.description'),
                         'field_wrapper_class' => 'col-span-2',
+                    ],
+                    'developers' => [
+                        'type' => 'checkbox-group',
+                        'label' => __('models/projects.fields.developers'),
+                        'options' => $this->developersOptions,
+                    ],
+                    'document' => [
+                        'type' => 'file',
+                        'label' => __('models/projects.fields.document'),
                     ],
                 ]
             ]
         ];
     }
+
+public function saveDevelopers($validated_date) {
+    $this->model->developers()->sync($validated_date);
+}
+
+public function getUserIdOptions($searchPickerTerm)
+{
+    return User::select('id', 'name')
+        ->where('name', 'like', '%' . $searchPickerTerm . '%')
+        ->get()
+        ->each(function($row){
+            $row->key = $row->id;
+            $row->value = $row->name;
+            $row->labels = collect(['White', 'Green', 'Blue', 'Red', 'Yellow'])->random(rand(0, 3))->toArray();
+        })
+        ->toArray();
+}
+
+// will return ($user_id_search_picker_selected_value) which used in blade to display the selected option
+public function getUserIdSearchPickerSelectedValueProperty()
+{
+    if ($this->formProperties['user_id']) {
+        return User::find($this->formProperties['user_id'])->name;
+    }
+    return null;
+}
+
 ```
 
 The definition above is then rendered as displayed in this screenshot (with additional language dependent translations for the labels required):
 
-![Rendered Form according to code snippet](Example-Form.png)
+![Rendered Form according to code snippet](Example-Form.JPG)
 
 All form components have the following general properties:
 
@@ -223,12 +305,14 @@ All form components have the following general properties:
 * `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
 * `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
 * `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
+* `tooltip` (optional): if set, the value is displayed as text in a tooltip on hover over a question mark icon rendered next to the label text
 
 #### Type `input`
 
 The `input` form field is a classic html input element. It has the following additional properties:
 
 * `inputType` (optional): Specifies the specific type of input, e.g. email, number, url. Default if not provided is text.
+* `secretValueToggle` (optional): Flag relevant for input type password, if set to true, an icon is displayed at the right end of the input field that allows to toggle the visilibity of the masked value on click.
 
 #### Type `textarea`
 
@@ -292,49 +376,6 @@ public function saveAttachment($attachmentValue) {
 
 #### Type `search-picker`
 
-```php
-public array $contactIdOptions = [];
-
-public function getContactIdOptions($searchPickerTerm)
-{
-    return Contact::select('id', 'name')
-            ->where('name', 'like', '%' . $searchPickerTerm . '%')
-            ->get()
-            ->each(function($row){
-                $row->key = $row->id;
-                $row->value = $row->name;
-                $row->labels = collect(['White', 'Green', 'Blue', 'Red', 'Yellow'])->random(rand(0, 3))->toArray();
-            })
-            ->toArray();
-}
-
-// will return ($contact_id_search_picker_selected_value) which used in blade to display the selected option
-public function getContactIdSearchPickerSelectedValueProperty()
-{
-    if ($this->contact_id) {
-        return Contact::find($this->contact_id)->name;
-    }
-    return null;
-}
-
-protected function fields(): array
-{
-    return [
-        [
-            'fields' => [
-                    'contact_id' => [
-                    'type' => 'search-picker',
-                    'label' => 'Contact Person',
-                    'searchPickerResultsProperty' => 'contactIdOptions',
-                    'placeholder' => __('Search for contact person'),
-                    'field_wrapper_class' => 'col-span-1',
-                ],
-            ]
-        ]
-    ];
-}
-```
-
 The `search-picker` form field is an input field with search functionality which display the results as a list under the field. It has the following additional properties:
 
 * `placeholder` (optional): Specifies the placeholder of the input field.
@@ -346,15 +387,28 @@ The `search-picker` form field is an input field with search functionality which
         'labels' => [] // optional
     ]
     ```
-**Note:** `getContactIdOptions()`, `getContactIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `contact_id`.
+**Note:** `getUserIdOptions()`, `getUserIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `user_id`.
 
-![Rendered Form according to code snippet](Search-Picker-Example.png)
+#### Type `trix-editor`
+
+The `trix-editor` form field is a rich text editor which uses [Trix](https://trix-editor.org/) under the hood. It has the general properties mentioned above excluding `readOnly`.
+
+In order to use the trix-editor form field you have to add the following to your blade:
+
+```
+<head>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+  <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+</head>
+```
+
+Please see the full documentation on the official [Trix page](https://github.com/basecamp/trix)  .
 
 ### Form Layout
 
 #### Tabs
 - A custom layout for components that utilize tabs to organize content.
-- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
+- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `key` represents an internal technical key uniquely identifying the tab. The `title` property is used as label for both the tab navigation and the heading of the form; if an alternative (usually shortened) title for the navigation should be used, this can be specified with the optional property `navTitle`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
 
 #### Multi-Step
 - The Multi-Step feature is designed to facilitate the creation of multi-step forms with a Tabs Layout. It provides methods to initialize steps, set the active step number, navigate between steps, and retrieve information about the form's multi-step structure.
@@ -429,7 +483,7 @@ The `search-picker` form field is an input field with search functionality which
 
         // ... other component properties and methods
     }
-    ```php
+    ```
 
 ### Form Methods
 
@@ -457,6 +511,25 @@ The `search-picker` form field is an input field with search functionality which
     * Displaying the Success Message:
         - The success message is displayed to the user either as a flash message or through a browser event. The display method depends on the value of the `$hasSession` property, which is true by default.
     * Another way to customize the success message is to override the `successMessage()` method in the component class.
+
+* `protected function canSubmit(): bool`
+    * Purpose: Check if the user is authorized to submit the form
+
+* `protected function fieldIndicator($fieldKey): ?string`
+    * Purpose:
+        - Display an indicator (*) for a required field in the form based on `required` rule in the rules array
+    * Customization:
+        - An indicator can be displayed based on a custom check (eg. conditional required rules like required_if), to do that `shouldDisplayIndicatorBasedOnCustomCheck($key)` should be overwritten:
+        Example:
+        ```php
+            protected function shouldDisplayIndicatorBasedOnCustomCheck($key): bool
+            {
+                if ($key == 'email' && $this->formProperties['type'] == 'email') {
+                    return true;
+                }
+                return false;
+            }
+        ```
 
 ## Changelog
 

@@ -1,4 +1,4 @@
-<div class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
+<div class="{{ $fieldWrapperClass }}">
     @include('lara-forms-builder::includes.field-label')
     @php
         $fieldValue = $model->$key->value ?? $model->$key;
@@ -7,7 +7,7 @@
             foreach ($selectOptions as $groupLabel => $options) {
                 $optionKey = array_search($fieldValue, array_column($options, 'value'));
                 if (!is_numeric($optionKey) && $optionKey == false) {
-                    $optionKey = array_search($this->$key, array_column($options, 'value'));
+                    $optionKey = array_search($this->formProperties[$key], array_column($options, 'value'));
                 }
                 if (is_numeric($optionKey)) {
                     $optionKeyGroupLabel = $groupLabel;
@@ -17,13 +17,15 @@
         } else {
             $optionKey = array_search($fieldValue, array_column($selectOptions, 'value'));
             if (!is_numeric($optionKey) && $optionKey == false) {
-                $optionKey = array_search($this->$key, array_column($selectOptions, 'value'));
+                $optionKey = array_search($this->formProperties[$key], array_column($selectOptions, 'value'));
             }
         }
     @endphp
     @if ((isset($mode) && ($mode == 'view' || $mode == 'confirm')) || isset($readOnly) && $readOnly)
         <div class="lfb-input-wrapper">
-            <input type="text" name="{{ $key }}" id="{{ $key }}"
+            <input id="{{ $key }}"
+                   name="{{ $key }}"
+                   type="text"
                    value=@if($isGrouped && $optionKeyGroupLabel)
                             "{{ $selectOptions[$optionKeyGroupLabel][$optionKey]['label'] }}"
                           @elseif(is_numeric($optionKey) && array_key_exists($optionKey, $selectOptions))
@@ -31,18 +33,23 @@
                           @else
                             "-"
                           @endif
-                   class="lfb-input lfb-disabled" readonly disabled>
+                   class="lfb-input lfb-disabled"
+                   readonly
+                   disabled
+            >
         </div>
     @else
         <div class="lfb-input-wrapper">
             @if($styled)
             @include('lara-forms-builder::includes.select-script')
-            <div
-                x-data="{ ...lfbStyledSelect({{ json_encode($selectOptions) }}), value: @entangle($key) }"
-                class="relative lfb-input"
-                wire:key="form-select-component-{{ md5($key) }}"
-                name="{{ $key }}"
-                id="{{ $key }}"
+            <div x-data="{
+                             ...lfbStyledSelect({{ json_encode($selectOptions) }}),
+                             value: @entangle('formProperties.'.$key).live
+                         }"
+                 wire:key="form-select-component-{{ md5($key) }}"
+                 id="formProperties-{{ $key }}"
+                 name="formProperties.{{ $key }}"
+                 class="relative lfb-input"
             >
                 <div
                     class="lfb-styled-select-input"
@@ -108,8 +115,11 @@
                 </div>
             </div>
             @else
-            <select id="{{ $key }}" name="{{ $key }}" class="lfb-input"
-                    wire:model="{{ $key }}">
+            <select wire:model.live="formProperties.{{ $key }}"
+                    id="formProperties-{{ $key }}"
+                    name="formProperties.{{ $key }}"
+                    class="lfb-input"
+            >
                 <option value>{{ __('Please select...') }}</option>
                 @if($isGrouped)
                     @foreach($selectOptions as $groupLabel => $options)
@@ -127,9 +137,7 @@
             </select>
             @endif
         </div>
-        @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
-        @if(isset($helpText))
-            <p class="lfb-help-text">{{ $helpText }}</p>
-        @endif
+        @include('lara-forms-builder::includes.field-error-message')
+        @include('lara-forms-builder::includes.field-help-text')
     @endif
 </div>

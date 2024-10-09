@@ -7,7 +7,7 @@ use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use WisamAlhennawi\LaraFormsBuilder\Commands\LaraFormsBuilderCommand;
 use WisamAlhennawi\LaraFormsBuilder\Commands\LaraFormsBuilderSetupCommand;
-use WisamAlhennawi\LaraFormsBuilder\Http\Livewire\Modals\Confirmation;
+use WisamAlhennawi\LaraFormsBuilder\Livewire\Modals\Confirmation;
 
 class LaraFormsBuilderServiceProvider extends PackageServiceProvider
 {

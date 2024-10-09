@@ -12,12 +12,12 @@ class [class] extends LaraFormComponent
         $this->mountForm($[object]);
     }
 
-    public function beforeFormProperties()
+    public function beforeFormProperties(): void
     {
         //
     }
 
-    public function afterFormProperties()
+    public function afterFormProperties(): void
     {
         //
     }

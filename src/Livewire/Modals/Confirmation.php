@@ -1,6 +1,6 @@
 <?php
 
-namespace WisamAlhennawi\LaraFormsBuilder\Http\Livewire\Modals;
+namespace WisamAlhennawi\LaraFormsBuilder\Livewire\Modals;
 
 use Livewire\Component;
 
@@ -35,7 +35,7 @@ class Confirmation extends Component
 
     public function confirm()
     {
-        $this->emit('modalConfirmed', $this->callback);
+        $this->dispatch('modalConfirmed', $this->callback);
         $this->hideConfirmationModal();
     }
 

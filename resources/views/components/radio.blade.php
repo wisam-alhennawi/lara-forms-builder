@@ -1,4 +1,4 @@
-<div class="@if (isset($fieldWrapperClass)) {{$fieldWrapperClass}} @endif">
+<div class="{{ $fieldWrapperClass }}">
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         @if ($model->$key && array_key_exists(is_object($model->$key) && enum_exists($model->$key::class) ? $model->$key->value : $model->$key, $radioOptions))
@@ -11,22 +11,38 @@
             @endphp
         @endif
         <div class="lfb-input-wrapper">
-            <input type="text" name="{{ $key }}" id="{{ $key }}" value="{{$fieldValue}}" class="lfb-input lfb-disabled" readonly disabled>
+            <input id="formProperties-{{ $key }}"
+                   name="formProperties.{{ $key }}"
+                   type="text"
+                   value="{{ $fieldValue }}"
+                   class="lfb-input lfb-disabled"
+                   readonly
+                   disabled
+            >
         </div>
     @else
     <fieldset class="lfb-fieldset">
         <div class="lfb-fieldset-container">
             @foreach($radioOptions as $optionKey => $optionLabel)
             <div class="lfb-fieldset-item {{ array_key_first($radioOptions) !== $optionKey ? 'lfb-fieldset-item-spacing' : '' }}">
-                <input wire:key="form-radio-component-{{ md5($key) }}" id="{{ $key . $loop->index }}" name="{{ $key }}" type="radio" value="{{ $optionKey }}" wire:model="{{ $key }}" class="lfb-radio">
+                <input wire:key="form-radio-component-{{ md5($key) }}"
+                    wire:model.live="formProperties.{{ $key }}"
+                    id="formProperties-{{ $key . $loop->index }}"
+                    name="formProperties.{{ $key }}"
+                    type="radio"
+                    value="{{ $optionKey }}"
+                    @class([
+                        'lfb-radio',
+                        'lfb-readonly' => $readOnly
+                    ])
+                    @readonly($readOnly)
+                >
                 <label class="lfb-label lfb-label-spacing">{{ $optionLabel }}</label>
             </div>
             @endforeach
         </div>
-        @error($key) <span class="lfb-alert lfb-alert-error">{{ $message }}</span> @enderror
-        @if(isset($helpText) && $helpText)
-        <p class="lfb-help-text">{{ $helpText }}</p>
-        @endif
+        @include('lara-forms-builder::includes.field-error-message')
+        @include('lara-forms-builder::includes.field-help-text')
     </fieldset>
     @endif
 </div>

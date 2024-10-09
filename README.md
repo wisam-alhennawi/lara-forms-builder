@@ -530,6 +530,18 @@ Please see the full documentation on the official [Trix page](https://github.com
                 return false;
             }
         ```
+#### Scroll to First Error
+
+The `scrollToFirstError` feature allows the form to automatically scroll to the first field with an error after clicking the submit button. This enhances user experience by immediately directing attention to the area that needs correction.
+
+###### How to Enable
+
+To enable this feature, add the following line in the `mount` method of your form component:
+
+```php
+$this->scrollToFirstError = true;
+```
+
 
 ## Changelog
 

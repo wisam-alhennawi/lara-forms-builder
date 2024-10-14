@@ -1,4 +1,4 @@
-<div class="{{ $fieldWrapperClass }}">
+<div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{ $fieldErrorWrapperClass }}@enderror">
     <fieldset class="lfb-fieldset">
         <div class="lfb-fieldset-container">
             <div class="lfb-fieldset-item">

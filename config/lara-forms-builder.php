@@ -10,4 +10,5 @@ return [
     'footer_buttons_wrapper_classes' => 'lfb-buttons-wrapper',
     'previous_button_classes' => 'lfb-secondary-button',
     'next_button_classes' => 'lfb-primary-button',
+    'field_error_wrapper_classes' => 'lfb-field-error-wrapper',
 ];

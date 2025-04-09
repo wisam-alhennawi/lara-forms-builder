@@ -9,6 +9,13 @@
 The main functionality of this package is:
 - Generate Livewire forms (Show, Create, Update) by using one command and one Livewire component.
 
+## Laravel and PHP versions compatibility
+
+| lara-forms-builder | Laravel                               | PHP                                              |
+|--------------------|---------------------------------------|--------------------------------------------------|
+| `v2.1.*`           | `^9.0` &#124; `^10.0`                 | `^8.1`                                           |
+| `v2.2.*`           | `^10.0` &#124; `^11.0` &#124; `^12.0` | `^8.1` &#124; `^8.2` &#124; `^8.3` &#124; `^8.4` |
+
 ## Requirements
 The following dependencies are required to use the package:
 

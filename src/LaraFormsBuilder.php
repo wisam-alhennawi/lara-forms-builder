@@ -34,6 +34,8 @@ trait LaraFormsBuilder
 
     public array $formProperties = [];
 
+    public $scrollToFirstError = false;
+
     /**
      * get field keys from fields array
      */
@@ -275,10 +277,15 @@ trait LaraFormsBuilder
      */
     protected function submit(): bool
     {
+
         if (! $this->canSubmit()) {
             $this->addError('formSubmit', __('You are not authorized to perform this action.'));
 
             return false;
+        }
+
+        if ($this->scrollToFirstError) {
+            $this->dispatch('scroll-to-first-error');
         }
 
         $validatedData = $this->validate();
@@ -507,5 +514,13 @@ trait LaraFormsBuilder
     protected function getDefaultCardFieldErrorWrapperClasses(): string
     {
         return config('lara-forms-builder.card_field_error_wrapper_classes');
+    }
+
+    /**
+     * Get the css classes for the wrapper error fields
+     */
+    protected function getDefaultFieldErrorWrapperClasses(): string
+    {
+        return config('lara-forms-builder.field_error_wrapper_classes');
     }
 }

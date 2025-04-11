@@ -62,7 +62,7 @@ class LaraFormsBuilderSetupCommand extends Command
     protected function checkEnvironment(): void
     {
         Log::info('LFB Jetstream = '.InstalledVersions::isInstalled('laravel/jetstream'));
-        //check if jetstream version 4 installed
+        // check if jetstream version 4 installed
         if (InstalledVersions::isInstalled('laravel/jetstream')) {
             $jetstreamVersion = InstalledVersions::getVersion('laravel/jetstream');
             $jetstreamVersionAsArray = collect(explode('.', $jetstreamVersion))->slice(0, 1)->toArray();
@@ -88,7 +88,7 @@ class LaraFormsBuilderSetupCommand extends Command
             );
         }
 
-        //check if pikaday & moment npm packages installed
+        // check if pikaday & moment npm packages installed
         if (File::exists(base_path('package.json'))) {
             $data = json_decode(file_get_contents(base_path('package.json')), true);
             // check dependencies{} object

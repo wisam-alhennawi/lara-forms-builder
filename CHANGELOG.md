@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.1.1 - 2025-04-14
+
+### What's Changed
+
+* Fix change log action error by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/69
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.1.0...v2.1.1
+
 ## v2.0.0 - 2024-10-09
 
 ### What's Changed

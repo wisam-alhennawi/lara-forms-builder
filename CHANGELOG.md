@@ -2,6 +2,40 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.1.1 - 2025-04-14
+
+### What's Changed
+
+* Fix change log action error by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/69
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.1.0...v2.1.1
+
+## v2.0.0 - 2024-10-09
+
+### What's Changed
+
+* Feature/livewire version 3 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/45
+* Feature/fix file upload by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/46
+* Add script directive by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/48
+* Fix extraValidate() function bug in multi step form by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/49
+* Bump aglipanci/laravel-pint-action from 2.3.0 to 2.3.1 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/37
+* Bump ramsey/composer-install from 2 to 3 by @dependabot in https://github.com/wisam-alhennawi/lara-forms-builder/pull/47
+* Support readOnly flags for checkbox and radio form components by @web-schwinge in https://github.com/wisam-alhennawi/lara-forms-builder/pull/53
+* Separate navigation title for tabs by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/54
+* Feature/tooltip and secret value toggle by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/55
+* Improve checks and use solid icons for secret value toggle and tooltip by @jpbu in https://github.com/wisam-alhennawi/lara-forms-builder/pull/56
+* Checkbox: add readonly class and attribute in view or confirm mode by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/57
+* V2 improvements by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/62
+* Added html rendering in field text help by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/64
+* Feature | Add trix editor as a form component by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/63
+* V2 by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/65
+
+### New Contributors
+
+* @web-schwinge made their first contribution in https://github.com/wisam-alhennawi/lara-forms-builder/pull/53
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v1.9.1...v2.0.0
+
 ## v1.9.1 - 2024-02-12
 
 ### What's Changed

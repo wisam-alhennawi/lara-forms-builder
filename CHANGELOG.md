@@ -10,6 +10,14 @@ All notable changes to `lara-forms-builder` will be documented in this file.
 
 **Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.1.0...v2.1.1
 
+## v2.1.0 - 2025-04-11
+
+### What's Changed
+* Wrapper error field by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/61
+* V2 part 2 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/68
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.0.0...v2.1.0
+
 ## v2.0.0 - 2024-10-09
 
 ### What's Changed

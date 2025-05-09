@@ -10,6 +10,7 @@
             'tooltip' => $field['tooltip'] ?? null,
             'secretValueToggle' => $field['secretValueToggle'] ?? false,
             'fieldModifier' =>  $field['fieldModifier'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('select')
@@ -24,6 +25,7 @@
             'searchable' => $field['searchable'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('radio')
@@ -35,6 +37,7 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('checkbox')
@@ -45,6 +48,7 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('textarea')
@@ -56,6 +60,7 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'rows' => $field['rows'] ?? 5,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('date-picker')
@@ -66,6 +71,7 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('cards')
@@ -91,6 +97,7 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('file')
@@ -103,6 +110,7 @@
             'removeIcon' => $field['removeIcon'] ?? null,
             'preview' => $field['preview'] ?? null,
             'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
     @case('search-picker')
@@ -113,6 +121,16 @@
             'placeholder' => $field['placeholder'] ?? '',
             'helpText' => $field['helpText'] ?? '',
             'readOnly' => $field['readOnly'] ?? false,
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
+        ])
+        @break
+    @case('trix-editor')
+        @include('lara-forms-builder::components.trix-editor', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'helpText' => $field['helpText'] ?? '',
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
         ])

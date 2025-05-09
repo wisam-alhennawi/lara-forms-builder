@@ -1,7 +1,7 @@
 @php
     $fieldValue = $model->$key->value ?? $model->$key;
 @endphp
-@error($key)
+@error('formProperties.'.$key)
     <div class="{{$cardFieldErrorWrapperClass}}" role="alert">
         <div class="lfb-card-message-container">
             <div class="lfb-card-message-icon-container">
@@ -26,8 +26,8 @@
 <div>
     <div wire:key="form-cards-component-{{ md5($key) }}" class="@if(isset($fieldWrapperClass)){{$fieldWrapperClass}}@endif">
         @foreach ($selectOptions as $option)
-            <div wire:click="$set('{{ $key }}', '{{ $option['value'] }}')"
-            class="lfb-card-wrapper {{ $this->$key == $option['value'] ? 'lfb-card-wrapper-state-active' : '' }} {{($readOnly)? 'lfb-card-wrapper-state-read-only ':''}}">
+            <div wire:click="$set('formProperties.{{ $key }}', '{{ $option['value'] }}')"
+            class="lfb-card-wrapper {{ $this->formProperties[$key] == $option['value'] ? 'lfb-card-wrapper-state-active' : '' }} {{($readOnly)? 'lfb-card-wrapper-state-read-only ':''}}">
                 <div class="lfb-card-container @if(isset($icon)) with-icon @endif">
                     <div class="lfb-card-item">
                         <h4 class="lfb-card-label">

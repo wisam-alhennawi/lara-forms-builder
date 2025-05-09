@@ -9,7 +9,7 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
             'secretValueToggle' => $field['secretValueToggle'] ?? false,
-            'typingAttributes' =>  $field['typingAttributes'] ?? null,
+            'fieldModifier' =>  $field['fieldModifier'] ?? null,
         ])
         @break
     @case('select')

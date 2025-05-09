@@ -62,14 +62,14 @@ class LaraFormsBuilderSetupCommand extends Command
     protected function checkEnvironment(): void
     {
         Log::info('LFB Jetstream = '.InstalledVersions::isInstalled('laravel/jetstream'));
-        //check if jetstream version 4 installed
+        // check if jetstream version 5 installed
         if (InstalledVersions::isInstalled('laravel/jetstream')) {
             $jetstreamVersion = InstalledVersions::getVersion('laravel/jetstream');
             $jetstreamVersionAsArray = collect(explode('.', $jetstreamVersion))->slice(0, 1)->toArray();
-            if ($jetstreamVersionAsArray[0] == 4) {
+            if ($jetstreamVersionAsArray[0] == 5) {
                 $this->isJetstreamInstalled = true;
             } else {
-                $this->warn('This Package Only Supports laravel/jetstream V4 And Your Version Is '.$jetstreamVersionAsArray[0]);
+                $this->warn('This Package Only Supports laravel/jetstream V5 And Your Version Is '.$jetstreamVersionAsArray[0]);
                 exit;
             }
         }
@@ -88,7 +88,7 @@ class LaraFormsBuilderSetupCommand extends Command
             );
         }
 
-        //check if pikaday & moment npm packages installed
+        // check if pikaday & moment npm packages installed
         if (File::exists(base_path('package.json'))) {
             $data = json_decode(file_get_contents(base_path('package.json')), true);
             // check dependencies{} object
@@ -125,16 +125,16 @@ class LaraFormsBuilderSetupCommand extends Command
     protected function installJetstream(): void
     {
         if (! $this->option('skip-jetstream-installation') && ! $this->isJetstreamInstalled) {
-            if ($this->components->confirm('This package requires (laravel/jetstream:^4.0 with livewire/livewire:^3.0). Do you want to install them?', true)) {
+            if ($this->components->confirm('This package requires (laravel/jetstream with livewire/livewire). Do you want to install them?', true)) {
                 try {
-                    exec('composer require laravel/jetstream:^4.0');
+                    exec('composer require laravel/jetstream');
                     exec('php artisan jetstream:install livewire');
                     exec('php artisan migrate');
 
                     $this->line('');
-                    $this->components->info('(laravel/jetstream:^4.0 with livewire/livewire:^3.0) installed successfully.');
+                    $this->components->info('(laravel/jetstream with livewire/livewire) installed successfully.');
                 } catch (\Throwable $e) {
-                    $this->components->error('(laravel/jetstream:^4.0 with livewire/livewire:^3.0) installation ERROR.');
+                    $this->components->error('(laravel/jetstream with livewire/livewire) installation ERROR.');
                     exit;
                 }
             } else {

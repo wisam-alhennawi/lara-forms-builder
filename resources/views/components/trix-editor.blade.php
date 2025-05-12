@@ -11,7 +11,10 @@
             </div>
 
             <script>
-                document.querySelector('trix-editor').editor.element.setAttribute('contentEditable', false)
+                document.addEventListener("DOMContentLoaded", function () {
+                    const readonlyEditor = document.querySelector('trix-editor[input="trix-editor-input-content-{{ $key }}"]');
+                    readonlyEditor.editor.element.setAttribute('contentEditable', false);
+                });
             </script>
             @include('lara-forms-builder::includes.field-form-warning')
         </div>
@@ -26,11 +29,14 @@
             </div>
 
             <script>
-                let trixEditor_{{ $key }} = document.getElementById("trix-editor-input-content-{{ $key }}")
+                document.addEventListener("DOMContentLoaded", function () {
+                    const input = document.getElementById("trix-editor-input-content-{{ $key }}");
+                    const editor = document.querySelector('trix-editor[input="trix-editor-input-content-{{ $key }}"]');
 
-                document.addEventListener("trix-change", function(event) {
-                    @this.set("formProperties.{{ $key }}", trixEditor_{{ $key }}.getAttribute('value'));
-                })
+                    editor.addEventListener("trix-change", function () {
+                        @this.set("formProperties.{{ $key }}", input.value);
+                    });
+                });
             </script>
             @include('lara-forms-builder::includes.field-error-message')
             @include('lara-forms-builder::includes.field-form-warning')

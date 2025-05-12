@@ -114,6 +114,7 @@ trait LaraFormsBuilder
 
     private function getFieldRulesAndValidationAttributes(): array
     {
+        // @phpstan-ignore-next-line
         $modelRules = get_class($this->model)::$rules ?? [];
         $fieldRules = [];
         $fieldValidationAttributes = [];
@@ -196,6 +197,7 @@ trait LaraFormsBuilder
         $this->fields = $this->fields();
 
         if ($this->isMultiStepForm()) {
+            // @phpstan-ignore-next-line
             $this->initSteps();
         }
     }

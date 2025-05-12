@@ -9,6 +9,13 @@
 The main functionality of this package is:
 - Generate Livewire forms (Show, Create, Update) by using one command and one Livewire component.
 
+## Laravel and PHP versions compatibility
+
+| lara-forms-builder | Laravel                               | PHP                                              |
+|--------------------|---------------------------------------|--------------------------------------------------|
+| `<= v2.1.*`        | `^9.0` &#124; `^10.0`                 | `^8.1`                                           |
+| `>= v2.2.*`        | `^10.0` &#124; `^11.0` &#124; `^12.0` | `^8.1` &#124; `^8.2` &#124; `^8.3` &#124; `^8.4` |
+
 ## Requirements
 The following dependencies are required to use the package:
 
@@ -16,7 +23,7 @@ The following dependencies are required to use the package:
 |:------------|:----------------------------------------------------|:----|
 | PHP         | [8.x](https://www.php.net/releases/8.0/en.php)      |     |
 | Laravel     | [10.x](https://laravel.com/docs/10.x)               |     |
-| Jetstream   | [4.x](https://jetstream.laravel.com/)               | 💡  |
+| Jetstream   | [5.x](https://jetstream.laravel.com/)               | 💡  |
 | Livewire    | [3.x](https://livewire.laravel.com/docs/quickstart) | 💡  |
 | Alpine.js   | [3.x](https://alpinejs.dev/)                        | 💡  |
 | TailwindCSS | [3.x](https://tailwindcss.com/docs)                 | 💡  |
@@ -54,7 +61,7 @@ php artisan make:lara-forms-builder-setup
 ```
 
 This command will do the following:
-- Install `"laravel/jetstream": "^4.0"` with `"livewire/livewire": "^3.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
+- Install `"laravel/jetstream": "^5.0"` with `"livewire/livewire": "^3.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
 - Install `"pikaday": "^1.0"` and `"moment": "^2.0"` npm packages and make required configuration.
 - Add confirmation modal component to `app.blade.php` layout.
 - publish `lara-forms-builder.php` config file and make required configuration.

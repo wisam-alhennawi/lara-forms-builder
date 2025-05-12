@@ -320,6 +320,25 @@ The `input` form field is a classic html input element. It has the following add
 
 * `inputType` (optional): Specifies the specific type of input, e.g. email, number, url. Default if not provided is text.
 * `secretValueToggle` (optional): Flag relevant for input type password, if set to true, an icon is displayed at the right end of the input field that allows to toggle the visilibity of the masked value on click.
+* `fieldModifier` (optional): This parameter allows customization of Livewire's input handling behavior with Livewire's native modifiers.
+  Simply pass a Livewire modifier string. For example:
+    - `live.debounce.400ms` - Debounces input with 400ms delay
+    - `live.throttle.750ms` - Throttles input to maximum 1 event per 750ms
+
+If no modifier is specified, Livewire's default `live` modifier will be applied.
+
+Example:
+
+```php
+
+    'weight' => [
+        'type' => 'input',
+        'inputType' => 'number',
+        'label' =>  __('models/dogs.fields.weight'),
+        'fieldModifier' => 'live.debounce.400ms',
+    ]
+
+```
 
 #### Type `textarea`
 

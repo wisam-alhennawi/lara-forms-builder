@@ -26,4 +26,9 @@ jobs:
         uses: ramsey/composer-install@v3
 
       - name: Run PHPStan
-        run: ./vendor/bin/phpstan --error-format=github
+        run: |
+          if [[ "${{ matrix.php }}" == "8.1" ]]; then
+            ./vendor/bin/phpstan analyse -c phpstan.neon81.dist --error-format=github
+          else
+            ./vendor/bin/phpstan analyse -c phpstan.neon.dist --error-format=github
+          fi

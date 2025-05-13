@@ -9,5 +9,9 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
-    checkMissingIterableValueType: false
-
+    ignoreErrors:
+        -
+            message: '#Trait [a-zA-Z0-9\\_]+ is used zero times and is not analysed.#'
+            paths:
+                - %currentWorkingDirectory%/src/Traits/HasTabs.php
+                - %currentWorkingDirectory%/src/Traits/MultiStepForm.php

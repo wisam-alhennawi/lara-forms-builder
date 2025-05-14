@@ -74,6 +74,10 @@
         @apply read-only:bg-gray-300;
     }
 
+    .lfb-checkbox.lfb-disabled {
+        @apply disabled:bg-gray-300 disabled:border-0;
+    }
+
     .lfb-fieldset {
         @apply mt-4;
     }

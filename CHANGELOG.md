@@ -2,6 +2,18 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.2.0 - 2025-05-14
+
+### What's Changed
+
+* Laravel 11 and 12 support, as well as PHP 8.2, 8.3, 8.4 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/67
+* Bugfix: Trix multiple editors by @florianbinderme in https://github.com/wisam-alhennawi/lara-forms-builder/pull/70
+* Added typingAttributes for input handling behavior by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/59
+* Fix phpstan workflow errors by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/73
+* Release: v2.2.0 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/71
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.1.1...v2.2.0
+
 ## v2.1.1 - 2025-04-14
 
 ### What's Changed
@@ -13,6 +25,7 @@ All notable changes to `lara-forms-builder` will be documented in this file.
 ## v2.1.0 - 2025-04-11
 
 ### What's Changed
+
 * Wrapper error field by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/61
 * V2 part 2 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/68
 

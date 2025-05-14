@@ -9,6 +9,7 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
             'secretValueToggle' => $field['secretValueToggle'] ?? false,
+            'fieldModifier' =>  $field['fieldModifier'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break

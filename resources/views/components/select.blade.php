@@ -38,6 +38,9 @@
                    disabled
             >
         </div>
+        @if (!empty($showHelpTextInViewMode))
+            @include('lara-forms-builder::includes.field-help-text')
+        @endif
     @else
         <div class="lfb-input-wrapper">
             @if($styled)

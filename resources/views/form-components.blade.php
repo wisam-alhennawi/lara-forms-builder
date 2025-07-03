@@ -20,6 +20,7 @@
             'selectOptions' => $field['options'],
             'isGrouped' => $field['isGrouped'] ?? false,
             'helpText' => $field['helpText'] ?? '',
+            'showHelpTextInViewMode' => $field['showHelpTextInViewMode'] ?? false,
             'readOnly' => $field['readOnly'] ?? false,
             'styled' => $field['styled'] ?? false,
             'searchable' => $field['searchable'] ?? false,

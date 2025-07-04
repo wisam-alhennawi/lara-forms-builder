@@ -138,6 +138,6 @@
             @endif
         </div>
         @include('lara-forms-builder::includes.field-error-message')
-        @include('lara-forms-builder::includes.field-help-text')
     @endif
+    @include('lara-forms-builder::includes.field-help-text')
 </div>

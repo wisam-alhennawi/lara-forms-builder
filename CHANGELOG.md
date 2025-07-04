@@ -2,6 +2,17 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.2.1 - 2025-07-04
+
+### What's Changed
+
+* Fix checkbox-group read-only by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/75
+* Release: V2.2.1 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/76
+* Always display help text in select field by @florianbinderme in https://github.com/wisam-alhennawi/lara-forms-builder/pull/78
+* V2 by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/79
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.2.0...v2.2.1
+
 ## v2.2.0 - 2025-05-14
 
 ### What's Changed

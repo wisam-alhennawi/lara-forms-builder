@@ -252,6 +252,14 @@ protected function fields(): array
                         'type' => 'checkbox',
                         'label' => __('models/projects.fields.is_accepted'),
                     ],
+                    'is_active' => [
+                        'type' => 'yes-no-toggle-switch',
+                            'label' => __('Active'),
+                            'options' => [
+                                0 => __('No'),
+                                1 => __('Yes'),
+                            ],
+                    ],
                     'description' => [
                         'type' => 'textarea',
                         'label' => __('models/projects.fields.description'),
@@ -429,6 +437,26 @@ In order to use the trix-editor form field you have to add the following to your
 ```
 
 Please see the full documentation on the official [Trix page](https://github.com/basecamp/trix)  .
+
+#### Type `yes-no-toggle-switch`
+
+The `yes-no-toggle-switch` form field is a two-state toggle that displays Yes/No labels and stores the selected value in `formProperties`.
+It has the following additional properties:
+
+* `options` (optional): Specifies the two options as a simple array `value => label`. Defaults to `[0 => 'No', 1 => 'Yes']` if not set.
+
+Example:
+
+```php
+    'is_active' => [
+        'type' => 'yes-no-toggle-switch',
+        'label' => __('Active'),
+        'options' => [
+            0 => __('No'),
+            1 => __('Yes'),
+        ],
+    ]
+```
 
 ### Form Layout
 

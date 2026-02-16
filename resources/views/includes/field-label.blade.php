@@ -1,9 +1,14 @@
 <label for="formProperties-{{ $key }}" class="lfb-label">
-    {!! $label !!}
-    @if ((!isset($mode) || (isset($mode) and $mode != 'view')))
-        {!! $this->fieldIndicator($key) !!}
-    @endif
+    <span>
+        {!! $label !!}
+        @if ((!isset($mode) || (isset($mode) and $mode != 'view')))
+            {!! $this->fieldIndicator($key) !!}
+        @endif
+    </span>
     @if(isset($tooltip) && $tooltip)
         @include('lara-forms-builder::includes.tooltip', ['message' => $tooltip])
+    @endif
+    @if(isset($infoTooltip) && $infoTooltip)
+        @include('lara-forms-builder::includes.info-tooltip', ['message' => $infoTooltip])
     @endif
 </label>

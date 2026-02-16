@@ -20,7 +20,7 @@
     }
 
     .lfb-label {
-        @apply block text-sm font-medium text-gray-800;
+        @apply flex text-sm font-medium text-gray-800 gap-1 items-center;
     }
 
     .lfb-label-spacing {
@@ -368,12 +368,37 @@
         @apply relative w-max inline-flex;
     }
 
+    .lfb-info-tooltip-container {
+        @apply relative w-max inline-flex;
+    }
+
     .lfb-tooltip-icon {
         @apply w-5 h-5;
     }
 
+    .lfb-info-tooltip-icon {
+        @apply w-5 h-5 transition-colors text-gray-500 hover:text-gray-400;
+    }
+
     .lfb-tooltip-area {
         @apply pointer-events-none absolute bottom-[120%] left-1/2 -translate-x-2/4 w-max max-w-[200px] rounded bg-gray-900 px-2 py-1 text-xs font-medium text-gray-50;
+    }
+
+    .lfb-info-tooltip-area {
+        @apply pointer-events-none absolute bottom-[120%] left-1/2 -translate-x-2/4 w-max rounded bg-gray-900 px-2 py-1 text-xs font-medium text-gray-50;
+    }
+
+    .lfb-info-tooltip-area-small-width,
+    .lfb-info-tooltip-area-medium-width {
+        @apply max-w-[200px];
+    }
+
+    .lfb-info-tooltip-area-medium-width {
+        @apply md:max-w-[300px];
+    }
+
+    .lfb-info-tooltip-area-large-width {
+        @apply max-w-[300px] md:max-w-[400px];
     }
 
     .lfb-secret-value-toggle-container {

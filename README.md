@@ -313,6 +313,13 @@ All form components have the following general properties:
 * `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
 * `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
 * `tooltip` (optional): if set, the value is displayed as text in a tooltip on hover over a question mark icon rendered next to the label text
+* `infoTooltip` (optional): supports string or array; use it to show an info icon with longer helper text and modular width classes. You can also pass a custom icon view via `iconView`.
+```php
+'infoTooltip' => [
+    'text' => 'Curabitur at felis non libero suscipit fermentum...',
+    'iconView' => 'partials.icons.info-tooltip',
+],
+```
 
 #### Type `input`
 

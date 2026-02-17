@@ -58,7 +58,11 @@
     }
 
     .lfb-checkbox-group-item {
-        @apply flex mt-1 basis-1/4;
+        @apply flex flex-col mt-1 basis-1/4;
+    }
+    
+    .lfb-checkbox-group-item-content {
+        @apply flex items-center;
     }
 
     .lfb-disabled {

@@ -374,12 +374,23 @@ The `cards` form field is a special layout element used to select among differen
 
 The `checkbox` form field is a single checkbox and does not have any additional properties.
 
-#### Type `checkbox-group`
+#### Type `checkbox-group` with Extra Input Element
 
 The `checkbox-group` form field is a multi-select group of checkboxes. It has the following additional properties:
 
 * `options` (mandatory): Specifies the values and labels for the checkboxes, provided as an array of objects with attributes `value` and `label` or a nested array of category label to array of objects with attributes `value` and `label` when grouped by category.
 * `hasCategory` (optional): Defines whether the checkbox entries are grouped by category, default if not set is false.
+* `has_extra_element` (optional): When set to `true` for an option, renders a text input field below the checkbox. The input remains read-only/disabled until its corresponding checkbox is selected.
+
+    **Behavior:**
+    - The extra input field is automatically disabled when the checkbox is unchecked
+    - The field becomes editable as soon as the checkbox is selected
+    - Extra input values are stored separately from checkbox values in `formProperties.{key}_extra.{value}`
+
+    **Data Structure:**
+    - Selected checkbox values: `$this->formProperties['{field_key}']` (array of selected values)
+    - Extra input values: `$this->formProperties['{field_key}_extra']` (associative array where keys are checkbox values and values are the input text)
+  
 
 #### Type `date-picker`
 

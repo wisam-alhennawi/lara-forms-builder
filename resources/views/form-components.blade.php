@@ -8,7 +8,6 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'secretValueToggle' => $field['secretValueToggle'] ?? false,
             'fieldModifier' =>  $field['fieldModifier'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
@@ -26,7 +25,6 @@
             'searchable' => $field['searchable'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -39,7 +37,6 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -51,7 +48,6 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -64,7 +60,6 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'rows' => $field['rows'] ?? 5,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -76,7 +71,6 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -103,7 +97,6 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -117,7 +110,6 @@
             'removeIcon' => $field['removeIcon'] ?? null,
             'preview' => $field['preview'] ?? null,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -131,7 +123,6 @@
             'readOnly' => $field['readOnly'] ?? false,
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
@@ -142,7 +133,6 @@
             'helpText' => $field['helpText'] ?? '',
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
-            'infoTooltip' => $field['infoTooltip'] ?? null,
         ])
         @break
     @default

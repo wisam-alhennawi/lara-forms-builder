@@ -8,7 +8,4 @@
     @if(isset($tooltip) && $tooltip)
         @include('lara-forms-builder::includes.tooltip', ['message' => $tooltip])
     @endif
-    @if(isset($infoTooltip) && $infoTooltip)
-        @include('lara-forms-builder::includes.info-tooltip', ['message' => $infoTooltip])
-    @endif
 </label>

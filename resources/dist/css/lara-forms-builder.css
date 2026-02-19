@@ -379,4 +379,20 @@
     .lfb-secret-value-toggle-icon {
         @apply h-5 w-5 text-gray-400;
     }
+
+    .lfb-accordion-wrapper {
+        @apply border border-gray-300 rounded-md px-4 py-2 transition-all;
+    }
+
+    .lfb-fieldset-header-accordion-container {
+        @apply flex items-center justify-between;
+    }
+
+    .lfb-group-open {
+        @apply mt-4;
+    }
+
+    .lfb-group-accordion-title {
+        @apply text-lg font-bold text-gray-800;
+    }
 }

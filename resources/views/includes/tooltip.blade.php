@@ -1,16 +1,34 @@
-<div class="lfb-tooltip-container" x-data="{ tooltipOpen: false }" @mouseenter="tooltipOpen = true" @mouseleave="tooltipOpen = false">
-    <!-- heroicon-question-mark-circle -->
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="lfb-tooltip-icon">
-        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
-    </svg>
+@php
+    $tooltipText = is_array($message) ? ($message['text'] ?? '') : $message;
+    $iconView = is_array($message) ? ($message['iconView'] ?? null) : null;
+
+    $textLength = strlen(strip_tags($tooltipText));
+    $widthClass = match (true) {
+        $textLength <= 200 => 'lfb-tooltip-area-small-width',
+        $textLength <= 400 => 'lfb-tooltip-area-medium-width',
+        default => 'lfb-tooltip-area-large-width',
+    };
+@endphp
+
+<div class="lfb-tooltip-container"
+    x-data="{ tooltipOpen: false }" @mouseenter="tooltipOpen = true" @mouseleave="tooltipOpen = false">
+    @if($iconView)
+        @include($iconView)
+    @else
+        <!-- heroicon-question-mark-circle -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="lfb-tooltip-icon">
+            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 0 1-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 0 1-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 0 1-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584ZM12 18a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+        </svg>
+    @endif
     <span x-show="tooltipOpen"
+        x-cloak
         x-transition:enter="transition ease-out duration-200"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="lfb-tooltip-area">
-        {{ $message }}
+        class="lfb-tooltip-area {{ $widthClass }}">
+        {{ $tooltipText }}
     </span>
 </div>

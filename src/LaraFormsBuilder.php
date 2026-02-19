@@ -54,12 +54,7 @@ trait LaraFormsBuilder
         foreach ($this->fields() as $key => $field) {
             if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
-                    foreach ($field['fields'] as $k => $f) {
-                        $fields[] = [
-                            'key' => $k,
-                            'field' => $f,
-                        ];
-                    }
+                    $fields = array_merge($fields, $this->flattenGroupInfo($field));
                 } else {
                     $fields[] = [
                         'key' => $key,
@@ -78,6 +73,10 @@ trait LaraFormsBuilder
                                 'field' => $f,
                             ];
                         }
+                    } elseif ($tabFieldKey == 'group_info' && is_array($tabFieldValue)) {
+                        $fields = array_merge($fields, $this->flattenGroupInfo(['group_info' => $tabFieldValue]));
+                    } elseif (is_numeric($tabFieldKey) && is_array($tabFieldValue) && isset($tabFieldValue['fields'])) {
+                        $fields = array_merge($fields, $this->flattenGroupInfo($tabFieldValue));
                     } elseif (is_numeric($tabFieldKey)) {
                         $fields[] = [
                             'key' => $tabFieldKey,
@@ -85,6 +84,37 @@ trait LaraFormsBuilder
                         ];
                     }
                 }
+            }
+        }
+
+        return $fields;
+    }
+
+    private function flattenGroupInfo(array $groupDefinition): array
+    {
+        $fields = [];
+        $groupInfo = $groupDefinition['group_info'] ?? [];
+        $accordionKey = $groupInfo['key'] ?? null;
+        $accordionEnabled = (bool) ($groupInfo['accordion'] ?? false);
+        if ($accordionEnabled && $accordionKey) {
+            $fields[] = [
+                'key' => $accordionKey,
+                'field' => [
+                    'type' => 'group_info',
+                    'label' => $groupInfo['title'] ?? $accordionKey,
+                    'rules' => $groupInfo['rules'] ?? null,
+                    'default' => $groupInfo['default'] ?? false,
+                    'accordion' => true,
+                ],
+            ];
+        }
+
+        if (isset($groupDefinition['fields']) && is_array($groupDefinition['fields'])) {
+            foreach ($groupDefinition['fields'] as $k => $f) {
+                $fields[] = [
+                    'key' => $k,
+                    'field' => $f,
+                ];
             }
         }
 
@@ -115,33 +145,11 @@ trait LaraFormsBuilder
         $modelRules = get_class($this->model)::$rules ?? [];
         $fieldRules = [];
         $fieldValidationAttributes = [];
-        foreach ($this->fields() as $key => $field) {
-            if (! isset($this->hasTabs) || ! $this->hasTabs) {
-                if (is_numeric($key) && isset($field['fields'])) {
-                    foreach ($field['fields'] as $key => $field) {
-                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
-                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
-                    }
-                } else {
-                    $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
-                    $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
-                }
-            } else {
-                // tabs
-                $tabContents = $field['content'] ?? [];
-                foreach ($tabContents as $tabKey => $tabContent) {
-                    // check if the field is tab
-                    if ($tabKey == 'fields' && is_array($tabContent)) {
-                        foreach ($tabContent as $key => $field) {
-                            $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
-                            $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
-                        }
-                    } elseif (is_numeric($tabKey)) {
-                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
-                    }
-                }
-            }
+        foreach ($this->getFieldsFlat() as $fieldFlat) {
+            $key = $fieldFlat['key'];
+            $field = $fieldFlat['field'];
+            $fieldRules['formProperties.'.$key] = $this->getFieldRules($field, $key, $modelRules);
+            $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
         }
 
         return [$fieldRules, $fieldValidationAttributes];
@@ -216,6 +224,8 @@ trait LaraFormsBuilder
         foreach ($fields as $field) {
             if (filled($this->model) && $this->model->exists) {
                 $this->formProperties[$field['key']] = $this->model->{$field['key']} ?? null;
+            } elseif (($field['field']['type'] ?? null) === 'group_info' && (bool) ($field['field']['accordion'] ?? false)) {
+                $this->formProperties[$field['key']] = $field['field']['default'] ?? false;
             } elseif (isset($field['field']['default'])) {
                 $this->formProperties[$field['key']] = $field['field']['default'];
             } else {

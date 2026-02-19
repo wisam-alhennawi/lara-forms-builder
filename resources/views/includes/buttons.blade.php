@@ -18,11 +18,11 @@
                 {{ (isset($mode) && $mode == 'confirm') ? __('Back') : $cancelButtonLabel }}
             </button>
             @if (isset($mode) && $mode == 'view')
-                @can('update', $model)
-                <button wire:click="switchToEditMode" class="{{$this->getPrimaryButtonClasses()}}">
-                    {{ __('Edit') }}
-                </button>
-                @endcan
+                @if ($this->canSubmit())
+                    <button wire:click="switchToEditMode" class="{{$this->getPrimaryButtonClasses()}}">
+                        {{ __('Edit') }}
+                    </button>
+                @endif
             @else
                 @include('lara-forms-builder::includes.submit-button')
             @endif

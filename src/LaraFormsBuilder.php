@@ -34,6 +34,8 @@ trait LaraFormsBuilder
 
     public array $formProperties = [];
 
+    public $scrollToFirstError = false;
+
     /**
      * get field keys from fields array
      */
@@ -142,6 +144,7 @@ trait LaraFormsBuilder
 
     private function getFieldRulesAndValidationAttributes(): array
     {
+        // @phpstan-ignore-next-line
         $modelRules = get_class($this->model)::$rules ?? [];
         $fieldRules = [];
         $fieldValidationAttributes = [];
@@ -202,6 +205,7 @@ trait LaraFormsBuilder
         $this->fields = $this->fields();
 
         if ($this->isMultiStepForm()) {
+            // @phpstan-ignore-next-line
             $this->initSteps();
         }
     }
@@ -209,9 +213,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to set options, values, etc. before setting the form properties
      */
-    protected function beforeFormProperties(): void
-    {
-    }
+    protected function beforeFormProperties(): void {}
 
     /**
      * Set form properties
@@ -241,9 +243,7 @@ trait LaraFormsBuilder
     /**
      * It can be used to change options, values, formats, etc. after setting the form properties
      */
-    protected function afterFormProperties(): void
-    {
-    }
+    protected function afterFormProperties(): void {}
 
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
@@ -275,10 +275,31 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Check if the user is authorized to submit the form
+     */
+    protected function canSubmit(): bool
+    {
+        return ($this->model->exists)
+            ? auth()->user()->can('update', $this->model)
+            : auth()->user()->can('create', $this->model::class);
+    }
+
+    /**
      * Submit the form (validation, create or update the model, etc.)
      */
     protected function submit(): bool
     {
+
+        if (! $this->canSubmit()) {
+            $this->addError('formSubmit', __('You are not authorized to perform this action.'));
+
+            return false;
+        }
+
+        if ($this->scrollToFirstError) {
+            $this->dispatch('scroll-to-first-error');
+        }
+
         $validatedData = $this->validate();
 
         $validatedData = $validatedData['formProperties'];
@@ -505,5 +526,13 @@ trait LaraFormsBuilder
     protected function getDefaultCardFieldErrorWrapperClasses(): string
     {
         return config('lara-forms-builder.card_field_error_wrapper_classes');
+    }
+
+    /**
+     * Get the css classes for the wrapper error fields
+     */
+    protected function getDefaultFieldErrorWrapperClasses(): string
+    {
+        return config('lara-forms-builder.field_error_wrapper_classes');
     }
 }

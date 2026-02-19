@@ -9,6 +9,13 @@
 The main functionality of this package is:
 - Generate Livewire forms (Show, Create, Update) by using one command and one Livewire component.
 
+## Laravel and PHP versions compatibility
+
+| lara-forms-builder | Laravel                               | PHP                                              |
+|--------------------|---------------------------------------|--------------------------------------------------|
+| `<= v2.1.*`        | `^9.0` &#124; `^10.0`                 | `^8.1`                                           |
+| `>= v2.2.*`        | `^10.0` &#124; `^11.0` &#124; `^12.0` | `^8.1` &#124; `^8.2` &#124; `^8.3` &#124; `^8.4` |
+
 ## Requirements
 The following dependencies are required to use the package:
 
@@ -16,7 +23,7 @@ The following dependencies are required to use the package:
 |:------------|:----------------------------------------------------|:----|
 | PHP         | [8.x](https://www.php.net/releases/8.0/en.php)      |     |
 | Laravel     | [10.x](https://laravel.com/docs/10.x)               |     |
-| Jetstream   | [4.x](https://jetstream.laravel.com/)               | 💡  |
+| Jetstream   | [5.x](https://jetstream.laravel.com/)               | 💡  |
 | Livewire    | [3.x](https://livewire.laravel.com/docs/quickstart) | 💡  |
 | Alpine.js   | [3.x](https://alpinejs.dev/)                        | 💡  |
 | TailwindCSS | [3.x](https://tailwindcss.com/docs)                 | 💡  |
@@ -41,7 +48,7 @@ all placed uses `$this->property` should be replaced with `$this->formProperties
      $this->email
      // V2
      $this->formProperties['email']
-     
+
      // V1
      $this->rules['email']
      // V2
@@ -54,7 +61,7 @@ php artisan make:lara-forms-builder-setup
 ```
 
 This command will do the following:
-- Install `"laravel/jetstream": "^4.0"` with `"livewire/livewire": "^3.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
+- Install `"laravel/jetstream": "^5.0"` with `"livewire/livewire": "^3.0"` if not installed. Installing jetstream will install `"tailwindcss": "^3.0"` & `"alpinejs": "^3.0"`.
 - Install `"pikaday": "^1.0"` and `"moment": "^2.0"` npm packages and make required configuration.
 - Add confirmation modal component to `app.blade.php` layout.
 - publish `lara-forms-builder.php` config file and make required configuration.
@@ -182,7 +189,7 @@ Forms are specified in a declarative manner as an array of the `fields` function
 
 public array $developersOptions = []; // For 'checkbox-group' options
 public array $userIdOptions = []; // For 'user_id' options
-    
+
 public function beforeFormProperties(): void
 {
     $this->developersOptions = User::all(['id as value', 'name as label'])->toArray();
@@ -192,7 +199,7 @@ public function afterFormProperties(): void
 {
     $this->formProperties['developers'] = $this->model->developers->pluck('id');
 }
-    
+
 protected function fields(): array
     {
         return [
@@ -244,6 +251,14 @@ protected function fields(): array
                     'is_accepted' => [
                         'type' => 'checkbox',
                         'label' => __('models/projects.fields.is_accepted'),
+                    ],
+                    'is_active' => [
+                        'type' => 'yes-no-toggle-switch',
+                            'label' => __('Active'),
+                            'options' => [
+                                0 => __('No'),
+                                1 => __('Yes'),
+                            ],
                     ],
                     'description' => [
                         'type' => 'textarea',
@@ -313,6 +328,25 @@ The `input` form field is a classic html input element. It has the following add
 
 * `inputType` (optional): Specifies the specific type of input, e.g. email, number, url. Default if not provided is text.
 * `secretValueToggle` (optional): Flag relevant for input type password, if set to true, an icon is displayed at the right end of the input field that allows to toggle the visilibity of the masked value on click.
+* `fieldModifier` (optional): This parameter allows customization of Livewire's input handling behavior with Livewire's native modifiers.
+  Simply pass a Livewire modifier string. For example:
+    - `live.debounce.400ms` - Debounces input with 400ms delay
+    - `live.throttle.750ms` - Throttles input to maximum 1 event per 750ms
+
+If no modifier is specified, Livewire's default `live` modifier will be applied.
+
+Example:
+
+```php
+
+    'weight' => [
+        'type' => 'input',
+        'inputType' => 'number',
+        'label' =>  __('models/dogs.fields.weight'),
+        'fieldModifier' => 'live.debounce.400ms',
+    ]
+
+```
 
 #### Type `textarea`
 
@@ -389,11 +423,46 @@ The `search-picker` form field is an input field with search functionality which
     ```
 **Note:** `getUserIdOptions()`, `getUserIdSearchPickerSelectedValueProperty()` functions should follow the naming convention of the form field name `user_id`.
 
+#### Type `trix-editor`
+
+The `trix-editor` form field is a rich text editor which uses [Trix](https://trix-editor.org/) under the hood. It has the general properties mentioned above excluding `readOnly`.
+
+In order to use the trix-editor form field you have to add the following to your blade:
+
+```
+<head>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+  <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+</head>
+```
+
+Please see the full documentation on the official [Trix page](https://github.com/basecamp/trix)  .
+
+#### Type `yes-no-toggle-switch`
+
+The `yes-no-toggle-switch` form field is a two-state toggle that displays Yes/No labels and stores the selected value in `formProperties`.
+It has the following additional properties:
+
+* `options` (optional): Specifies the two options as a simple array `value => label`. Defaults to `[0 => 'No', 1 => 'Yes']` if not set.
+
+Example:
+
+```php
+    'is_active' => [
+        'type' => 'yes-no-toggle-switch',
+        'label' => __('Active'),
+        'options' => [
+            0 => __('No'),
+            1 => __('Yes'),
+        ],
+    ]
+```
+
 ### Form Layout
 
 #### Tabs
 - A custom layout for components that utilize tabs to organize content.
-- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `key` represents an internal technical key uniquely identifying the tab. The `title` property is used as label for both the tab navigation and the heading of the form; if an alternative (usually shortened) title for the navigation should be used, this can be specified with the optional property `navTitle`. The `'content'` array includes information about the form fields, their types, labels, options, and styling. 
+- Each tab is represented as an array (in `fields()` method) containing `'key'`, `'title'`, and `'content'`. The `key` represents an internal technical key uniquely identifying the tab. The `title` property is used as label for both the tab navigation and the heading of the form; if an alternative (usually shortened) title for the navigation should be used, this can be specified with the optional property `navTitle`. The `'content'` array includes information about the form fields, their types, labels, options, and styling.
 
 #### Multi-Step
 - The Multi-Step feature is designed to facilitate the creation of multi-step forms with a Tabs Layout. It provides methods to initialize steps, set the active step number, navigate between steps, and retrieve information about the form's multi-step structure.
@@ -496,6 +565,37 @@ The `search-picker` form field is an input field with search functionality which
     * Displaying the Success Message:
         - The success message is displayed to the user either as a flash message or through a browser event. The display method depends on the value of the `$hasSession` property, which is true by default.
     * Another way to customize the success message is to override the `successMessage()` method in the component class.
+
+* `protected function canSubmit(): bool`
+    * Purpose: Check if the user is authorized to submit the form
+
+* `protected function fieldIndicator($fieldKey): ?string`
+    * Purpose:
+        - Display an indicator (*) for a required field in the form based on `required` rule in the rules array
+    * Customization:
+        - An indicator can be displayed based on a custom check (eg. conditional required rules like required_if), to do that `shouldDisplayIndicatorBasedOnCustomCheck($key)` should be overwritten:
+        Example:
+        ```php
+            protected function shouldDisplayIndicatorBasedOnCustomCheck($key): bool
+            {
+                if ($key == 'email' && $this->formProperties['type'] == 'email') {
+                    return true;
+                }
+                return false;
+            }
+        ```
+#### Scroll to First Error
+
+The `scrollToFirstError` feature allows the form to automatically scroll to the first field with an error after clicking the submit button. This enhances user experience by immediately directing attention to the area that needs correction.
+
+###### How to Enable
+
+To enable this feature, add the following line in the `mount` method of your form component:
+
+```php
+$this->scrollToFirstError = true;
+```
+
 
 ## Changelog
 

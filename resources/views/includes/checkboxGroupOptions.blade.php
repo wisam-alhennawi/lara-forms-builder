@@ -4,8 +4,11 @@
               id="{{ $key }}.{{ $option['value'] }}"
               type="checkbox"
               value="{{ $option['value'] }}"
-              class="lfb-checkbox @if(isset($option['disabled']) && $option['disabled']) lfb-disabled @endif"
-              @if ((isset($mode) && ($mode == 'view' || $mode == 'confirm')) || (isset($option['disabled']) && $option['disabled'])) disabled @endif
+              @class([
+                  'lfb-checkbox',
+                  'lfb-disabled' => (isset($mode) && ($mode == 'view' || $mode == 'confirm')) || (isset($option['disabled']) && $option['disabled']) || $readOnly,
+              ])
+              @disabled((isset($mode) && ($mode == 'view' || $mode == 'confirm')) || (isset($option['disabled']) && $option['disabled']) || $readOnly)
        >
        <label class="lfb-label lfb-label-spacing print:text-xs" for="{{ $key }}.{{ $option['value'] }}">
               {!! $option['label'] !!}

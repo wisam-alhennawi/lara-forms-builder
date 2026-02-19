@@ -1,3 +1,3 @@
 @if($helpText)
-    <p class="lfb-help-text">{{ $helpText }}</p>
+    <div class="lfb-help-text">{!! $helpText !!}</div>
 @endif

@@ -1,4 +1,4 @@
-<div class="{{ $fieldWrapperClass }}">
+<div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{ $fieldErrorWrapperClass }}@enderror">
     @include('lara-forms-builder::includes.field-label')
     @if (isset($mode) && ($mode == 'view' || $mode == 'confirm'))
         @if ($model->$key && array_key_exists(is_object($model->$key) && enum_exists($model->$key::class) ? $model->$key->value : $model->$key, $radioOptions))

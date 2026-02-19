@@ -2,6 +2,7 @@
     $groupWrapperClass = $this->getDefaultGroupWrapperClass();
     $defaultFieldWrapperClass = $this->getDefaultFieldWrapperClass();
     $defaultCardFieldErrorWrapperClasses = $this->getDefaultCardFieldErrorWrapperClasses();
+    $defaultFieldErrorWrapperClasses = $this->getDefaultFieldErrorWrapperClasses();
 @endphp
 
 <div id="lara-forms-builder">
@@ -24,4 +25,7 @@
     @if (!isset($hasTabs) || (isset($hasTabs) && !$hasTabs))
         @include('lara-forms-builder::includes.buttons')
     @endif
+    @if($scrollToFirstError)
+       @include('lara-forms-builder::includes.scroll-to-first-error-script')
+    @endif 
 </div>

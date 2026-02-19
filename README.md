@@ -320,7 +320,16 @@ All form components have the following general properties:
 * `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
 * `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
 * `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
-* `tooltip` (optional): if set, the value is displayed as text in a tooltip on hover over a question mark icon rendered next to the label text
+* `tooltip` (optional): supports string or array and renders a tooltip icon next to the label.
+    - String usage: pass plain tooltip text.
+    - Array usage: pass `text` for tooltip content and optional `iconView` for a custom icon Blade partial.
+    - Width classes are applied automatically based on tooltip text length (small, medium, large).
+```php
+'tooltip' => [
+    'text' => 'Curabitur at felis non libero suscipit fermentum...',
+    'iconView' => 'partials.icons.info-tooltip',
+],
+```
 
 #### Type `input`
 

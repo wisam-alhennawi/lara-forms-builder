@@ -78,7 +78,7 @@
     }
 
     .lfb-checkbox-group {
-        @apply flex flex-wrap;
+        @apply flex flex-wrap mt-1;
     }
 
     .lfb-checkbox-group-item {

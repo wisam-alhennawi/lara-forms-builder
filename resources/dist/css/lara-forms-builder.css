@@ -53,6 +53,30 @@
         @apply h-4 w-4 border-gray-300 text-primary focus:ring-primary;
     }
 
+    .lfb-yes-no-toggle-container {
+        @apply mt-2 flex items-center gap-3;
+    }
+
+    .lfb-yes-no-toggle-wrapper {
+        @apply flex bg-gray-200 p-1 rounded-md;
+    }
+
+    .lfb-yes-no-toggle-label {
+        @apply px-4 py-1.5 text-xs uppercase font-bold rounded text-slate-500 hover:text-slate-700 transition-all;
+    }
+
+    .lfb-yes-no-toggle-label-on.lfb-yes-no-toggle-active {
+        @apply bg-primary text-white;
+    }
+
+    .lfb-yes-no-toggle-label-off.lfb-yes-no-toggle-active {
+        @apply bg-white shadow-sm;
+    }
+
+    .lfb-yes-no-toggle-disabled {
+        @apply opacity-70 pointer-events-none;
+    }
+
     .lfb-checkbox-group {
         @apply flex flex-wrap;
     }

@@ -467,6 +467,102 @@ Example:
     ]
 ```
 
+### Group Info (Layout)
+
+`group_info` is a layout helper that wraps a group of fields. It can render as a normal group or as an accordion.
+
+Common `group_info` options:
+
+* `title` (optional): Group title.
+* `description` (optional): Group description text.
+* `description_view` (optional): Blade view to include under the title/description.
+* `group_wrapper_class` (optional): CSS class(es) for the inner fields wrapper.
+* `default_group_wrapper_class` (optional): If `false`, only `group_wrapper_class` is used. Default is `true`.
+
+Accordion options (optional):
+
+* `accordion` (boolean): Enables accordion behavior (fields are hidden until enabled).
+* `key` (string): The boolean field name saved in the database (required when `accordion` is `true`).
+* `default` (boolean): Default value for the accordion field on create.
+* `rules` (string): Validation rules for the accordion boolean (e.g. `boolean`).
+* `toggle` (boolean): If `true`, render a Yes/No toggle instead of a checkbox.
+* `toggleOptions` (array): Options for the Yes/No toggle, e.g. `[0 => 'No', 1 => 'Yes']`.
+
+Example: normal group (no accordion)
+
+```php
+[
+    'group_info' => [
+        'title' => __('Dog Info'),
+        'description' => __('Basic information about the dog.'),
+        'group_wrapper_class' => 'grid grid-cols-2 gap-4',
+    ],
+    'fields' => [
+        'name' => [
+            'type' => 'input',
+            'label' => __('models/dogs.fields.name'),
+        ],
+        'breed' => [
+            'type' => 'input',
+            'label' => __('models/dogs.fields.breed'),
+        ],
+    ],
+],
+```
+
+Example: accordion with checkbox
+
+```php
+[
+    'group_info' => [
+        'title' => __('Advanced settings'),
+        'description' => __('Enable to show advanced fields.'),
+        'accordion' => true,
+        'key' => 'is_active',
+        'default' => false,
+        'rules' => 'boolean',
+        'group_wrapper_class' => 'grid grid-cols-2 gap-4',
+    ],
+    'fields' => [
+        'microchip' => [
+            'type' => 'input',
+            'label' => __('Microchip'),
+        ],
+    ],
+],
+```
+
+Example: accordion with yes-no toggle
+
+```php
+[
+    'group_info' => [
+        'title' => __('Advanced settings'),
+        'description' => __('Enable to show advanced fields.'),
+        'accordion' => true,
+        'toggle' => true,
+        'toggleOptions' => [
+            0 => __('No'),
+            1 => __('Yes'),
+        ],
+        'key' => 'advanced_enabled',
+        'default' => false,
+        'rules' => 'boolean',
+        'group_wrapper_class' => 'grid grid-cols-2 gap-4',
+    ],
+    'fields' => [
+        'timezone' => [
+            'type' => 'select',
+            'label' => __('Timezone'),
+            'options' => [
+                'UTC' => 'UTC',
+                'Europe/Rome' => 'Europe/Rome',
+            ],
+        ],
+    ],
+],
+```
+
 ### Form Layout
 
 #### Tabs

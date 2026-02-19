@@ -7,6 +7,7 @@
                         $groupInfo = $field['group_info'];
                         $isAccordion = (bool) ($groupInfo['accordion'] ?? false);
                         $accordionKey = $groupInfo['key'] ?? null;
+                        $useToggle = (bool) ($groupInfo['toggle'] ?? false);
                         $isReadonlyMode = (isset($mode) && ($mode == 'view' || $mode == 'confirm')) || ($groupInfo['readOnly'] ?? false);
                     @endphp
                     <div class="lfb-group-header-wrapper">
@@ -20,19 +21,28 @@
                                             <sup>*</sup>
                                         @endif
                                     </label>
-                                    <input wire:key="form-group-info-accordion-component-{{ md5($accordionKey) }}"
-                                            wire:model.live="formProperties.{{ $accordionKey }}"
-                                            x-model="open"
-                                            id="formProperties-{{ $accordionKey }}"
-                                            name="formProperties.{{ $accordionKey }}"
-                                            type="checkbox"
-                                            @class([
-                                                'lfb-checkbox',
-                                                'lfb-readonly' => $isReadonlyMode,
-                                            ])
-                                            @readonly($isReadonlyMode)
-                                            @disabled($isReadonlyMode)
-                                    >
+                                    @if (!$useToggle)
+                                        {{-- CHECKBOX (default) --}}
+                                        @include('lara-forms-builder::components.checkbox', [
+                                            'variant' => 'accordion',
+                                            'key' => $accordionKey,
+                                            'label' => '',
+                                            'readOnly' => $isReadonlyMode,
+                                            'mode' => $mode ?? null,
+                                            'rules' => $rules ?? [],
+                                            'alpineModel' => 'open',
+                                        ])
+                                    @else
+                                        {{-- TOGGLE YES-NO (if toggle => true) --}}
+                                        @include('lara-forms-builder::components.yes-no-toggle-switch', [
+                                            'variant' => 'accordion',
+                                            'key' => $accordionKey,
+                                            'toggleOptions' => $groupInfo['toggleOptions'] ?? [0 => __('No'), 1 => __('Yes')],
+                                            'readOnly' => $isReadonlyMode,
+                                            'mode' => $mode ?? null,
+                                            'alpineModel' => 'open',
+                                        ])
+                                    @endif
                                 </div>
                                 @error('formProperties.' .  $accordionKey)
                                     <span class="lfb-alert lfb-alert-error">

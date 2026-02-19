@@ -40,6 +40,9 @@
                         <sup>*</sup>
                     @endif
                     </label>
+                    @if(isset($tooltip) && $tooltip)
+                        @include('lara-forms-builder::includes.tooltip', ['message' => $tooltip])
+                    @endif
                 </div>
             </div>
             @include('lara-forms-builder::includes.field-error-message')

@@ -380,7 +380,8 @@ The `checkbox-group` form field is a multi-select group of checkboxes. It has th
 
 * `options` (mandatory): Specifies the values and labels for the checkboxes, provided as an array of objects with attributes `value` and `label` or a nested array of category label to array of objects with attributes `value` and `label` when grouped by category.
 * `hasCategory` (optional): Defines whether the checkbox entries are grouped by category, default if not set is false.
-* `has_extra_element` (optional): When set to `true` for an option, renders a text input field below the checkbox. The input remains read-only/disabled until its corresponding checkbox is selected.
+* `enable_extra_elements` (optional): Enables the extra input feature for this checkbox group. Default is `false`.
+* `has_extra_element` (optional): When set to `true` for an option, renders a text input field below the checkbox. The input remains read-only/disabled until its corresponding checkbox is selected. The option-level setting only has an effect when `enable_extra_elements` is `true`.
 
     **Behavior:**
     - The extra input field is automatically disabled when the checkbox is unchecked

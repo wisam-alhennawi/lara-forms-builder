@@ -1,5 +1,5 @@
 @php
-    $hasExtraElement = $option['has_extra_element'] ?? false;
+    $hasExtraElement = $enableExtraElements && ($option['has_extra_element'] ?? false);
     $selectedValues = $this->formProperties[$key] ?? [];
     $isSelected = is_array($selectedValues) && in_array($option['value'], $selectedValues, true);
     $isDisabled = (isset($mode) && ($mode == 'view' || $mode == 'confirm')) || (isset($option['disabled']) && $option['disabled']) || $readOnly;
@@ -37,7 +37,7 @@
                             @disabled($extraElementDisabled)
                      >
                      @php
-                     $extraKey = "{$key}_extra.{$option['value']}";
+                            $extraKey = "{$key}_extra.{$option['value']}";
                      @endphp
                      @include('lara-forms-builder::includes.field-error-message', ['key' => $extraKey])
                      @include('lara-forms-builder::includes.field-form-warning', ['key' => $extraKey])

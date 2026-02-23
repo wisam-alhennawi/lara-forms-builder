@@ -467,6 +467,44 @@ Example:
     ]
 ```
 
+#### Type `custom-view`
+
+The `custom-view` form field allows rendering a custom Blade view or a dedicated Livewire component inside the form.
+It has the following additional properties:
+
+* `view` (optional): Blade view name to include (for example `forms.fields.custom-note`).
+* `livewire_component` (optional): Livewire component name to render (for example `forms.custom-note`).
+
+At least one of `view` or `livewire_component` should be provided.
+
+When rendered, the following data is passed to your custom view/component:
+
+* `key`: Current field key (for example `notes`).
+* `field`: Full field configuration array.
+* `formProperties`: Form state array.
+* `mode`: Current form mode (`create`, `edit`, `view`, ...).
+* `model`: Current model instance (if available).
+
+Example with custom Blade view:
+
+```php
+'custom_note' => [
+    'type' => 'custom-view',
+    'label' => __('Custom Note'),
+    'view' => 'forms.fields.custom-note',
+]
+```
+
+Example with custom Livewire component:
+
+```php
+'custom_note' => [
+    'type' => 'custom-view',
+    'label' => __('Custom Note'),
+    'livewire_component' => 'forms.custom-note',
+]
+```
+
 ### Form Layout
 
 #### Tabs

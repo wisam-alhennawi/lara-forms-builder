@@ -147,5 +147,12 @@
             'tooltip' => $field['tooltip'] ?? null,
         ])
         @break
+    @case('custom-view')
+        @include('lara-forms-builder::components.custom-view', [
+            'key' => $fieldKey,
+            'field' => $field,
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+        ])
+        @break
     @default
 @endswitch

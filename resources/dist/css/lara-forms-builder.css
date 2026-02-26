@@ -439,4 +439,17 @@
     .lfb-field-error-wrapper button.lfb-upload-button {
         @apply border-red-500 focus:border-red-500 focus:ring-red-500 ring-0;
     }
+
+    /* Repeater Styles */
+    .lfb-repeater-buttons-wrapper {
+        @apply flex justify-end gap-2 mt-4;
+    }
+
+    .lfb-repeater-add-button {
+        @apply inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 transition;
+    }
+
+    .lfb-repeater-remove-button {
+        @apply inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 transition;
+    }
 }

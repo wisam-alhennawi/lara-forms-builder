@@ -26,16 +26,50 @@
                 if (!empty($customGroupWrapperClass)) {
                     $groupWrapperClass = !$isGroupWrapperClassDefault ? $customGroupWrapperClass : $groupWrapperClass . ' ' . $customGroupWrapperClass;
                 }
+                $isRepeaterEnabled = isset($field['group_info']['repeater']) && $field['group_info']['repeater'] === true;
+                // Count only repeater blocks (keys with prefix $this->groupRepeaterPrefix)
+                $lastIndex = collect($this->fields[$fieldKey]['fields'])
+                    ->keys()
+                    ->filter(fn($Key) => str_starts_with($Key, $this->groupRepeaterPrefix))
+                    ->map(fn($key) => (int) substr($key, strrpos($key, '_') + 1))
+                    ->max();
             @endphp
-                <div class="{{$groupWrapperClass}}">
-                    @foreach ($field['fields'] as $groupFieldKey => $groupField)
-                        @include('lara-forms-builder::form-components', [
-                            'field' => $groupField,
-                            'fieldKey' => $groupFieldKey,
-                            'defaultFieldWrapperClass' => $defaultFieldWrapperClass
-                        ])
-                    @endforeach
-                </div>
+                    <div class="{{$groupWrapperClass}}">
+                        @foreach ($field['fields'] as $groupFieldKey => $groupField)
+                            @include('lara-forms-builder::form-components', [
+                                'field' => $groupField,
+                                'fieldKey' => $groupFieldKey,
+                                'defaultFieldWrapperClass' => $defaultFieldWrapperClass
+                            ])
+                        @endforeach
+                    </div>
+                    @if(! in_array($this->mode, ['view', 'confirm']) && $isRepeaterEnabled)
+                    <div class="lfb-repeater-buttons-wrapper">
+                        {{-- Add button --}}
+                        <button type="button"
+                                wire:click="processGroupRepeating('{{ $field['group_info']['group-id'] }}')"
+                                class="lfb-repeater-add-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </button>
+
+                        {{-- Remove button --}}
+                        @if($lastIndex > 0)
+                        <button type="button"
+                                wire:click="removeRepeater('{{ $fieldKey }}')"
+                                class="lfb-repeater-remove-button flex items-center gap-1 px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                        @endif
+                    </div>
+                    @endif
         </div>
     @else
         @include('lara-forms-builder::form-components', [

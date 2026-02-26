@@ -217,6 +217,7 @@ trait LaraFormsBuilder
      * It can be used to set options, values, etc. before setting the form properties
      */
     protected function beforeFormProperties(): void {}
+
     protected function setRepeatedFields(): void {}
 
     /**
@@ -261,11 +262,11 @@ trait LaraFormsBuilder
     {
         $allRepeatedFieldsData = [];
 
-        foreach ($this->getFieldKeys(true) as $fieldKey)
-        {
+        foreach ($this->getFieldKeys(true) as $fieldKey) {
             // Collect all group_repeater_* keys into $allRepeaterData
             if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
                 $allRepeatedFieldsData[$fieldKey] = $this->formProperties[$fieldKey];
+
                 continue; // skip individual save
             }
 
@@ -575,33 +576,32 @@ trait LaraFormsBuilder
         }
 
         // Get all repeated fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
-        $repeatedGroupFields = collect($groupFields)->filter(fn($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
+        $repeatedGroupFields = collect($groupFields)->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
         // Filter only basic (template) repeatable fields which defined in the main Form/Component fields() and end with '_0' (e.g.: 'group_repeater_foo_0')
-        $basicRepeatableGroupFields = $repeatedGroupFields->filter(fn($field, $key) => str_ends_with($key, '_0'));
+        $basicRepeatableGroupFields = $repeatedGroupFields->filter(fn ($field, $key) => str_ends_with($key, '_0'));
         // Get the last used index from all repeated fields keys (e.g.: 'group_repeater_foo_0', 'group_repeater_foo_1', etc...) the numeric postfix index (e.g.: 0, 1, etc...)
         $lastIndex = $repeatedGroupFields
             ->keys()
-            ->map(fn($fieldKey) => (int) substr($fieldKey, strrpos($fieldKey, '_') + 1)) // extract numeric index
+            ->map(fn ($fieldKey) => (int) substr($fieldKey, strrpos($fieldKey, '_') + 1)) // extract numeric index
             ->max();
 
         $nextIndex = $lastIndex + 1;
 
         // Duplicate each basic field
-        foreach ($basicRepeatableGroupFields as $key => $field)
-        {
+        foreach ($basicRepeatableGroupFields as $key => $field) {
             // Remove _0 to get the base name of the field (e.g.: group_repeater_foo_0 -> group_repeater_foo)
             $baseNameWithoutIndex = substr($key, 0, -2);
 
-            $newKey = $baseNameWithoutIndex . '_' . $nextIndex;
+            $newKey = $baseNameWithoutIndex.'_'.$nextIndex;
 
             // add the repeated field to the $this->fields array
             $groupFields[$newKey] = $field;
             // Initialize the repeated field in the $formProperties array
             $this->formProperties[$newKey] = null;
             // Set the validation rules depending on the base field
-            $this->rules["formProperties." . $newKey] = $this->rules["formProperties." . $key];
+            $this->rules['formProperties.'.$newKey] = $this->rules['formProperties.'.$key];
             // Set the validation attributes depending on the base field
-            $this->validationAttributes["formProperties." . $newKey] = $this->getFieldValidationAttribute($field, $key);
+            $this->validationAttributes['formProperties.'.$newKey] = $this->getFieldValidationAttribute($field, $key);
         }
     }
 
@@ -609,11 +609,11 @@ trait LaraFormsBuilder
     {
         $groupFields = &$this->fields[$groupIndex]['fields'];
         // Get all repeated fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
-        $repeatedGroupFields = collect($groupFields)->filter(fn($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
+        $repeatedGroupFields = collect($groupFields)->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
         // Get the last used index from all repeated fields keys (e.g.: 'group_repeater_foo_0', 'group_repeater_foo_1', etc...) the numeric postfix index (e.g.: 0, 1, etc...)
         $lastIndex = $repeatedGroupFields
             ->keys()
-            ->map(fn($fieldKey) => (int) substr($fieldKey, strrpos($fieldKey, '_') + 1)) // extract numeric index
+            ->map(fn ($fieldKey) => (int) substr($fieldKey, strrpos($fieldKey, '_') + 1)) // extract numeric index
             ->max();
 
         // if the last index is 0 that mean ir belongs to the basic fields in the main Form/Component fields()
@@ -624,7 +624,7 @@ trait LaraFormsBuilder
         // Find all repeated fields keys that sharing the same last index
         $repeatedFieldsKeysToRemove = $repeatedGroupFields
             ->keys()
-            ->filter(fn($fieldKey) => str_ends_with($fieldKey, "_" . $lastIndex))
+            ->filter(fn ($fieldKey) => str_ends_with($fieldKey, '_'.$lastIndex))
             ->toArray();
 
         // Remove them from fields, formProperties, rules, and validationAttributes
@@ -635,5 +635,4 @@ trait LaraFormsBuilder
             unset($this->validationAttributes["formProperties.$key"]);
         }
     }
-
 }

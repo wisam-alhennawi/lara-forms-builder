@@ -481,12 +481,17 @@ Common `group_info` options:
 
 Accordion options (optional):
 
-* `accordion` (boolean): Enables accordion behavior (fields are hidden until enabled).
-* `key` (string): The boolean field name saved in the database (required when `accordion` is `true`).
-* `default` (boolean): Default value for the accordion field on create.
-* `rules` (string): Validation rules for the accordion boolean (e.g. `boolean`).
-* `toggle` (boolean): If `true`, render a Yes/No toggle instead of a checkbox.
-* `toggleOptions` (array): Options for the Yes/No toggle, e.g. `[0 => 'No', 1 => 'Yes']`.
+* `visibility` (array): Defines visibility behavior for the group.
+    * `accordion` (boolean): Enables accordion behavior (group fields are hidden until enabled).
+    * `controlled_by` (string): Field key inside the same `fields` group used to control open/close state.
+    * `default` (optional): Initial value used only when the controller field has no value yet. Can be `true/false` (for checkbox) or the corresponding toggle value.
+
+`controlled_by` concept:
+
+* The controller is a normal form field included in the same `fields` array.
+* If `controlled_by` points to a field with `type: checkbox`, the header renders a checkbox.
+* If `controlled_by` points to a field with `type: yes-no-toggle-switch`, the header renders a yes/no toggle.
+* The controller field is still part of form data and is persisted like any other field.
 
 Example: normal group (no accordion)
 
@@ -510,20 +515,26 @@ Example: normal group (no accordion)
 ],
 ```
 
-Example: accordion with checkbox
+Example: accordion controlled by checkbox
 
 ```php
 [
     'group_info' => [
         'title' => __('Advanced settings'),
         'description' => __('Enable to show advanced fields.'),
-        'accordion' => true,
-        'key' => 'is_active',
-        'default' => false,
-        'rules' => 'boolean',
+        'visibility' => [
+            'accordion' => true,
+            'controlled_by' => 'is_active',
+            'default' => true,
+        ],
         'group_wrapper_class' => 'grid grid-cols-2 gap-4',
     ],
     'fields' => [
+        'is_active' => [
+            'type' => 'checkbox',
+            'label' => __('Enable advanced settings'),
+            'rules' => 'boolean',
+        ],
         'microchip' => [
             'type' => 'input',
             'label' => __('Microchip'),
@@ -532,25 +543,30 @@ Example: accordion with checkbox
 ],
 ```
 
-Example: accordion with yes-no toggle
+Example: accordion controlled by yes-no-toggle-switch
 
 ```php
 [
     'group_info' => [
         'title' => __('Advanced settings'),
         'description' => __('Enable to show advanced fields.'),
-        'accordion' => true,
-        'toggle' => true,
-        'toggleOptions' => [
-            0 => __('No'),
-            1 => __('Yes'),
+        'visibility' => [
+            'accordion' => true,
+            'controlled_by' => 'is_active',
+            'default' => true,
         ],
-        'key' => 'advanced_enabled',
-        'default' => false,
-        'rules' => 'boolean',
         'group_wrapper_class' => 'grid grid-cols-2 gap-4',
     ],
     'fields' => [
+        'is_active' => [
+            'type' => 'yes-no-toggle-switch',
+            'label' => __('Enable advanced settings'),
+            'options' => [
+                0 => __('No'),
+                1 => __('Yes'),
+            ],
+            'rules' => 'boolean',
+        ],
         'timezone' => [
             'type' => 'select',
             'label' => __('Timezone'),

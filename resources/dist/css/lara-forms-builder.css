@@ -8,7 +8,7 @@
     }
 
     .lfb-group-wrapper {
-        @apply grid grid-cols-2 gap-6;
+        @apply grid grid-cols-2 gap-6 mt-4;
     }
 
     .lfb-group-title {

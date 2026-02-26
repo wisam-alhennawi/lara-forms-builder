@@ -471,6 +471,77 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Resolve group metadata used by fields.blade.php
+     */
+    public function resolveGroupMeta(array $field, string $groupWrapperClass, ?string $mode = null): array
+    {
+        $groupInfo = $field['group_info'] ?? [];
+        $visibility = $groupInfo['visibility'] ?? [];
+        $isAccordion = (bool) ($visibility['accordion'] ?? false);
+        $controlledBy = $visibility['controlled_by'] ?? null;
+        $controllerField = null;
+
+        if ($isAccordion && $controlledBy && is_array($field['fields'] ?? null)) {
+            foreach ($field['fields'] as $groupFieldKey => $groupField) {
+                if (! is_array($groupField)) {
+                    continue;
+                }
+                $resolvedGroupFieldKey = is_string($groupFieldKey) ? $groupFieldKey : ($groupField['key'] ?? null);
+                if ($resolvedGroupFieldKey === $controlledBy) {
+                    $controllerField = $groupField;
+                    break;
+                }
+            }
+        }
+
+        $useToggle = ($controllerField['type'] ?? null) === 'yes-no-toggle-switch';
+        $controllerDefault = $controllerField['default'] ?? null;
+        $visibilityDefault = $visibility['default'] ?? null;
+        $initialAccordionValue = $controllerDefault ?? $visibilityDefault;
+        $accordionOpenValue = 1;
+        $accordionClosedValue = 0;
+        if ($useToggle) {
+            $toggleOptions = $controllerField['options'] ?? [0 => __('No'), 1 => __('Yes')];
+            $toggleValues = array_keys($toggleOptions);
+            $accordionClosedValue = $toggleValues[0] ?? 0;
+            $accordionOpenValue = $toggleValues[1] ?? 1;
+            if (is_bool($initialAccordionValue)) {
+                $initialAccordionValue = $initialAccordionValue ? $accordionOpenValue : $accordionClosedValue;
+            }
+        }
+
+        $currentAccordionValue = ($controlledBy && array_key_exists($controlledBy, $this->formProperties))
+            ? $this->formProperties[$controlledBy]
+            : $initialAccordionValue;
+
+        $initialAccordionOpen = $useToggle
+            ? ((string) $currentAccordionValue === (string) $accordionOpenValue || in_array($currentAccordionValue, [true, 1, '1'], true))
+            : in_array($currentAccordionValue, [true, 1, '1'], true);
+
+        $isReadonlyMode = ($mode == 'view' || $mode == 'confirm') || (($controllerField['readOnly'] ?? false) ?: false);
+
+        $resolvedGroupWrapperClass = $groupWrapperClass;
+        $customGroupWrapperClass = $groupInfo['group_wrapper_class'] ?? null;
+        $isGroupWrapperClassDefault = $groupInfo['default_group_wrapper_class'] ?? true;
+        if (! empty($customGroupWrapperClass)) {
+            $resolvedGroupWrapperClass = ! $isGroupWrapperClassDefault ? $customGroupWrapperClass : $resolvedGroupWrapperClass.' '.$customGroupWrapperClass;
+        }
+
+        return [
+            'groupInfo' => $groupInfo,
+            'isAccordion' => $isAccordion,
+            'controlledBy' => $controlledBy,
+            'controllerField' => $controllerField,
+            'useToggle' => $useToggle,
+            'initialAccordionValue' => $initialAccordionValue,
+            'initialAccordionOpen' => $initialAccordionOpen,
+            'accordionOpenValue' => $accordionOpenValue,
+            'isReadonlyMode' => $isReadonlyMode,
+            'resolvedGroupWrapperClass' => $resolvedGroupWrapperClass,
+        ];
+    }
+
+    /**
      * Get the default css classes for the wrapper of group of fields
      */
     protected function getDefaultGroupWrapperClass(): string

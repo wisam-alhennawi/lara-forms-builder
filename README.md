@@ -474,16 +474,16 @@ It has the following additional properties:
 
 * `view` (optional): Blade view name to include (for example `forms.fields.custom-note`).
 * `livewire_component` (optional): Livewire component name to render (for example `forms.custom-note`).
+* `data` (optional): Global array of data/props passed as-is to the custom Blade view or Livewire component.
 
 At least one of `view` or `livewire_component` should be provided.
 
-When rendered, the following data is passed to your custom view/component:
+When rendered:
 
-* `key`: Current field key (for example `notes`).
-* `field`: Full field configuration array.
-* `formProperties`: Form state array.
-* `mode`: Current form mode (`create`, `edit`, `view`, ...).
-* `model`: Current model instance (if available).
+* For Blade view: `@include($field['view'], $field['data'] ?? [])`
+* For Livewire component: `@livewire($field['livewire_component'], $field['data'] ?? [])`
+
+Pass only what you need through `data`.
 
 Example with custom Blade view:
 
@@ -492,6 +492,11 @@ Example with custom Blade view:
     'type' => 'custom-view',
     'label' => __('Custom Note'),
     'view' => 'forms.fields.custom-note',
+    'data' => [
+        'mode' => $this->mode,
+        'model' => $this->model,
+        'formProperties' => $this->formProperties,
+    ],
 ]
 ```
 
@@ -502,6 +507,12 @@ Example with custom Livewire component:
     'type' => 'custom-view',
     'label' => __('Custom Note'),
     'livewire_component' => 'forms.custom-note',
+    'data' => [
+        'mode' => $this->mode,
+        'model' => $this->model,
+        'formProperties' => $this->formProperties,
+        'fieldKey' => 'custom_note',
+    ],
 ]
 ```
 

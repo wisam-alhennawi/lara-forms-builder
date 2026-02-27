@@ -35,7 +35,7 @@
                                         <sup>*</sup>
                                     @endif
                                 </label>
-                                @include('lara-forms-builder::components.accordion-controller', [
+                                @include('lara-forms-builder::includes.accordion-controller', [
                                     'controlledBy' => $controlledBy,
                                     'controllerField' => $controllerField,
                                     'useToggle' => $useToggle,

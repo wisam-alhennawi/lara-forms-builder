@@ -493,6 +493,8 @@ Accordion options (optional):
 * If `controlled_by` points to a field with `type: yes-no-toggle-switch`, the header renders a yes/no toggle.
 * The controller field is still part of form data and is persisted like any other field.
 
+**Important:** Handling group data based on whether the controller is checked/enabled, and showing validation messages for required fields inside that group, is not managed automatically by LFB and must be implemented in the form logic.
+
 Example: normal group (no accordion)
 
 ```php

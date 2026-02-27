@@ -1,6 +1,6 @@
 <div class="{{ $fieldWrapperClass }} @error('formProperties.' .  $key){{ $fieldErrorWrapperClass }}@enderror">
     @include('lara-forms-builder::includes.field-label')
-    <div class="lfb-fieldset-container">
+    <div class="lfb-fieldset lfb-fieldset-container">
         <div class="lfb-checkbox-group">
             @if($hasCategory)
                 @foreach($checkboxGroupOptions as $category => $options)

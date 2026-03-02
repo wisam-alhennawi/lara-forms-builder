@@ -93,13 +93,17 @@
                             ? (is_string($groupFieldKey) ? $groupFieldKey : ($groupField['key'] ?? null))
                             : null;
                         $isControllerField = $isAccordion && $controlledBy && $resolvedGroupFieldKey === $controlledBy;
-                        $isRepeaterEnabled = isset($field['group_info']['repeater']) && $field['group_info']['repeater'] === true;
-                        // Count only repeater blocks (keys with prefix $this->groupRepeaterPrefix)
-                        $lastIndex = collect($this->fields[$fieldKey]['fields'])
-                            ->keys()
-                            ->filter(fn($Key) => str_starts_with($Key, $this->groupRepeaterPrefix))
-                            ->map(fn($key) => (int) substr($key, strrpos($key, '_') + 1))
-                            ->max();
+
+                        $isRepeaterEnabled = isset($groupMeta['groupInfo']['repeater']['group_id']);
+                        if ($isRepeaterEnabled) {
+                            $groupId = $groupMeta['groupInfo']['repeater']['group_id'];
+                            $repeatedGroups = collect($this->fields)
+                                ->filter(fn($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+                            // Get the repeated groups count to conditionally display the delete button
+                            $repeatedGroupsCount = $repeatedGroups->count();
+                            // Check if this is the last repeated group to conditionally display the Add button below it
+                            $isLastGroup = $fieldKey === $repeatedGroups->keys()->last();
+                        }
                     @endphp
                     @if (! $resolvedGroupFieldKey || $isControllerField)
                         @continue
@@ -111,11 +115,11 @@
                     ])
                 @endforeach
             </div>
-                @if(! in_array($this->mode, ['view', 'confirm']) && $isRepeaterEnabled)
+                @if($isRepeaterEnabled && ! in_array($this->mode, ['view', 'confirm']) && $isLastGroup)
                     <div class="lfb-repeater-buttons-wrapper">
                         {{-- Add button --}}
                         <button type="button"
-                                wire:click="processGroupRepeating('{{ $field['group_info']['group-id'] }}')"
+                                wire:click="processGroupRepeating('{{ $field['group_info']['repeater']['group_id'] }}')"
                                 class="lfb-repeater-add-button">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                  viewBox="0 0 24 24" stroke="currentColor">
@@ -124,10 +128,10 @@
                             </svg>
                         </button>
 
-                        {{-- Remove button --}}
-                        @if($lastIndex > 0)
+                        {{-- Delete button --}}
+                        @if($repeatedGroupsCount > 1)
                             <button type="button"
-                                    wire:click="removeRepeater('{{ $fieldKey }}')"
+                                    wire:click="deleteRepeatedGroup('{{ $fieldKey }}')"
                                     class="lfb-repeater-remove-button flex items-center gap-1 px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                      viewBox="0 0 24 24" stroke="currentColor">

@@ -630,43 +630,50 @@ trait LaraFormsBuilder
      */
     public function processGroupRepeating(string|int $groupId): void
     {
-        $groupFields = [];
+        $lastRepeatedGroup = [];
+        $lastRepeatedGroupIndex = null;
+        $lastPostfixNumericIndex = null;
 
-        foreach ($this->fields as &$group) {
-            if (
-                isset($group['group_info']['group-id']) &&
-                $group['group_info']['group-id'] === $groupId
-            ) {
-                $groupFields = &$group['fields'];
-                break;
+        foreach ($this->fields as $index => $group)
+        {
+            if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId)
+            {
+                $lastRepeatedGroup = $group;
+                $lastRepeatedGroupIndex = $index;
+
+                if (isset($group['fields'])) {
+                    foreach ($group['fields'] as $fieldKey => $field) {
+                        if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                            if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                                $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                            } else {
+                                throw new Exception('Use numeric postfix for repeated fields keys (e.g.: ' . $this->groupRepeaterPrefix . 'foo_0)');
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        if ($groupFields === []) {
-            throw new Exception("Group not found check the provided 'group-id' property");
+        if ($lastRepeatedGroup === [] || $lastRepeatedGroupIndex === null || $lastPostfixNumericIndex === null) {
+            throw new Exception("Group not found check the provided 'repeater' => ['group_id' => 'developers'] property");
         }
 
-        // Get all repeated fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
-        $repeatedGroupFields = collect($groupFields)->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
-        // Filter only basic (template) repeatable fields which defined in the main Form/Component fields() and end with '_0' (e.g.: 'group_repeater_foo_0')
-        $basicRepeatableGroupFields = $repeatedGroupFields->filter(fn ($field, $key) => str_ends_with($key, '_0'));
-        // Get the last used index from all repeated fields keys (e.g.: 'group_repeater_foo_0', 'group_repeater_foo_1', etc...) the numeric postfix index (e.g.: 0, 1, etc...)
-        $lastIndex = $repeatedGroupFields
-            ->keys()
-            ->map(fn ($fieldKey) => (int) substr($fieldKey, strrpos($fieldKey, '_') + 1)) // extract numeric index
-            ->max();
+        // Init the new repeated group
+        $newRepeatedGroup['group_info'] = $lastRepeatedGroup['group_info'];
 
-        $nextIndex = $lastIndex + 1;
+        // Get repeatable fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
+        $repeatableGroupFields = collect($lastRepeatedGroup['fields'])->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
 
-        // Duplicate each basic field
-        foreach ($basicRepeatableGroupFields as $key => $field) {
-            // Remove _0 to get the base name of the field (e.g.: group_repeater_foo_0 -> group_repeater_foo)
+        // Duplicate each repeatable field
+        foreach ($repeatableGroupFields as $key => $field) {
+            // Remove the numeric suffix (_3) to get the base name of the field (e.g.: group_repeater_foo_3 -> group_repeater_foo)
             $baseNameWithoutIndex = substr($key, 0, -2);
 
-            $newKey = $baseNameWithoutIndex.'_'.$nextIndex;
+            $newKey = $baseNameWithoutIndex . '_' . $lastPostfixNumericIndex + 1;
 
-            // add the repeated field to the $this->fields array
-            $groupFields[$newKey] = $field;
+            // add the repeated field
+            $newRepeatedGroup['fields'][$newKey] = $field;
             // Initialize the repeated field in the $formProperties array
             $this->formProperties[$newKey] = null;
             // Set the validation rules depending on the base field
@@ -674,33 +681,22 @@ trait LaraFormsBuilder
             // Set the validation attributes depending on the base field
             $this->validationAttributes['formProperties.'.$newKey] = $this->getFieldValidationAttribute($field, $key);
         }
+
+        // Add the new repeated group to the $this->fields array directly after the last repeated group
+        array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
     }
 
-    public function removeRepeater(int $groupIndex): void
+    public function deleteRepeatedGroup(int $groupIndex): void
     {
-        $groupFields = &$this->fields[$groupIndex]['fields'];
-        // Get all repeated fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
-        $repeatedGroupFields = collect($groupFields)->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
-        // Get the last used index from all repeated fields keys (e.g.: 'group_repeater_foo_0', 'group_repeater_foo_1', etc...) the numeric postfix index (e.g.: 0, 1, etc...)
-        $lastIndex = $repeatedGroupFields
-            ->keys()
-            ->map(fn ($fieldKey) => (int) substr($fieldKey, strrpos($fieldKey, '_') + 1)) // extract numeric index
-            ->max();
+        $repeatedGroupToDelete = $this->fields[$groupIndex];
+        $repeatedFieldKeysToDelete = array_keys($repeatedGroupToDelete['fields']);
 
-        // if the last index is 0 that mean ir belongs to the basic fields in the main Form/Component fields()
-        if ($lastIndex === 0) {
-            return;
-        }
+        // Remove the group from $this->fields array and reindex it
+        unset($this->fields[$groupIndex]);
+        $this->fields = array_values($this->fields);
 
-        // Find all repeated fields keys that sharing the same last index
-        $repeatedFieldsKeysToRemove = $repeatedGroupFields
-            ->keys()
-            ->filter(fn ($fieldKey) => str_ends_with($fieldKey, '_'.$lastIndex))
-            ->toArray();
-
-        // Remove them from fields, formProperties, rules, and validationAttributes
-        foreach ($repeatedFieldsKeysToRemove as $key) {
-            unset($groupFields[$key]);
+        // Remove fields keys from formProperties, rules, and validationAttributes
+        foreach ($repeatedFieldKeysToDelete as $key) {
             unset($this->formProperties[$key]);
             unset($this->rules["formProperties.$key"]);
             unset($this->validationAttributes["formProperties.$key"]);

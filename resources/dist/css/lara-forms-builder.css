@@ -8,7 +8,7 @@
     }
 
     .lfb-group-wrapper {
-        @apply grid grid-cols-2 gap-6;
+        @apply grid grid-cols-2 gap-6 mt-4;
     }
 
     .lfb-group-title {
@@ -78,7 +78,7 @@
     }
 
     .lfb-checkbox-group {
-        @apply flex flex-wrap;
+        @apply flex flex-wrap mt-1;
     }
 
     .lfb-checkbox-group-item {
@@ -419,6 +419,22 @@
 
     .lfb-secret-value-toggle-icon {
         @apply h-5 w-5 text-gray-400;
+    }
+
+    .lfb-accordion-wrapper {
+        @apply border border-gray-300 rounded-md px-4 py-2 transition-all;
+    }
+
+    .lfb-fieldset-header-accordion-container {
+        @apply flex items-center justify-between;
+    }
+
+    .lfb-group-open {
+        @apply mt-4;
+    }
+
+    .lfb-group-accordion-title {
+        @apply text-lg font-bold text-gray-800;
     }
 
     .lfb-trix-editor-wrapper {

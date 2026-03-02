@@ -1,49 +1,117 @@
 @foreach ($fields as $fieldKey => $field)
     @if (is_numeric($fieldKey) && isset($field['fields']))
-        <div class="lfb-fields-wrapper">
-            @if (isset($field['group_info']))
-                @if (isset($field['group_info']['title']) || isset($field['group_info']['description']) || isset($field['group_info']['description_view']))
-                    <div>
-                        @if (isset($field['group_info']['title']))
+        @php
+            $groupMeta = $this->resolveGroupMeta($field, $groupWrapperClass, $mode ?? null);
+            $groupInfo = $groupMeta['groupInfo'];
+            $isAccordion = $groupMeta['isAccordion'];
+            $controlledBy = $groupMeta['controlledBy'];
+            $controllerField = $groupMeta['controllerField'];
+            $useToggle = $groupMeta['useToggle'];
+            $initialAccordionValue = $groupMeta['initialAccordionValue'];
+            $initialAccordionOpen = $groupMeta['initialAccordionOpen'];
+            $accordionOpenValue = $groupMeta['accordionOpenValue'];
+            $isReadonlyMode = $groupMeta['isReadonlyMode'];
+            $resolvedGroupWrapperClass = $groupMeta['resolvedGroupWrapperClass'];
+        @endphp
+
+        <div class="lfb-fields-wrapper @if($isAccordion) lfb-accordion-wrapper @endif"
+             @if($isAccordion && $controlledBy)
+                x-data="{ open: @entangle('formProperties.' . $controlledBy).live }"
+                x-init="
+                    if ((open === null || open === undefined || open === '') && @js($initialAccordionValue !== null)) {
+                        open = @js($initialAccordionValue)
+                    }
+                "
+            @endif>
+            @if (isset($groupInfo['title']) || isset($groupInfo['description']) || isset($groupInfo['description_view']))
+                <div class="lfb-group-header-wrapper">
+                    @if ($isAccordion && $controlledBy && $controllerField)
+                        <fieldset>
+                            <div class="lfb-fieldset-header-accordion-container">
+                                <label class="lfb-group-accordion-title" for="formProperties-{{ $controlledBy }}">
+                                    {!! $groupInfo['title'] ?? '' !!}
+                                    @if ((!isset($mode) || (isset($mode) and $mode != 'view')) and isset($rules)
+                                        and array_key_exists('formProperties.' .  $controlledBy, $rules) && str_contains($rules['formProperties.' .  $controlledBy], 'required'))
+                                        <sup>*</sup>
+                                    @endif
+                                </label>
+                                @include('lara-forms-builder::includes.accordion-controller', [
+                                    'controlledBy' => $controlledBy,
+                                    'controllerField' => $controllerField,
+                                    'useToggle' => $useToggle,
+                                    'isReadonlyMode' => $isReadonlyMode,
+                                ])
+                            </div>
+                            @error('formProperties.' .  $controlledBy)
+                                <span class="lfb-alert lfb-alert-error">
+                                    {{ $message }}
+                                </span>
+                            @enderror
+                            @if (isset($groupInfo['description']))
+                                <p class="lfb-group-description">
+                                    {{ $groupInfo['description'] }}
+                                </p>
+                            @endif
+                            @if (isset($groupInfo['description_view']))
+                                @include($groupInfo['description_view'])
+                            @endif
+                        </fieldset>
+                    @else
+                        @if (isset($groupInfo['title']))
                             <h2 class="lfb-group-title">
-                                {{ $field['group_info']['title'] }}
+                                {{ $groupInfo['title'] }}
                             </h2>
                         @endif
-                        @if (isset($field['group_info']['description']))
+                        @if (isset($groupInfo['description']))
                             <p class="lfb-group-description">
-                                {{ $field['group_info']['description'] }}
+                                {{ $groupInfo['description'] }}
                             </p>
                         @endif
-                        @if (isset($field['group_info']['description_view']))
-                            @include($field['group_info']['description_view'])
+                        @if (isset($groupInfo['description_view']))
+                            @include($groupInfo['description_view'])
                         @endif
-                    </div>
-                @endif
+                    @endif
+                </div>
             @endif
-            @php
-                $customGroupWrapperClass = isset($field['group_info']['group_wrapper_class']) ? $field['group_info']['group_wrapper_class'] : null;
-                $isGroupWrapperClassDefault = isset($field['group_info']['default_group_wrapper_class']) ? $field['group_info']['default_group_wrapper_class'] : true;
-                if (!empty($customGroupWrapperClass)) {
-                    $groupWrapperClass = !$isGroupWrapperClassDefault ? $customGroupWrapperClass : $groupWrapperClass . ' ' . $customGroupWrapperClass;
-                }
-                $isRepeaterEnabled = isset($field['group_info']['repeater']) && $field['group_info']['repeater'] === true;
-                // Count only repeater blocks (keys with prefix $this->groupRepeaterPrefix)
-                $lastIndex = collect($this->fields[$fieldKey]['fields'])
-                    ->keys()
-                    ->filter(fn($Key) => str_starts_with($Key, $this->groupRepeaterPrefix))
-                    ->map(fn($key) => (int) substr($key, strrpos($key, '_') + 1))
-                    ->max();
-            @endphp
-                    <div class="{{$groupWrapperClass}}">
-                        @foreach ($field['fields'] as $groupFieldKey => $groupField)
-                            @include('lara-forms-builder::form-components', [
-                                'field' => $groupField,
-                                'fieldKey' => $groupFieldKey,
-                                'defaultFieldWrapperClass' => $defaultFieldWrapperClass
-                            ])
-                        @endforeach
-                    </div>
-                    @if(! in_array($this->mode, ['view', 'confirm']) && $isRepeaterEnabled)
+
+                <div
+                    @if($isAccordion && $controlledBy && $controllerField)
+                        x-show="open"
+                        @if(!$initialAccordionOpen) x-cloak @endif
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                    @endif
+                    class="{{ $resolvedGroupWrapperClass }}"
+                >
+                @foreach ($field['fields'] as $groupFieldKey => $groupField)
+                    @php
+                        $resolvedGroupFieldKey = is_array($groupField)
+                            ? (is_string($groupFieldKey) ? $groupFieldKey : ($groupField['key'] ?? null))
+                            : null;
+                        $isControllerField = $isAccordion && $controlledBy && $resolvedGroupFieldKey === $controlledBy;
+                        $isRepeaterEnabled = isset($field['group_info']['repeater']) && $field['group_info']['repeater'] === true;
+                        // Count only repeater blocks (keys with prefix $this->groupRepeaterPrefix)
+                        $lastIndex = collect($this->fields[$fieldKey]['fields'])
+                            ->keys()
+                            ->filter(fn($Key) => str_starts_with($Key, $this->groupRepeaterPrefix))
+                            ->map(fn($key) => (int) substr($key, strrpos($key, '_') + 1))
+                            ->max();
+                    @endphp
+                    @if (! $resolvedGroupFieldKey || $isControllerField)
+                        @continue
+                    @endif
+                    @include('lara-forms-builder::form-components', [
+                        'field' => $groupField,
+                        'fieldKey' => $resolvedGroupFieldKey,
+                        'defaultFieldWrapperClass' => $defaultFieldWrapperClass
+                    ])
+                @endforeach
+            </div>
+                @if(! in_array($this->mode, ['view', 'confirm']) && $isRepeaterEnabled)
                     <div class="lfb-repeater-buttons-wrapper">
                         {{-- Add button --}}
                         <button type="button"
@@ -58,18 +126,18 @@
 
                         {{-- Remove button --}}
                         @if($lastIndex > 0)
-                        <button type="button"
-                                wire:click="removeRepeater('{{ $fieldKey }}')"
-                                class="lfb-repeater-remove-button flex items-center gap-1 px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                 viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M6 18L18 6M6 6l12 12"/>
-                            </svg>
-                        </button>
+                            <button type="button"
+                                    wire:click="removeRepeater('{{ $fieldKey }}')"
+                                    class="lfb-repeater-remove-button flex items-center gap-1 px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
                         @endif
                     </div>
-                    @endif
+                @endif
         </div>
     @else
         @include('lara-forms-builder::form-components', [

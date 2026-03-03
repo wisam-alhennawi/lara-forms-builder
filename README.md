@@ -581,6 +581,63 @@ Example: accordion controlled by yes-no-toggle-switch
 ],
 ```
 
+Repeater options (optional):
+
+* `repeater` (array): Define if the group will have a repeter functionality.
+    * `group_id` (string): a unique identifier for the related repeated groups.
+
+The main point is that we always have a `group_id` and a prefix to distinguish the repeated fields in addition to set the postfix `_0` for the first field.
+All repeated fields will take the same validation rules and validation attributes as the first field.
+
+
+The following is a dummy code snippet for concept explanation (a project form which has many developers):
+```php
+
+public function beforeFormProperties(): void
+{
+    $this->rules["formProperties." . $this->groupRepeaterPrefix . 'developer_name_0'] = 'required';
+}
+
+public function setRepeatedFields(): void
+{
+    $developers = $this->model->developers;
+    if ($developers->isEmpty()) {
+        return;
+    }
+    $fieldsRepeatingCount = $developers->count() - 1;
+    for ($i = 0; $i < $fieldsRepeatingCount; $i++) {
+        $this->processGroupRepeating('developers'); // group_id
+    }
+    foreach ($developers as $index => $developer) {
+        $this->formProperties[$this->groupRepeaterPrefix . "developer_name_{$index}"] = $developer->name;
+    }
+}
+
+protected function fields(): array
+{
+    return [
+        [
+            'group_info' => [
+                'repeater' => [
+                    'group_id' => 'developers'
+                ],
+            ],
+            'fields' => [
+                $this->groupRepeaterPrefix . 'developer_name_0' => [
+                    'type' => 'input',
+                    'label' => __('Name'),
+                ]
+            ]
+        ],
+    ];
+}
+
+public function saveGroupRepeater($validated_data): void
+{
+    // Saving logic
+}
+```
+
 #### Type `custom-view`
 
 The `custom-view` form field allows rendering a custom Blade view or a dedicated Livewire component inside the form.

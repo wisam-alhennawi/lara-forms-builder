@@ -132,7 +132,7 @@
                         @if($repeatedGroupsCount > 1)
                             <button type="button"
                                     wire:click="deleteRepeatedGroup('{{ $fieldKey }}')"
-                                    class="lfb-repeater-remove-button flex items-center gap-1 px-3 py-1 text-sm font-medium text-red-700 bg-red-100 rounded hover:bg-red-200 transition">
+                                    class="lfb-repeater-remove-button">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                      viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

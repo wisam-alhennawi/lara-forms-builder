@@ -634,10 +634,8 @@ trait LaraFormsBuilder
         $lastRepeatedGroupIndex = null;
         $lastPostfixNumericIndex = null;
 
-        foreach ($this->fields as $index => $group)
-        {
-            if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId)
-            {
+        foreach ($this->fields as $index => $group) {
+            if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
                 $lastRepeatedGroup = $group;
                 $lastRepeatedGroupIndex = $index;
 
@@ -647,7 +645,7 @@ trait LaraFormsBuilder
                             if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
                                 $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
                             } else {
-                                throw new Exception('Use numeric postfix for repeated fields keys (e.g.: ' . $this->groupRepeaterPrefix . 'foo_0)');
+                                throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
                             }
                         }
                     }
@@ -670,7 +668,7 @@ trait LaraFormsBuilder
             // Remove the numeric suffix (_3) to get the base name of the field (e.g.: group_repeater_foo_3 -> group_repeater_foo)
             $baseNameWithoutIndex = substr($key, 0, -2);
 
-            $newKey = $baseNameWithoutIndex . '_' . $lastPostfixNumericIndex + 1;
+            $newKey = $baseNameWithoutIndex.'_'.$lastPostfixNumericIndex + 1;
 
             // add the repeated field
             $newRepeatedGroup['fields'][$newKey] = $field;

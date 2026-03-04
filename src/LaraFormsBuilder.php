@@ -2,6 +2,7 @@
 
 namespace WisamAlhennawi\LaraFormsBuilder;
 
+use Exception;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -36,24 +37,32 @@ trait LaraFormsBuilder
 
     public $scrollToFirstError = false;
 
+    public string $groupRepeaterPrefix = 'group_repeater_';
+
     /**
      * get field keys from fields array
      */
-    public function getFieldKeys(): array
+    public function getFieldKeys(bool $withRepeatedFields = false): array
     {
         // get all keys from fields array
         return array_map(function ($field) {
             return $field['key'];
-        }, $this->getFieldsFlat());
+        }, $this->getFieldsFlat($withRepeatedFields));
     }
 
     /**
      * get all fields from fields array as flat array
      */
-    public function getFieldsFlat(): array
+    public function getFieldsFlat(bool $withRepeatedFields = false): array
     {
+        $fieldsToFlat = $this->fields();
+
+        if ($withRepeatedFields === true) {
+            $fieldsToFlat = $this->fields;
+        }
+
         $fields = [];
-        foreach ($this->fields() as $key => $field) {
+        foreach ($fieldsToFlat as $key => $field) {
             if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $k => $f) {
@@ -196,6 +205,8 @@ trait LaraFormsBuilder
 
         $this->fields = $this->fields();
 
+        $this->setRepeatedFields();
+
         if ($this->isMultiStepForm()) {
             // @phpstan-ignore-next-line
             $this->initSteps();
@@ -206,6 +217,8 @@ trait LaraFormsBuilder
      * It can be used to set options, values, etc. before setting the form properties
      */
     protected function beforeFormProperties(): void {}
+
+    protected function setRepeatedFields(): void {}
 
     /**
      * Set form properties
@@ -247,12 +260,27 @@ trait LaraFormsBuilder
 
     private function processSaveFunctions(): void
     {
-        // saveFoo(), for all fields
-        foreach ($this->getFieldKeys() as $fieldKey) {
+        $allRepeatedFieldsData = [];
+
+        foreach ($this->getFieldKeys(true) as $fieldKey) {
+            // Collect all group_repeater_* keys into $allRepeaterData
+            if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                $allRepeatedFieldsData[$fieldKey] = $this->formProperties[$fieldKey];
+
+                continue; // skip individual save
+            }
+
+            // For normal fields, call their individual save function
+            // saveFoo(), for all fields
             $function = 'save'.Str::of($fieldKey)->studly();
             if (method_exists($this, $function) && array_key_exists($fieldKey, $this->formProperties)) {
                 $this->$function($this->formProperties[$fieldKey]);
             }
+        }
+
+        // Call saveGroupRepeater once with all repeater fields
+        if (method_exists($this, 'saveGroupRepeater')) {
+            $this->saveGroupRepeater($allRepeatedFieldsData);
         }
     }
 
@@ -595,5 +623,81 @@ trait LaraFormsBuilder
     protected function getDefaultFieldErrorWrapperClasses(): string
     {
         return config('lara-forms-builder.field_error_wrapper_classes');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function processGroupRepeating(string|int $groupId): void
+    {
+        $lastRepeatedGroup = [];
+        $lastRepeatedGroupIndex = null;
+        $lastPostfixNumericIndex = null;
+
+        foreach ($this->fields as $index => $group) {
+            if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                $lastRepeatedGroup = $group;
+                $lastRepeatedGroupIndex = $index;
+
+                if (isset($group['fields'])) {
+                    foreach ($group['fields'] as $fieldKey => $field) {
+                        if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                            if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                                $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                            } else {
+                                throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($lastRepeatedGroup === [] || $lastRepeatedGroupIndex === null || $lastPostfixNumericIndex === null) {
+            throw new Exception("Group not found check the provided 'repeater' => ['group_id' => 'developers'] property");
+        }
+
+        // Init the new repeated group
+        $newRepeatedGroup['group_info'] = $lastRepeatedGroup['group_info'];
+
+        // Get repeatable fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
+        $repeatableGroupFields = collect($lastRepeatedGroup['fields'])->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
+
+        // Duplicate each repeatable field
+        foreach ($repeatableGroupFields as $key => $field) {
+            // Remove the numeric suffix (_3) to get the base name of the field (e.g.: group_repeater_foo_3 -> group_repeater_foo)
+            $baseNameWithoutIndex = substr($key, 0, -2);
+
+            $newKey = $baseNameWithoutIndex.'_'.$lastPostfixNumericIndex + 1;
+
+            // add the repeated field
+            $newRepeatedGroup['fields'][$newKey] = $field;
+            // Initialize the repeated field in the $formProperties array
+            $this->formProperties[$newKey] = null;
+            // Set the validation rules depending on the base field
+            $this->rules['formProperties.'.$newKey] = $this->rules['formProperties.'.$key];
+            // Set the validation attributes depending on the base field
+            $this->validationAttributes['formProperties.'.$newKey] = $this->getFieldValidationAttribute($field, $key);
+        }
+
+        // Add the new repeated group to the $this->fields array directly after the last repeated group
+        array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+    }
+
+    public function deleteRepeatedGroup(int $groupIndex): void
+    {
+        $repeatedGroupToDelete = $this->fields[$groupIndex];
+        $repeatedFieldKeysToDelete = array_keys($repeatedGroupToDelete['fields']);
+
+        // Remove the group from $this->fields array and reindex it
+        unset($this->fields[$groupIndex]);
+        $this->fields = array_values($this->fields);
+
+        // Remove fields keys from formProperties, rules, and validationAttributes
+        foreach ($repeatedFieldKeysToDelete as $key) {
+            unset($this->formProperties[$key]);
+            unset($this->rules["formProperties.$key"]);
+            unset($this->validationAttributes["formProperties.$key"]);
+        }
     }
 }

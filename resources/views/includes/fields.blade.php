@@ -93,6 +93,17 @@
                             ? (is_string($groupFieldKey) ? $groupFieldKey : ($groupField['key'] ?? null))
                             : null;
                         $isControllerField = $isAccordion && $controlledBy && $resolvedGroupFieldKey === $controlledBy;
+
+                        $isRepeaterEnabled = isset($groupMeta['groupInfo']['repeater']['group_id']);
+                        if ($isRepeaterEnabled) {
+                            $groupId = $groupMeta['groupInfo']['repeater']['group_id'];
+                            $repeatedGroups = collect($this->fields)
+                                ->filter(fn($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+                            // Get the repeated groups count to conditionally display the delete button
+                            $repeatedGroupsCount = $repeatedGroups->count();
+                            // Check if this is the last repeated group to conditionally display the Add button below it
+                            $isLastGroup = $fieldKey === $repeatedGroups->keys()->last();
+                        }
                     @endphp
                     @if (! $resolvedGroupFieldKey || $isControllerField)
                         @continue
@@ -104,6 +115,33 @@
                     ])
                 @endforeach
             </div>
+                @if($isRepeaterEnabled && ! in_array($this->mode, ['view', 'confirm']) && $isLastGroup)
+                    <div class="lfb-repeater-buttons-wrapper">
+                        {{-- Add button --}}
+                        <button type="button"
+                                wire:click="processGroupRepeating('{{ $field['group_info']['repeater']['group_id'] }}')"
+                                class="lfb-repeater-add-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 4v16m8-8H4"/>
+                            </svg>
+                        </button>
+
+                        {{-- Delete button --}}
+                        @if($repeatedGroupsCount > 1)
+                            <button type="button"
+                                    wire:click="deleteRepeatedGroup('{{ $fieldKey }}')"
+                                    class="lfb-repeater-remove-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                     viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        @endif
+                    </div>
+                @endif
         </div>
     @else
         @include('lara-forms-builder::form-components', [

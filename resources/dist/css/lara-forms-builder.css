@@ -8,7 +8,7 @@
     }
 
     .lfb-group-wrapper {
-        @apply grid grid-cols-2 gap-6;
+        @apply grid grid-cols-2 gap-6 mt-4;
     }
 
     .lfb-group-title {
@@ -20,7 +20,7 @@
     }
 
     .lfb-label {
-        @apply block text-sm font-medium text-gray-800;
+        @apply flex text-sm font-medium text-gray-800 gap-1 items-center;
     }
 
     .lfb-label-spacing {
@@ -53,8 +53,32 @@
         @apply h-4 w-4 border-gray-300 text-primary focus:ring-primary;
     }
 
+    .lfb-yes-no-toggle-container {
+        @apply mt-2 flex items-center gap-3;
+    }
+
+    .lfb-yes-no-toggle-wrapper {
+        @apply flex bg-gray-200 p-1 rounded-md;
+    }
+
+    .lfb-yes-no-toggle-label {
+        @apply px-4 py-1.5 text-xs uppercase font-bold rounded text-slate-500 hover:text-slate-700 transition-all;
+    }
+
+    .lfb-yes-no-toggle-label-on.lfb-yes-no-toggle-active {
+        @apply bg-primary text-white;
+    }
+
+    .lfb-yes-no-toggle-label-off.lfb-yes-no-toggle-active {
+        @apply bg-white shadow-sm;
+    }
+
+    .lfb-yes-no-toggle-disabled {
+        @apply opacity-70 pointer-events-none;
+    }
+
     .lfb-checkbox-group {
-        @apply flex flex-wrap;
+        @apply flex flex-wrap mt-1;
     }
 
     .lfb-checkbox-group-item {
@@ -377,7 +401,20 @@
     }
 
     .lfb-tooltip-area {
-        @apply pointer-events-none absolute bottom-[120%] left-1/2 -translate-x-2/4 w-max max-w-[200px] rounded bg-gray-900 px-2 py-1 text-xs font-medium text-gray-50;
+        @apply pointer-events-none absolute bottom-[120%] left-1/2 -translate-x-2/4 w-max rounded bg-gray-900 px-2 py-1 text-xs font-medium text-gray-50;
+    }
+
+    .lfb-tooltip-area-small-width,
+    .lfb-tooltip-area-medium-width {
+        @apply max-w-[200px];
+    }
+
+    .lfb-tooltip-area-medium-width {
+        @apply md:max-w-[300px];
+    }
+
+    .lfb-tooltip-area-large-width {
+        @apply max-w-[300px] md:max-w-[400px];
     }
 
     .lfb-secret-value-toggle-container {
@@ -386,6 +423,22 @@
 
     .lfb-secret-value-toggle-icon {
         @apply h-5 w-5 text-gray-400;
+    }
+
+    .lfb-accordion-wrapper {
+        @apply border border-gray-300 rounded-md px-4 py-2 transition-all;
+    }
+
+    .lfb-fieldset-header-accordion-container {
+        @apply flex items-center justify-between;
+    }
+
+    .lfb-group-open {
+        @apply mt-4;
+    }
+
+    .lfb-group-accordion-title {
+        @apply text-lg font-bold text-gray-800;
     }
 
     .lfb-trix-editor-wrapper {
@@ -405,5 +458,18 @@
     .lfb-field-error-wrapper select.lfb-input,
     .lfb-field-error-wrapper button.lfb-upload-button {
         @apply border-red-500 focus:border-red-500 focus:ring-red-500 ring-0;
+    }
+
+    /* Repeater Styles */
+    .lfb-repeater-buttons-wrapper {
+        @apply flex justify-end gap-2 mt-4;
+    }
+
+    .lfb-repeater-add-button {
+        @apply inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded text-green-700 bg-green-100 hover:bg-green-200 transition;
+    }
+
+    .lfb-repeater-remove-button {
+        @apply inline-flex items-center gap-1 px-4 py-2 text-sm font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 transition;
     }
 }

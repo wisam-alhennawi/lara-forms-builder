@@ -391,12 +391,141 @@ The `cards` form field is a special layout element used to select among differen
 
 The `checkbox` form field is a single checkbox and does not have any additional properties.
 
-#### Type `checkbox-group`
+#### Type `checkbox-group` with Extra Input Element
 
 The `checkbox-group` form field is a multi-select group of checkboxes. It has the following additional properties:
 
 * `options` (mandatory): Specifies the values and labels for the checkboxes, provided as an array of objects with attributes `value` and `label` or a nested array of category label to array of objects with attributes `value` and `label` when grouped by category.
 * `hasCategory` (optional): Defines whether the checkbox entries are grouped by category, default if not set is false.
+* `enable_extra_elements` (optional): Enables the extra input feature for this checkbox group. Default is `false`.
+* `has_extra_element` (optional): When set to `true` for an option, renders a text input field below the checkbox. The input remains read-only/disabled until its corresponding checkbox is selected. The option-level setting only has an effect when `enable_extra_elements` is `true`.
+
+    **Behavior:**
+    - The extra input field is automatically disabled when the checkbox is unchecked
+    - The field becomes editable as soon as the checkbox is selected
+    - Extra input values are stored separately from checkbox values in `formProperties.{key}_extra.{value}`
+
+    **Data Structure:**
+    - Selected checkbox values: `$this->formProperties['{field_key}']` (array of selected values)
+    - Extra input values: `$this->formProperties['{field_key}_extra']` (associative array where keys are checkbox values and values are the input text)
+
+    **Setup Guide (Example Naming)**
+
+    Example field key: `related_items`
+
+    ```php
+    'related_items' => [
+        'type' => 'checkbox-group',
+        'label' => 'Related Items',
+        'options' => $this->relatedItemsOptions,
+        'rules' => 'array',
+        'enable_extra_elements' => true,
+    ],
+    ```
+
+    Each option must include `has_extra_element` (boolean):
+
+    ```php
+    public function beforeFormProperties(): void
+    {
+        $this->relatedItemsOptions = RelatedItem::query()
+            ->select('id as value', 'name as label', 'has_extra_element')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($row) {
+                $row->value = (string) $row->value;
+
+                return $row;
+            })
+            ->toArray();
+    }
+    ```
+
+    Initialize values after loading the model:
+
+    ```php
+    public function afterFormProperties(): void
+    {
+        $this->formProperties['related_items'] = (filled($this->model) && $this->model->exists)
+            ? $this->model->relatedItems->pluck('id')->map('strval')->toArray()
+            : [];
+
+        $this->formProperties['related_items_extra'] = (filled($this->model) && $this->model->exists)
+            ? $this->model->relatedItems
+                ->pluck('pivot.extra_element', 'id')
+                ->mapWithKeys(function ($value, $key) {
+                    return [(string) $key => $value];
+                })
+                ->toArray()
+            : [];
+    }
+    ```
+
+    Keep extra inputs in sync when the checkbox group changes:
+
+    ```php
+    public function updatedRelatedItems($value): void
+    {
+        $selectedIds = $this->formProperties['related_items'] ?? [];
+        $selectedIds = is_array($selectedIds) ? $selectedIds : [];
+        $extraValues = $this->formProperties['related_items_extra'] ?? [];
+
+        foreach ($this->relatedItemsOptions as $option) {
+            $id = (string) ($option['value'] ?? '');
+            $requiresExtra = (bool) ($option['has_extra_element'] ?? false);
+
+            if ($requiresExtra && ! in_array($id, $selectedIds, true)) {
+                $extraValues[$id] = null;
+            }
+        }
+
+        $this->formProperties['related_items_extra'] = $extraValues;
+    }
+    ```
+
+    Validate extra inputs when required:
+
+    ```php
+    protected function extraValidate(array $validatedData = []): bool
+    {
+        $selectedIds = $validatedData['related_items'] ?? [];
+        $extraValues = $this->formProperties['related_items_extra'] ?? [];
+
+        foreach ($this->relatedItemsOptions as $option) {
+            $id = (string) ($option['value'] ?? '');
+            $requiresExtra = (bool) ($option['has_extra_element'] ?? false);
+            $isSelected = in_array($id, $selectedIds, true);
+            $value = $extraValues[$id] ?? null;
+
+            if ($requiresExtra && $isSelected && (is_null($value) || trim((string) $value) === '')) {
+                $this->addError('formProperties.related_items_extra.'.$id, 'This field is required.');
+                return false;
+            }
+        }
+
+        return true;
+    }
+    ```
+
+    Persist the pivot data in a `save...` hook:
+
+    ```php
+    public function saveRelatedItems($validatedData): void
+    {
+        $selectedIds = $validatedData ?? [];
+        $extraValues = $this->formProperties['related_items_extra'] ?? [];
+        $syncData = [];
+
+        foreach ($selectedIds as $relatedItemId) {
+            $syncData[$relatedItemId] = [
+                'extra_element' => $extraValues[(string) $relatedItemId] ?? null,
+            ];
+        }
+
+        $this->model->relatedItems()->sync($syncData);
+    }
+    ```
+
 
 #### Type `date-picker`
 

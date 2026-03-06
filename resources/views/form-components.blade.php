@@ -110,6 +110,7 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
+            'enableExtraElements' => $field['enable_extra_elements'] ?? false,
         ])
         @break
     @case('file')

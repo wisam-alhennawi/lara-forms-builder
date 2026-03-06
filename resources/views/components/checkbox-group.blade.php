@@ -9,13 +9,13 @@
                             {{ $category }}
                         </label>
                         @foreach($options as $option)
-                            @include('lara-forms-builder::includes.checkboxGroupOptions')
+                            @include('lara-forms-builder::includes.checkboxGroupOptions', ['enableExtraElements' => $enableExtraElements ?? false])
                         @endforeach
                     </div>
                 @endforeach
             @else
                 @foreach($checkboxGroupOptions as $option)
-                    @include('lara-forms-builder::includes.checkboxGroupOptions')
+                    @include('lara-forms-builder::includes.checkboxGroupOptions', ['enableExtraElements' => $enableExtraElements ?? false])
                 @endforeach
             @endif
         </div>

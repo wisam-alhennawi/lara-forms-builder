@@ -419,7 +419,6 @@ The `checkbox-group` form field is a multi-select group of checkboxes. It has th
         'label' => 'Related Items',
         'options' => $this->relatedItemsOptions,
         'rules' => 'array',
-        'has_extra_element' => true,
         'enable_extra_elements' => true,
     ],
     ```
@@ -526,7 +525,7 @@ The `checkbox-group` form field is a multi-select group of checkboxes. It has th
         $this->model->relatedItems()->sync($syncData);
     }
     ```
-  
+
 
 #### Type `date-picker`
 

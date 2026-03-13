@@ -3,6 +3,7 @@
 namespace WisamAlhennawi\LaraFormsBuilder;
 
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -262,7 +263,7 @@ trait LaraFormsBuilder
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
      *
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function render()
     {

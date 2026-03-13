@@ -90,10 +90,20 @@ trait LaraFormsBuilder
                             ];
                         }
                     } elseif (is_numeric($tabFieldKey)) {
-                        $fields[] = [
-                            'key' => $tabFieldKey,
-                            'field' => $tabFieldValue,
-                        ];
+                        if (isset($tabFieldValue['fields'])) {
+                            foreach ($tabFieldValue['fields'] as $k => $f) {
+                                $fields[] = [
+                                    'key' => $k,
+                                    'field' => $f,
+                                ];
+                            }
+                        } else {
+                            // TODO: Check when this condition is accomplished
+                            $fields[] = [
+                                'key' => $tabFieldKey,
+                                'field' => $tabFieldValue,
+                            ];
+                        }
                     }
                 }
             }
@@ -139,6 +149,7 @@ trait LaraFormsBuilder
                     $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                 }
             } else {
+                // TODO: Update to accept multiple groups inside tab content
                 // tabs
                 $tabContents = $field['content'] ?? [];
                 foreach ($tabContents as $tabKey => $tabContent) {

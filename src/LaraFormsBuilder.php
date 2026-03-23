@@ -149,7 +149,6 @@ trait LaraFormsBuilder
                     $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                 }
             } else {
-                // TODO: Update to accept multiple groups inside tab content
                 // tabs
                 $tabContents = $field['content'] ?? [];
                 foreach ($tabContents as $tabKey => $tabContent) {
@@ -160,8 +159,15 @@ trait LaraFormsBuilder
                             $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                         }
                     } elseif (is_numeric($tabKey)) {
-                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
+                        if (isset($tabContent['fields'])) {
+                            foreach ($tabContent['fields'] as $k => $f) {
+                                $fieldRules['formProperties.'.$k] = $this->getFieldRules($f, $k, $modelRules);
+                                $fieldValidationAttributes['formProperties.'.$k] = $this->getFieldValidationAttribute($f, $k);
+                            }
+                        } else {
+                            $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
+                            $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
+                        }
                     }
                 }
             }

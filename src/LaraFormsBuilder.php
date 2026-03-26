@@ -3,7 +3,6 @@
 namespace WisamAlhennawi\LaraFormsBuilder;
 
 use Exception;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -269,7 +268,7 @@ trait LaraFormsBuilder
     /**
      * A Livewire component's render method gets called on the initial page load AND every subsequent component update.
      *
-     * @return View
+     * @return \Illuminate\Contracts\View\View
      */
     public function render()
     {
@@ -651,19 +650,46 @@ trait LaraFormsBuilder
         $lastRepeatedGroup = [];
         $lastRepeatedGroupIndex = null;
         $lastPostfixNumericIndex = null;
+        $tabIndex = null;
 
-        foreach ($this->fields as $index => $group) {
-            if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
-                $lastRepeatedGroup = $group;
-                $lastRepeatedGroupIndex = $index;
+        // TODO: [UPDATED]
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            foreach ($this->fields as $index => $tab) {
+                // Content is multi groups of fields and numeric array
+                foreach ($tab['content'] as $groupIndex => $group) {
+                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                        $lastRepeatedGroup = $group;
+                        $lastRepeatedGroupIndex = $groupIndex;
+                        $tabIndex = $index;
 
-                if (isset($group['fields'])) {
-                    foreach ($group['fields'] as $fieldKey => $field) {
-                        if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
-                            if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
-                                $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
-                            } else {
-                                throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                        if (isset($group['fields'])) {
+                            foreach ($group['fields'] as $fieldKey => $field) {
+                                if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                                    if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                                        $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                                    } else {
+                                        throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach ($this->fields as $index => $group) {
+                if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                    $lastRepeatedGroup = $group;
+                    $lastRepeatedGroupIndex = $index;
+
+                    if (isset($group['fields'])) {
+                        foreach ($group['fields'] as $fieldKey => $field) {
+                            if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                                if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                                    $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                                } else {
+                                    throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                                }
                             }
                         }
                     }
@@ -692,25 +718,54 @@ trait LaraFormsBuilder
             $newRepeatedGroup['fields'][$newKey] = $field;
             // Initialize the repeated field in the $formProperties array
             $this->formProperties[$newKey] = null;
+            if ($field['type'] === 'yes-no-toggle-switch') {
+                $this->formProperties[$newKey] = false;
+            }
             // Set the validation rules depending on the base field
             $this->rules['formProperties.'.$newKey] = $this->rules['formProperties.'.$key];
             // Set the validation attributes depending on the base field
             $this->validationAttributes['formProperties.'.$newKey] = $this->getFieldValidationAttribute($field, $key);
         }
 
-        // Add the new repeated group to the $this->fields array directly after the last repeated group
-        array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            // Add the new repeated group to the $this->fields[$tabIndex]['content'] array directly after the last repeated group
+            array_splice($this->fields[$tabIndex]['content'], $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+            $this->initSteps();
+        } else {
+            // Add the new repeated group to the $this->fields array directly after the last repeated group
+            array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+        }
     }
 
-    public function deleteRepeatedGroup(int $groupIndex): void
+    public function deleteRepeatedGroup(int $groupIndex, string|int $groupId): void
     {
-        $repeatedGroupToDelete = $this->fields[$groupIndex];
+        $targetTabIndex = null;
+
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            foreach ($this->fields as $tabIndex => $tab) {
+                // Content is multi groups of fields and numeric array
+                foreach ($tab['content'] as $group) {
+                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                        $targetTabIndex = $tabIndex;
+                        $repeatedGroupToDelete = $this->fields[$tabIndex]['content'][$groupIndex];
+                    }
+                }
+            }
+        } else {
+            $repeatedGroupToDelete = $this->fields[$groupIndex];
+        }
+
         $repeatedFieldKeysToDelete = array_keys($repeatedGroupToDelete['fields']);
 
-        // Remove the group from $this->fields array and reindex it
-        unset($this->fields[$groupIndex]);
-        $this->fields = array_values($this->fields);
-
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            // Remove the group from $this->fields content array and reindex it
+            unset($this->fields[$targetTabIndex]['content'][$groupIndex]);
+            $this->fields[$targetTabIndex]['content'] = array_values($this->fields[$targetTabIndex]['content']);
+        } else {
+            // Remove the group from $this->fields array and reindex it
+            unset($this->fields[$groupIndex]);
+            $this->fields = array_values($this->fields);
+        }
         // Remove fields keys from formProperties, rules, and validationAttributes
         foreach ($repeatedFieldKeysToDelete as $key) {
             unset($this->formProperties[$key]);

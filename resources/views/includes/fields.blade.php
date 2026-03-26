@@ -12,9 +12,11 @@
             $accordionOpenValue = $groupMeta['accordionOpenValue'];
             $isReadonlyMode = $groupMeta['isReadonlyMode'];
             $resolvedGroupWrapperClass = $groupMeta['resolvedGroupWrapperClass'];
+            $groupFieldsKeys = array_keys($field['fields'] ?? []);
+            $groupWireKey = 'lfb-group-'.md5((string) $fieldKey.'|'.implode('|', $groupFieldsKeys));
         @endphp
 
-        <div class="lfb-fields-wrapper @if($isAccordion) lfb-accordion-wrapper @endif"
+        <div wire:key="{{ $groupWireKey }}" class="lfb-fields-wrapper @if($isAccordion) lfb-accordion-wrapper @endif"
              @if($isAccordion && $controlledBy)
                 x-data="{ open: @entangle('formProperties.' . $controlledBy).live }"
                 x-init="
@@ -97,8 +99,22 @@
                         $isRepeaterEnabled = isset($groupMeta['groupInfo']['repeater']['group_id']);
                         if ($isRepeaterEnabled) {
                             $groupId = $groupMeta['groupInfo']['repeater']['group_id'];
-                            $repeatedGroups = collect($this->fields)
-                                ->filter(fn($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+                            if (isset($this->hasTabs) && $this->hasTabs === true) {
+                                $repeatedGroups = collect();
+                                $lastGroupIndex = null;
+                                foreach ($this->fields as $index => $tab) {
+                                    foreach ($tab['content'] as $groupIndex => $group) {
+                                        if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                                            $repeatedGroups[$groupIndex] = $group;
+                                            $lastGroupIndex = $groupIndex;
+                                        }
+                                    }
+                                }
+                            } else {
+                                $repeatedGroups = collect($this->fields)
+                                    ->filter(fn($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+                            }
+
                             // Get the repeated groups count to conditionally display the delete button
                             $repeatedGroupsCount = $repeatedGroups->count();
                             // Check if this is the last repeated group to conditionally display the Add button below it
@@ -128,20 +144,20 @@
                             </svg>
                         </button>
 
-                        {{-- Delete button --}}
-                        @if($repeatedGroupsCount > 1)
-                            <button type="button"
-                                    wire:click="deleteRepeatedGroup('{{ $fieldKey }}')"
-                                    class="lfb-repeater-remove-button">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                     viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                        @endif
-                    </div>
-                @endif
+                    {{-- Delete button --}}
+                    @if($repeatedGroupsCount > 1)
+                        <button type="button"
+                                wire:click="deleteRepeatedGroup('{{ $fieldKey }}', '{{ $field['group_info']['repeater']['group_id'] }}')"
+                                class="lfb-repeater-remove-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    @endif
+                </div>
+            @endif
         </div>
     @else
         @include('lara-forms-builder::form-components', [

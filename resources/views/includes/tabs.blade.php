@@ -38,6 +38,10 @@
 
         {{-- Tabs Content --}}
         <div class="lfb-tab-content-wrapper" wire:target="save" wire:loading.class="lfb-tab-content-wrapper-loading-class">
+            {{-- Top Navigation Buttons (optional) --}}
+            @if(property_exists($this, 'hasTopNavigation') && $this->hasTopNavigation)
+                @include('lara-forms-builder::includes.buttons', ['position' => 'top'])
+            @endif
             <div class="lfb-tab-content-container">
                 @error('tabWarning')
                     <div class="lfb-tab-error-wrapper" role="alert">
@@ -69,7 +73,7 @@
                     </div>
                 @endforeach
             </div>
-            @include('lara-forms-builder::includes.buttons')
+            @include('lara-forms-builder::includes.buttons', ['position' => 'bottom'])
         </div>
     </div>
 </div>

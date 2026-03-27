@@ -10,6 +10,12 @@ trait HasTabs
 
     public bool $hasTabs = true;
 
+    /**
+     * If true, shows the buttons also above the tabs/multistep form.
+     * Set from the controller via mountForm([... 'hasTopNavigation' => true ...])
+     * Default: false (buttons only below)
+     */
+    public bool $hasTopNavigation = false;
     public bool $isMultiStep = false;
 
     protected function initActiveTab($value)

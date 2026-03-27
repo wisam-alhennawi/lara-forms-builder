@@ -154,6 +154,10 @@
         @apply border-t border-gray-200 mt-8 py-6;
     }
 
+    .lfb-header-buttons-wrapper {
+        @apply border-b border-gray-200 py-4;
+    }
+
     .lfb-buttons {
         @apply px-4 flex justify-end gap-2;
     }

@@ -1,14 +1,27 @@
-<div class="{{ $this->getFooterButtonsWrapperClasses() }}">
+@php
+    $position = $position ?? 'top';
+@endphp
+<div class="{{ $position === 'top' ? $this->getHeaderButtonsWrapperClasses() : $this->getFooterButtonsWrapperClasses() }}">
     <div class="lfb-buttons @if($this->isMultiStepForm() && $this->activeStepNumber() > 1)lfb-multi-step-buttons @endif">
         @if ($this->isMultiStepForm())
             @if ($this->activeStepNumber() > 1)
-                <button wire:click="previousStep" class="{{$this->getPreviousButtonClasses()}}">
-                    {{ __('Previous Step') }}
+                <button wire:click="previousStep" class="{{$this->getPreviousButtonClasses()}} lfb-prev-multi-step-button ">
+                    @if(method_exists($this, 'getStepPreviousIcon') && $this->getStepPreviousIcon())
+                        {!! $this->getStepPreviousIcon() !!}
+                    @endif
+                    <span class="lbf-button-label">
+                        {{ method_exists($this, 'getStepPreviousLabel') && $this->getStepPreviousLabel() ? $this->getStepPreviousLabel() : __('Previous Step') }}
+                    </span>
                 </button>
             @endif
             @if ($this->activeStepNumber() != $this->totalSteps())
-                <button wire:click="nextStep" class="{{$this->getNextButtonClasses()}}">
-                    {{ __('Next Step') }}
+                <button wire:click="nextStep" class="{{$this->getNextButtonClasses()}} lfb-next-multi-step-button">
+                    <span class="lbf-button-label">
+                        {{ method_exists($this, 'getStepNextLabel') && $this->getStepNextLabel() ? $this->getStepNextLabel() : __('Next Step') }}
+                    </span>
+                    @if(method_exists($this, 'getStepNextIcon') && $this->getStepNextIcon())
+                        {!! $this->getStepNextIcon() !!}
+                    @endif
                 </button>
             @else
                 @include('lara-forms-builder::includes.submit-button')

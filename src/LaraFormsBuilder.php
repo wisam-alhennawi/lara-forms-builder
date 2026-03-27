@@ -594,6 +594,14 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Get the css classes for header buttons wrapper
+     */
+    protected function getHeaderButtonsWrapperClasses(): string
+    {
+        return config('lara-forms-builder.header_buttons_wrapper_classes');
+    }
+
+    /**
      * Get the css classes for primary button
      */
     protected function getPrimaryButtonClasses(): string
@@ -700,4 +708,49 @@ trait LaraFormsBuilder
             unset($this->validationAttributes["formProperties.$key"]);
         }
     }
+
+    /**
+     * Allows customizing the label of the "Previous Step" button.
+     * Can be overridden in the form controller.
+     */
+    public function getStepPreviousLabel(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Allows customizing the label of the "Next Step" button.
+     * Can be overridden in the form controller.
+     */
+    public function getStepNextLabel(): ?string
+    {
+        return null;
+    }
+    
+    /**
+     * Allows customizing the SVG icon for the "Previous Step" button.
+     * Can be overridden in the form controller. Return SVG markup or null.
+     */
+    public function getStepPreviousIcon(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Allows customizing the SVG icon for the "Next Step" button.
+     * Can be overridden in the form controller. Return SVG markup or null.
+     */
+    public function getStepNextIcon(): ?string
+    {
+        return null;
+    }
+
+    /* *
+     * Allows customizing the display of the step number.
+     * Can be overridden in the form controller.
+     */
+   /*  public function showStepNumber(): bool
+    {
+        return $this->showStepNumber;
+    } */
 }

@@ -746,13 +746,4 @@ trait LaraFormsBuilder
     {
         return null;
     }
-
-    /* *
-     * Allows customizing the display of the step number.
-     * Can be overridden in the form controller.
-     */
-   /*  public function showStepNumber(): bool
-    {
-        return $this->showStepNumber;
-    } */
 }

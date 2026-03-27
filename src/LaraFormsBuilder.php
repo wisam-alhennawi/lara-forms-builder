@@ -39,6 +39,8 @@ trait LaraFormsBuilder
 
     public string $groupRepeaterPrefix = 'group_repeater_';
 
+    public bool $showStepNumber = false;
+
     /**
      * get field keys from fields array
      */

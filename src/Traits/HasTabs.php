@@ -16,6 +16,7 @@ trait HasTabs
      * Default: false (buttons only below)
      */
     public bool $hasTopNavigation = false;
+
     public bool $isMultiStep = false;
 
     protected function initActiveTab($value)

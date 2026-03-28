@@ -9,7 +9,7 @@
             if (formElement) {
                 const headerOffset = 100;
                 const elementPosition = formElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                window.scrollTo({ top: elementPosition, behavior: 'instant' });
             }
         }, 100);
     });

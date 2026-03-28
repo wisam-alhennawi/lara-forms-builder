@@ -66,6 +66,7 @@ trait MultiStepForm
         if ($this->mode == 'confirm') {
             $this->mode = null;
         }
+        $this->dispatch('scroll-to-top-form');
     }
 
     /**
@@ -73,6 +74,10 @@ trait MultiStepForm
      */
     public function nextStep()
     {
+        if ($this->scrollToFirstError) {
+            $this->dispatch('scroll-to-first-error');
+        }
+        
         // validate the current step
         $validatedData = $this->validate(
             array_intersect_key(
@@ -92,6 +97,7 @@ trait MultiStepForm
         }
         $this->activeStepNumber = $this->activeStepNumber + 1;
         $this->activeTab = $this->steps[$this->activeStepNumber - 1]['key'];
+        $this->dispatch('scroll-to-top-form');
     }
 
     /**

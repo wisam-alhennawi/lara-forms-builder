@@ -8,7 +8,7 @@
                         @foreach($fields as $index => $field)
                             <div class="lfb-step-nav">
                                 <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-step-nav-title-active' : '']" class="lfb-step-nav-title">
-                                    @if(method_exists($this, 'showStepNumber') ? $this->showStepNumber() : false)
+                                    @if(property_exists($this, 'showStepNumber') && $this->showStepNumber)
                                         <span class="lfb-step-nav-number">{{ $index + 1 }}</span>
                                     @endif
                                     <div class="lfb-step-nav-label">

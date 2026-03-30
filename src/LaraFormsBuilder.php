@@ -41,6 +41,8 @@ trait LaraFormsBuilder
 
     public bool $showStepNumber = false;
 
+    public bool $multiStepNavigationIconsEnabled = false;
+
     /**
      * get field keys from fields array
      */
@@ -715,35 +717,45 @@ trait LaraFormsBuilder
      * Allows customizing the label of the "Previous Step" button.
      * Can be overridden in the form controller.
      */
-    public function getStepPreviousLabel(): ?string
+    public function getPreviousStepLabel(): string
     {
-        return null;
+        return __('Previous Step');
     }
 
     /**
      * Allows customizing the label of the "Next Step" button.
      * Can be overridden in the form controller.
      */
-    public function getStepNextLabel(): ?string
+    public function getNextStepLabel(): string
     {
-        return null;
+        return __('Next Step');
     }
     
     /**
      * Allows customizing the SVG icon for the "Previous Step" button.
      * Can be overridden in the form controller. Return SVG markup or null.
+     * When multiStepNavigationIconsEnabled is true, returns a default chevron-left icon if not overridden.
      */
-    public function getStepPreviousIcon(): ?string
+    public function getPreviousStepIcon(): ?string
     {
+        if ($this->multiStepNavigationIconsEnabled) {
+            return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>';
+        }
+
         return null;
     }
 
     /**
      * Allows customizing the SVG icon for the "Next Step" button.
      * Can be overridden in the form controller. Return SVG markup or null.
+     * When multiStepNavigationIconsEnabled is true, returns a default chevron-right icon if not overridden.
      */
-    public function getStepNextIcon(): ?string
+    public function getNextStepIcon(): ?string
     {
+        if ($this->multiStepNavigationIconsEnabled) {
+            return '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>';
+        }
+
         return null;
     }
 }

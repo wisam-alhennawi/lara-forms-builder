@@ -941,35 +941,48 @@ class CustomerForm extends LaraFormComponent
 
 ##### Custom Button Labels
 
-Override `getStepPreviousLabel()` and/or `getStepNextLabel()` in your form component to replace the default button text.
+Override `getPreviousStepLabel()` and/or `getNextStepLabel()` in your form component to replace the default button text. The default implementations already return `__('Previous Step')` and `__('Next Step')` respectively.
 
 ```php
-public function getStepPreviousLabel(): ?string
+public function getPreviousStepLabel(): string
 {
     return __('Go Back');
 }
 
-public function getStepNextLabel(): ?string
+public function getNextStepLabel(): string
 {
     return __('Continue');
 }
 ```
 
-Returning `null` (the default) keeps the built-in label.
-
 ---
 
-##### Custom Button Icons
+##### Navigation Icons
 
-Override `getStepPreviousIcon()` and/or `getStepNextIcon()` to supply custom SVG markup for the navigation buttons. Return a raw SVG string or `null` to use the default icon.
+Set the `$multiStepNavigationIconsEnabled` property to `true` to display the built-in chevron icons on the Previous / Next navigation buttons.
 
 ```php
-public function getStepPreviousIcon(): ?string
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $multiStepNavigationIconsEnabled = true;
+
+    // ...
+}
+```
+
+When enabled, a left-chevron icon is shown on the Previous button and a right-chevron icon on the Next button by default.
+
+To use custom icons instead, override `getPreviousStepIcon()` and/or `getNextStepIcon()` in your form component and return raw SVG markup. The override is applied regardless of the value of `$multiStepNavigationIconsEnabled`.
+
+```php
+public function getPreviousStepIcon(): ?string
 {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M15 19l-7-7 7-7"/></svg>';
 }
 
-public function getStepNextIcon(): ?string
+public function getNextStepIcon(): ?string
 {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M9 5l7 7-7 7"/></svg>';
 }

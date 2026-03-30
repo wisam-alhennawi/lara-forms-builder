@@ -77,7 +77,7 @@ trait MultiStepForm
         if ($this->scrollToFirstError) {
             $this->dispatch('scroll-to-first-error');
         }
-        
+
         // validate the current step
         $validatedData = $this->validate(
             array_intersect_key(

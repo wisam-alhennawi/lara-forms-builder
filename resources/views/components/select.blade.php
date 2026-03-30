@@ -139,5 +139,6 @@
         </div>
         @include('lara-forms-builder::includes.field-error-message')
     @endif
+    @include('lara-forms-builder::includes.field-form-warning')
     @include('lara-forms-builder::includes.field-help-text')
 </div>

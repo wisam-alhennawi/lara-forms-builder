@@ -5,10 +5,15 @@
             <aside class="lfb-steps-nav-wrapper">
                 <div class="lfb-steps-nav-container">
                     <nav class="lfb-steps-nav">
-                        @foreach($fields as $field)
+                        @foreach($fields as $index => $field)
                             <div class="lfb-step-nav">
                                 <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-step-nav-title-active' : '']" class="lfb-step-nav-title">
-                                    {{ $field['navTitle'] ?? $field['title'] }}
+                                    @if(property_exists($this, 'showStepNumber') && $this->showStepNumber)
+                                        <span class="lfb-step-nav-number">{{ $index + 1 }}</span>
+                                    @endif
+                                    <div class="lfb-step-nav-label">
+                                        {{ $field['navTitle'] ?? $field['title'] }}
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -38,6 +43,10 @@
 
         {{-- Tabs Content --}}
         <div class="lfb-tab-content-wrapper" wire:target="save" wire:loading.class="lfb-tab-content-wrapper-loading-class">
+            {{-- Top Navigation Buttons (optional) --}}
+            @if(property_exists($this, 'hasTopNavigation') && $this->hasTopNavigation)
+                @include('lara-forms-builder::includes.buttons', ['position' => 'top'])
+            @endif
             <div class="lfb-tab-content-container">
                 @error('tabWarning')
                     <div class="lfb-tab-error-wrapper" role="alert">
@@ -69,7 +78,7 @@
                     </div>
                 @endforeach
             </div>
-            @include('lara-forms-builder::includes.buttons')
+            @include('lara-forms-builder::includes.buttons', ['position' => 'bottom'])
         </div>
     </div>
 </div>

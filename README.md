@@ -897,6 +897,99 @@ Example with custom Livewire component:
     }
     ```
 
+#### Multi-Step Customization Options
+
+The following options allow you to further customize the appearance and behavior of multi-step forms.
+
+---
+
+##### Show Step Numbers
+
+Set the `$showStepNumber` property to `true` to display a numeric index next to each step name in the navigation.
+
+```php
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $showStepNumber = true;
+
+    // ...
+}
+```
+
+Each step label will be prefixed with its sequential number (e.g. `1 Address Data`, `2 Contact Data`).
+
+---
+
+##### Top Navigation Bar
+
+Set the `$hasTopNavigation` property to `true` to render the Previous / Next navigation buttons **above** the form content in addition to the default bottom position.
+
+```php
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $hasTopNavigation = true;
+
+    // ...
+}
+```
+
+---
+
+##### Custom Button Labels
+
+Override `getPreviousStepLabel()` and/or `getNextStepLabel()` in your form component to replace the default button text. The default implementations already return `__('Previous Step')` and `__('Next Step')` respectively.
+
+```php
+public function getPreviousStepLabel(): string
+{
+    return __('Go Back');
+}
+
+public function getNextStepLabel(): string
+{
+    return __('Continue');
+}
+```
+
+---
+
+##### Navigation Icons
+
+Set the `$multiStepNavigationIconsEnabled` property to `true` to display the built-in chevron icons on the Previous / Next navigation buttons.
+
+```php
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $multiStepNavigationIconsEnabled = true;
+
+    // ...
+}
+```
+
+When enabled, a left-chevron icon is shown on the Previous button and a right-chevron icon on the Next button by default.
+
+To use custom icons instead, override `getPreviousStepIcon()` and/or `getNextStepIcon()` in your form component and return raw SVG markup. The override is applied regardless of the value of `$multiStepNavigationIconsEnabled`.
+
+```php
+public function getPreviousStepIcon(): ?string
+{
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M15 19l-7-7 7-7"/></svg>';
+}
+
+public function getNextStepIcon(): ?string
+{
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M9 5l7 7-7 7"/></svg>';
+}
+```
+
+---
+
 ### Form Methods
 
 * `protected function successMessage()`

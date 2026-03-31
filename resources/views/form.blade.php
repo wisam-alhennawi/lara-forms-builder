@@ -27,5 +27,8 @@
     @endif
     @if($scrollToFirstError)
        @include('lara-forms-builder::includes.scroll-to-first-error-script')
-    @endif 
+    @endif
+    @if(isset($isMultiStep) && $isMultiStep)
+        @include('lara-forms-builder::includes.scroll-to-top-form')
+    @endif
 </div>

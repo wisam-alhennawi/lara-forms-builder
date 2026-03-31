@@ -612,6 +612,14 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Get the css classes for header buttons wrapper
+     */
+    protected function getHeaderButtonsWrapperClasses(): string
+    {
+        return config('lara-forms-builder.header_buttons_wrapper_classes') ?? 'lfb-header-buttons-wrapper';
+    }
+
+    /**
      * Get the css classes for primary button
      */
     protected function getPrimaryButtonClasses(): string

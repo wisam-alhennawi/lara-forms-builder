@@ -2,6 +2,14 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.2.2 - 2026-03-31
+
+### What's Changed
+
+* Add form warning to select component by @florianbinderme in https://github.com/wisam-alhennawi/lara-forms-builder/pull/89
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.2.1...v2.2.2
+
 ## v2.2.1 - 2025-07-04
 
 ### What's Changed

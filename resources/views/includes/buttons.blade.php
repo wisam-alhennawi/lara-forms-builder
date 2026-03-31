@@ -5,22 +5,22 @@
     <div class="lfb-buttons @if($this->isMultiStepForm() && $this->activeStepNumber() > 1)lfb-multi-step-buttons @endif">
         @if ($this->isMultiStepForm())
             @if ($this->activeStepNumber() > 1)
-                <button wire:click="previousStep" class="{{$this->getPreviousButtonClasses()}} lfb-prev-multi-step-button ">
-                    @if(method_exists($this, 'getPreviousStepIcon') && $this->getPreviousStepIcon())
-                        {!! $this->getPreviousStepIcon() !!}
+                <button wire:click="previousStep" class="{{$this->getPreviousButtonClasses()}}">
+                    @if($previousStepIcon = $this->getPreviousStepIcon())
+                        {!! $previousStepIcon !!}
                     @endif
                     <span class="lbf-button-label">
-                        {{ method_exists($this, 'getPreviousStepLabel') && $this->getPreviousStepLabel() ? $this->getPreviousStepLabel() : __('Previous Step') }}
+                        {{ $this->getPreviousStepLabel() }}
                     </span>
                 </button>
             @endif
             @if ($this->activeStepNumber() != $this->totalSteps())
-                <button wire:click="nextStep" class="{{$this->getNextButtonClasses()}} lfb-next-multi-step-button">
+                <button wire:click="nextStep" class="{{$this->getNextButtonClasses()}}">
                     <span class="lbf-button-label">
-                        {{ method_exists($this, 'getNextStepLabel') && $this->getNextStepLabel() ? $this->getNextStepLabel() : __('Next Step') }}
+                        {{ $this->getNextStepLabel() }}
                     </span>
-                    @if(method_exists($this, 'getNextStepIcon') && $this->getNextStepIcon())
-                        {!! $this->getNextStepIcon() !!}
+                    @if($nextStepIcon = $this->getNextStepIcon())
+                        {!! $nextStepIcon !!}
                     @endif
                 </button>
             @else

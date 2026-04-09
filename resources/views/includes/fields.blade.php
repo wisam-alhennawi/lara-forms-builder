@@ -1,5 +1,7 @@
+
+@php $lfbGroupKeyCounter = []; @endphp
 @foreach ($fields as $fieldKey => $field)
-    @if (is_numeric($fieldKey) && isset($field['fields']))
+    <?php if (is_numeric($fieldKey) && isset($field['fields'])): ?>
         @php
             $groupMeta = $this->resolveGroupMeta($field, $groupWrapperClass, $mode ?? null);
             $groupInfo = $groupMeta['groupInfo'];
@@ -13,7 +15,9 @@
             $isReadonlyMode = $groupMeta['isReadonlyMode'];
             $resolvedGroupWrapperClass = $groupMeta['resolvedGroupWrapperClass'];
             $groupFieldsKeys = array_keys($field['fields'] ?? []);
-            $groupWireKey = 'lfb-group-'.md5((string) $fieldKey.'|'.implode('|', $groupFieldsKeys));
+            $baseGroupKey = implode('|', $groupFieldsKeys);
+            $lfbGroupKeyCounter[$baseGroupKey] = ($lfbGroupKeyCounter[$baseGroupKey] ?? 0) + 1;
+            $groupWireKey = 'lfb-group-'. md5((string) $baseGroupKey . '-' . $lfbGroupKeyCounter[$baseGroupKey]);
         @endphp
 
         <div wire:key="{{ $groupWireKey }}" class="lfb-fields-wrapper @if($isAccordion) lfb-accordion-wrapper @endif"
@@ -159,11 +163,11 @@
                 </div>
             @endif
         </div>
-    @else
+    <?php else: ?>
         @include('lara-forms-builder::form-components', [
             'field' => $field,
             'fieldKey' => $fieldKey,
             'defaultFieldWrapperClass' => $defaultFieldWrapperClass
         ])
-    @endif
+    <?php endif; ?>
 @endforeach

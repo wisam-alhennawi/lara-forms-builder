@@ -69,23 +69,12 @@
                 @foreach($fields as $fieldKey => $field)
                     <div x-show="tab == '{{ $field['key'] }}'" wire:key="{{ 'tab-'. md5($field['key']) }}" x-cloak class="lfb-tab-content-item">
                         <h2 class="lfb-tab-content-item-title">{{ $field['title'] }}</h2>
-                        @if(isset($field['content']['fields']))
-                            @include('lara-forms-builder::includes.fields', [
-                                    'fields' => [
-                                        $fieldKey => $field['content']
-                                    ]
-                                ]
-                            )
-                        @else
-                            {{-- TODO: Chcek if we need to chcek is_nemeric -> group meta without fields case --}}
-                            @foreach($field['content'] as $index => $group)
-                                @include('lara-forms-builder::includes.fields', [
-                                    'fields' => [
-                                        $index => $group
-                                    ]
-                                ])
-                            @endforeach
-                        @endif
+                        @include('lara-forms-builder::includes.fields', [
+                            'fields' => (isset($field['content']['fields']))
+                                ? [
+                                    $fieldKey => $field['content']
+                                ] : $field['content']
+                        ])
                     </div>
                 @endforeach
             </div>

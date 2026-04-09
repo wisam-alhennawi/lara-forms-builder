@@ -23,7 +23,7 @@
         </div>
     @enderror
     @if (!isset($hasTabs) || (isset($hasTabs) && !$hasTabs))
-        @include('lara-forms-builder::includes.buttons')
+        @include('lara-forms-builder::includes.buttons', ['position' => 'bottom'])
     @endif
     @if($scrollToFirstError)
        @include('lara-forms-builder::includes.scroll-to-first-error-script')

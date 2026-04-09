@@ -1,7 +1,4 @@
-@php
-    $position = $position ?? 'top';
-@endphp
-<div class="{{ $position === 'top' ? $this->getHeaderButtonsWrapperClasses() : $this->getFooterButtonsWrapperClasses() }}">
+<div class="{{ ($position ?? 'bottom') === 'top' ? $this->getHeaderButtonsWrapperClasses() : $this->getFooterButtonsWrapperClasses() }}">
     <div class="lfb-buttons @if($this->isMultiStepForm() && $this->activeStepNumber() > 1)lfb-multi-step-buttons @endif">
         @if ($this->isMultiStepForm())
             @if ($this->activeStepNumber() > 1)

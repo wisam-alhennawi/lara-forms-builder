@@ -4,6 +4,7 @@ namespace WisamAlhennawi\LaraFormsBuilder;
 
 use Exception;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -736,7 +737,7 @@ trait LaraFormsBuilder
         }
     }
 
-    private function collectRepeatedGroups(string|int $groupId): \Illuminate\Support\Collection
+    private function collectRepeatedGroups(string|int $groupId): Collection
     {
         if (isset($this->hasTabs) && $this->hasTabs === true) {
             $repeatedGroups = collect();
@@ -796,5 +797,4 @@ trait LaraFormsBuilder
     {
         return $this->collectRepeatedGroups($groupId)->count();
     }
-
 }

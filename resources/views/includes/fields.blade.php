@@ -102,27 +102,7 @@
 
                         $isRepeaterEnabled = isset($groupMeta['groupInfo']['repeater']['group_id']);
                         if ($isRepeaterEnabled) {
-                            $groupId = $groupMeta['groupInfo']['repeater']['group_id'];
-                            if (isset($this->hasTabs) && $this->hasTabs === true) {
-                                $repeatedGroups = collect();
-                                $lastGroupIndex = null;
-                                foreach ($this->fields as $index => $tab) {
-                                    foreach ($tab['content'] as $groupIndex => $group) {
-                                        if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
-                                            $repeatedGroups[$groupIndex] = $group;
-                                            $lastGroupIndex = $groupIndex;
-                                        }
-                                    }
-                                }
-                            } else {
-                                $repeatedGroups = collect($this->fields)
-                                    ->filter(fn($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
-                            }
-
-                            // Get the repeated groups count to conditionally display the delete button
-                            $repeatedGroupsCount = $repeatedGroups->count();
-                            // Check if this is the last repeated group to conditionally display the Add button below it
-                            $isLastGroup = $fieldKey === $repeatedGroups->keys()->last();
+                            $isLastGroup = $this->isLastRepeatedGroup($groupMeta['groupInfo']['repeater']['group_id'], $fieldKey);
                         }
                     @endphp
                     @if (! $resolvedGroupFieldKey || $isControllerField)
@@ -149,7 +129,7 @@
                         </button>
 
                     {{-- Delete button --}}
-                    @if($repeatedGroupsCount > 1)
+                    @if($this->getRepeatedGroupsCount($field['group_info']['repeater']['group_id']) > 1)
                         <button type="button"
                                 wire:click="deleteRepeatedGroup('{{ $fieldKey }}', '{{ $field['group_info']['repeater']['group_id'] }}')"
                                 class="lfb-repeater-remove-button">

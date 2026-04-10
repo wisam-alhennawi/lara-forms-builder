@@ -656,55 +656,15 @@ trait LaraFormsBuilder
      */
     public function processGroupRepeating(string|int $groupId): void
     {
-        $lastRepeatedGroup = [];
-        $lastRepeatedGroupIndex = null;
-        $lastPostfixNumericIndex = null;
-        $tabIndex = null;
-
-        // TODO: [UPDATED]
-        if (isset($this->hasTabs) && $this->hasTabs === true) {
-            foreach ($this->fields as $index => $tab) {
-                // Content is multi groups of fields and numeric array
-                foreach ($tab['content'] as $groupIndex => $group) {
-                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
-                        $lastRepeatedGroup = $group;
-                        $lastRepeatedGroupIndex = $groupIndex;
-                        $tabIndex = $index;
-
-                        if (isset($group['fields'])) {
-                            foreach ($group['fields'] as $fieldKey => $field) {
-                                if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
-                                    if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
-                                        $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
-                                    } else {
-                                        throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            foreach ($this->fields as $index => $group) {
-                if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
-                    $lastRepeatedGroup = $group;
-                    $lastRepeatedGroupIndex = $index;
-
-                    if (isset($group['fields'])) {
-                        foreach ($group['fields'] as $fieldKey => $field) {
-                            if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
-                                if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
-                                    $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
-                                } else {
-                                    throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $repeatedGroups = $this->collectRepeatedGroups($groupId);
+        $lastRepeatedGroup = $repeatedGroups->last() ?? [];
+        $lastRepeatedGroupIndex = $repeatedGroups->keys()->last();
+        $lastPostfixNumericIndex = $lastRepeatedGroup !== []
+            ? $this->resolveLastPostfixNumericIndex($lastRepeatedGroup)
+            : null;
+        $tabIndex = isset($this->hasTabs) && $this->hasTabs === true
+            ? $this->findTabIndexForGroup($groupId)
+            : null;
 
         if ($lastRepeatedGroup === [] || $lastRepeatedGroupIndex === null || $lastPostfixNumericIndex === null) {
             throw new Exception("Group not found check the provided 'repeater' => ['group_id' => 'developers'] property");
@@ -748,18 +708,9 @@ trait LaraFormsBuilder
 
     public function deleteRepeatedGroup(int $groupIndex, string|int $groupId): void
     {
-        $targetTabIndex = null;
-
         if (isset($this->hasTabs) && $this->hasTabs === true) {
-            foreach ($this->fields as $tabIndex => $tab) {
-                // Content is multi groups of fields and numeric array
-                foreach ($tab['content'] as $group) {
-                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
-                        $targetTabIndex = $tabIndex;
-                        $repeatedGroupToDelete = $this->fields[$tabIndex]['content'][$groupIndex];
-                    }
-                }
-            }
+            $targetTabIndex = $this->findTabIndexForGroup($groupId);
+            $repeatedGroupToDelete = $this->fields[$targetTabIndex]['content'][$groupIndex];
         } else {
             $repeatedGroupToDelete = $this->fields[$groupIndex];
         }
@@ -769,10 +720,12 @@ trait LaraFormsBuilder
         if (isset($this->hasTabs) && $this->hasTabs === true) {
             // Remove the group from $this->fields content array and reindex it
             unset($this->fields[$targetTabIndex]['content'][$groupIndex]);
+            // TODO: Check if the reindex is needed.
             $this->fields[$targetTabIndex]['content'] = array_values($this->fields[$targetTabIndex]['content']);
         } else {
             // Remove the group from $this->fields array and reindex it
             unset($this->fields[$groupIndex]);
+            // TODO: Check if the reindex is needed.
             $this->fields = array_values($this->fields);
         }
         // Remove fields keys from formProperties, rules, and validationAttributes
@@ -782,4 +735,66 @@ trait LaraFormsBuilder
             unset($this->validationAttributes["formProperties.$key"]);
         }
     }
+
+    private function collectRepeatedGroups(string|int $groupId): \Illuminate\Support\Collection
+    {
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            $repeatedGroups = collect();
+            foreach ($this->fields as $tab) {
+                foreach ($tab['content'] as $groupIndex => $group) {
+                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                        $repeatedGroups[$groupIndex] = $group;
+                    }
+                }
+            }
+
+            return $repeatedGroups;
+        }
+
+        return collect($this->fields)
+            ->filter(fn ($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+    }
+
+    private function resolveLastPostfixNumericIndex(array $group): ?int
+    {
+        $lastPostfixNumericIndex = null;
+
+        if (isset($group['fields'])) {
+            foreach ($group['fields'] as $fieldKey => $field) {
+                if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                    if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                        $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                    } else {
+                        throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                    }
+                }
+            }
+        }
+
+        return $lastPostfixNumericIndex;
+    }
+
+    private function findTabIndexForGroup(string|int $groupId): ?int
+    {
+        foreach ($this->fields as $tabIndex => $tab) {
+            foreach ($tab['content'] as $group) {
+                if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                    return $tabIndex;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function isLastRepeatedGroup(string|int $groupId, string|int $fieldKey): bool
+    {
+        return $fieldKey === $this->collectRepeatedGroups($groupId)->keys()->last();
+    }
+
+    public function getRepeatedGroupsCount(string|int $groupId): int
+    {
+        return $this->collectRepeatedGroups($groupId)->count();
+    }
+
 }

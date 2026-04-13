@@ -1,7 +1,7 @@
 @php
     $hasExtraElement = $enableExtraElements && ($option['has_extra_element'] ?? false);
     $selectedValues = $this->formProperties[$key] ?? [];
-    $isSelected = is_array($selectedValues) && in_array($option['value'], $selectedValues, true);
+    $isSelected = is_array($selectedValues) && in_array($option['value'], $selectedValues);
     $isDisabled = (isset($mode) && ($mode == 'view' || $mode == 'confirm')) || (isset($option['disabled']) && $option['disabled']) || $readOnly;
     $extraElementDisabled = $isDisabled || ! $isSelected;
 @endphp

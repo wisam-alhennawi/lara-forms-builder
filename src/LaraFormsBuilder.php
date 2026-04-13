@@ -4,6 +4,7 @@ namespace WisamAlhennawi\LaraFormsBuilder;
 
 use Exception;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -91,10 +92,20 @@ trait LaraFormsBuilder
                             ];
                         }
                     } elseif (is_numeric($tabFieldKey)) {
-                        $fields[] = [
-                            'key' => $tabFieldKey,
-                            'field' => $tabFieldValue,
-                        ];
+                        if (isset($tabFieldValue['fields'])) {
+                            foreach ($tabFieldValue['fields'] as $k => $f) {
+                                $fields[] = [
+                                    'key' => $k,
+                                    'field' => $f,
+                                ];
+                            }
+                        } else {
+                            // TODO: Check when this condition is accomplished
+                            $fields[] = [
+                                'key' => $tabFieldKey,
+                                'field' => $tabFieldValue,
+                            ];
+                        }
                     }
                 }
             }
@@ -150,8 +161,15 @@ trait LaraFormsBuilder
                             $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                         }
                     } elseif (is_numeric($tabKey)) {
-                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
+                        if (isset($tabContent['fields'])) {
+                            foreach ($tabContent['fields'] as $k => $f) {
+                                $fieldRules['formProperties.'.$k] = $this->getFieldRules($f, $k, $modelRules);
+                                $fieldValidationAttributes['formProperties.'.$k] = $this->getFieldValidationAttribute($f, $k);
+                            }
+                        } else {
+                            $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
+                            $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
+                        }
                     }
                 }
             }
@@ -639,28 +657,15 @@ trait LaraFormsBuilder
      */
     public function processGroupRepeating(string|int $groupId): void
     {
-        $lastRepeatedGroup = [];
-        $lastRepeatedGroupIndex = null;
-        $lastPostfixNumericIndex = null;
-
-        foreach ($this->fields as $index => $group) {
-            if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
-                $lastRepeatedGroup = $group;
-                $lastRepeatedGroupIndex = $index;
-
-                if (isset($group['fields'])) {
-                    foreach ($group['fields'] as $fieldKey => $field) {
-                        if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
-                            if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
-                                $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
-                            } else {
-                                throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $repeatedGroups = $this->collectRepeatedGroups($groupId);
+        $lastRepeatedGroup = $repeatedGroups->last() ?? [];
+        $lastRepeatedGroupIndex = $repeatedGroups->keys()->last();
+        $lastPostfixNumericIndex = $lastRepeatedGroup !== []
+            ? $this->resolveLastPostfixNumericIndex($lastRepeatedGroup)
+            : null;
+        $tabIndex = isset($this->hasTabs) && $this->hasTabs === true
+            ? $this->findTabIndexForGroup($groupId)
+            : null;
 
         if ($lastRepeatedGroup === [] || $lastRepeatedGroupIndex === null || $lastPostfixNumericIndex === null) {
             throw new Exception("Group not found check the provided 'repeater' => ['group_id' => 'developers'] property");
@@ -683,30 +688,113 @@ trait LaraFormsBuilder
             $newRepeatedGroup['fields'][$newKey] = $field;
             // Initialize the repeated field in the $formProperties array
             $this->formProperties[$newKey] = null;
+            if ($field['type'] === 'yes-no-toggle-switch') {
+                $this->formProperties[$newKey] = false;
+            }
             // Set the validation rules depending on the base field
             $this->rules['formProperties.'.$newKey] = $this->rules['formProperties.'.$key];
             // Set the validation attributes depending on the base field
             $this->validationAttributes['formProperties.'.$newKey] = $this->getFieldValidationAttribute($field, $key);
         }
 
-        // Add the new repeated group to the $this->fields array directly after the last repeated group
-        array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            // Add the new repeated group to the $this->fields[$tabIndex]['content'] array directly after the last repeated group
+            array_splice($this->fields[$tabIndex]['content'], $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+            $this->initSteps();
+        } else {
+            // Add the new repeated group to the $this->fields array directly after the last repeated group
+            array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+        }
     }
 
-    public function deleteRepeatedGroup(int $groupIndex): void
+    public function deleteRepeatedGroup(int $groupIndex, string|int $groupId): void
     {
-        $repeatedGroupToDelete = $this->fields[$groupIndex];
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            $targetTabIndex = $this->findTabIndexForGroup($groupId);
+            $repeatedGroupToDelete = $this->fields[$targetTabIndex]['content'][$groupIndex];
+        } else {
+            $repeatedGroupToDelete = $this->fields[$groupIndex];
+        }
+
         $repeatedFieldKeysToDelete = array_keys($repeatedGroupToDelete['fields']);
 
-        // Remove the group from $this->fields array and reindex it
-        unset($this->fields[$groupIndex]);
-        $this->fields = array_values($this->fields);
-
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            // Remove the group from $this->fields content array and reindex it
+            unset($this->fields[$targetTabIndex]['content'][$groupIndex]);
+            // TODO: Check if the reindex is needed.
+            $this->fields[$targetTabIndex]['content'] = array_values($this->fields[$targetTabIndex]['content']);
+        } else {
+            // Remove the group from $this->fields array and reindex it
+            unset($this->fields[$groupIndex]);
+            // TODO: Check if the reindex is needed.
+            $this->fields = array_values($this->fields);
+        }
         // Remove fields keys from formProperties, rules, and validationAttributes
         foreach ($repeatedFieldKeysToDelete as $key) {
             unset($this->formProperties[$key]);
             unset($this->rules["formProperties.$key"]);
             unset($this->validationAttributes["formProperties.$key"]);
         }
+    }
+
+    private function collectRepeatedGroups(string|int $groupId): Collection
+    {
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            $repeatedGroups = collect();
+            foreach ($this->fields as $tab) {
+                foreach ($tab['content'] as $groupIndex => $group) {
+                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                        $repeatedGroups[$groupIndex] = $group;
+                    }
+                }
+            }
+
+            return $repeatedGroups;
+        }
+
+        return collect($this->fields)
+            ->filter(fn ($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+    }
+
+    private function resolveLastPostfixNumericIndex(array $group): ?int
+    {
+        $lastPostfixNumericIndex = null;
+
+        if (isset($group['fields'])) {
+            foreach ($group['fields'] as $fieldKey => $field) {
+                if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                    if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                        $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                    } else {
+                        throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                    }
+                }
+            }
+        }
+
+        return $lastPostfixNumericIndex;
+    }
+
+    private function findTabIndexForGroup(string|int $groupId): ?int
+    {
+        foreach ($this->fields as $tabIndex => $tab) {
+            foreach ($tab['content'] as $group) {
+                if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                    return $tabIndex;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function isLastRepeatedGroup(string|int $groupId, string|int $fieldKey): bool
+    {
+        return $fieldKey === $this->collectRepeatedGroups($groupId)->keys()->last();
+    }
+
+    public function getRepeatedGroupsCount(string|int $groupId): int
+    {
+        return $this->collectRepeatedGroups($groupId)->count();
     }
 }

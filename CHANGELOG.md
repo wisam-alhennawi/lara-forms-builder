@@ -2,6 +2,24 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.3.0 - 2026-04-28
+
+### What's Changed
+
+* LFB 1. // Neue Komponente //  Ja/Nein-Toggle by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/80
+* LFB 2. // Erweiterung der Tooltip-Komponente by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/81
+* LFB 4. // Implementierung Gruppierungs-Komponente mit optionaler Collapse-Funktion by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/83
+* LFB 6. // Implementierung Custom View / Erweiterte Formularansicht by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/84
+* Apply repeater functionality for a group of fields by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/85
+* LFB 3. // Implementierung Checkbox Group mit optionalem Eingabefeld by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/82
+* Feature/scroll to first error multi step form by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/88
+* Add multi-step form customization options by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/87
+* Fix default button position in Lara Forms Builder by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/90
+* Feature/update tab content to accept multi groups by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/86
+* Release: v2.3.0 by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/91
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.2.2...v2.3.0
+
 ## v2.2.2 - 2026-03-31
 
 ### What's Changed

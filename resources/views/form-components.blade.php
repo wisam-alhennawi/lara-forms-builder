@@ -51,6 +51,18 @@
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
         ])
         @break
+    @case('yes-no-toggle-switch')
+        @include('lara-forms-builder::components.yes-no-toggle-switch', [
+            'key' => $fieldKey,
+            'label' => $field['label'],
+            'toggleOptions' => $field['options'] ?? ['no' => 'No', 'yes' => 'Yes'],
+            'helpText' => $field['helpText'] ?? '',
+            'readOnly' => $field['readOnly'] ?? false,
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
+            'tooltip' => $field['tooltip'] ?? null,
+            'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
+        ])
+        @break
     @case('textarea')
         @include('lara-forms-builder::components.textarea', [
             'key' => $fieldKey,
@@ -98,6 +110,7 @@
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
             'fieldErrorWrapperClass' => $field['field_error_wrapper_class'] ?? $defaultFieldErrorWrapperClasses,
+            'enableExtraElements' => $field['enable_extra_elements'] ?? false,
         ])
         @break
     @case('file')
@@ -133,6 +146,13 @@
             'helpText' => $field['helpText'] ?? '',
             'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
             'tooltip' => $field['tooltip'] ?? null,
+        ])
+        @break
+    @case('custom-view')
+        @include('lara-forms-builder::components.custom-view', [
+            'key' => $fieldKey,
+            'field' => $field,
+            'fieldWrapperClass' => $field['field_wrapper_class'] ?? $defaultFieldWrapperClass,
         ])
         @break
     @default

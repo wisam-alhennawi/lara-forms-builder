@@ -252,6 +252,14 @@ protected function fields(): array
                         'type' => 'checkbox',
                         'label' => __('models/projects.fields.is_accepted'),
                     ],
+                    'is_active' => [
+                        'type' => 'yes-no-toggle-switch',
+                            'label' => __('Active'),
+                            'options' => [
+                                0 => __('No'),
+                                1 => __('Yes'),
+                            ],
+                    ],
                     'description' => [
                         'type' => 'textarea',
                         'label' => __('models/projects.fields.description'),
@@ -312,7 +320,16 @@ All form components have the following general properties:
 * `readOnly` (optional): When set to true, the form field does not allow input or changes and only displays the current value
 * `rules` (optional): Validation rules to be applied for this field. If not set, Eloquent model rules for the field with the same name will be used if available, otherwise no rules are applied.
 * `field_wrapper_class` (optional): CSS class(es) to be added to the div that encloses the form component
-* `tooltip` (optional): if set, the value is displayed as text in a tooltip on hover over a question mark icon rendered next to the label text
+* `tooltip` (optional): supports string or array and renders a tooltip icon next to the label.
+    - String usage: pass plain tooltip text.
+    - Array usage: pass `text` for tooltip content and optional `iconView` for a custom icon Blade partial.
+    - Width classes are applied automatically based on tooltip text length (small, medium, large).
+```php
+'tooltip' => [
+    'text' => 'Curabitur at felis non libero suscipit fermentum...',
+    'iconView' => 'partials.icons.info-tooltip',
+],
+```
 
 #### Type `input`
 
@@ -374,12 +391,141 @@ The `cards` form field is a special layout element used to select among differen
 
 The `checkbox` form field is a single checkbox and does not have any additional properties.
 
-#### Type `checkbox-group`
+#### Type `checkbox-group` with Extra Input Element
 
 The `checkbox-group` form field is a multi-select group of checkboxes. It has the following additional properties:
 
 * `options` (mandatory): Specifies the values and labels for the checkboxes, provided as an array of objects with attributes `value` and `label` or a nested array of category label to array of objects with attributes `value` and `label` when grouped by category.
 * `hasCategory` (optional): Defines whether the checkbox entries are grouped by category, default if not set is false.
+* `enable_extra_elements` (optional): Enables the extra input feature for this checkbox group. Default is `false`.
+* `has_extra_element` (optional): When set to `true` for an option, renders a text input field below the checkbox. The input remains read-only/disabled until its corresponding checkbox is selected. The option-level setting only has an effect when `enable_extra_elements` is `true`.
+
+    **Behavior:**
+    - The extra input field is automatically disabled when the checkbox is unchecked
+    - The field becomes editable as soon as the checkbox is selected
+    - Extra input values are stored separately from checkbox values in `formProperties.{key}_extra.{value}`
+
+    **Data Structure:**
+    - Selected checkbox values: `$this->formProperties['{field_key}']` (array of selected values)
+    - Extra input values: `$this->formProperties['{field_key}_extra']` (associative array where keys are checkbox values and values are the input text)
+
+    **Setup Guide (Example Naming)**
+
+    Example field key: `related_items`
+
+    ```php
+    'related_items' => [
+        'type' => 'checkbox-group',
+        'label' => 'Related Items',
+        'options' => $this->relatedItemsOptions,
+        'rules' => 'array',
+        'enable_extra_elements' => true,
+    ],
+    ```
+
+    Each option must include `has_extra_element` (boolean):
+
+    ```php
+    public function beforeFormProperties(): void
+    {
+        $this->relatedItemsOptions = RelatedItem::query()
+            ->select('id as value', 'name as label', 'has_extra_element')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($row) {
+                $row->value = (string) $row->value;
+
+                return $row;
+            })
+            ->toArray();
+    }
+    ```
+
+    Initialize values after loading the model:
+
+    ```php
+    public function afterFormProperties(): void
+    {
+        $this->formProperties['related_items'] = (filled($this->model) && $this->model->exists)
+            ? $this->model->relatedItems->pluck('id')->map('strval')->toArray()
+            : [];
+
+        $this->formProperties['related_items_extra'] = (filled($this->model) && $this->model->exists)
+            ? $this->model->relatedItems
+                ->pluck('pivot.extra_element', 'id')
+                ->mapWithKeys(function ($value, $key) {
+                    return [(string) $key => $value];
+                })
+                ->toArray()
+            : [];
+    }
+    ```
+
+    Keep extra inputs in sync when the checkbox group changes:
+
+    ```php
+    public function updatedRelatedItems($value): void
+    {
+        $selectedIds = $this->formProperties['related_items'] ?? [];
+        $selectedIds = is_array($selectedIds) ? $selectedIds : [];
+        $extraValues = $this->formProperties['related_items_extra'] ?? [];
+
+        foreach ($this->relatedItemsOptions as $option) {
+            $id = (string) ($option['value'] ?? '');
+            $requiresExtra = (bool) ($option['has_extra_element'] ?? false);
+
+            if ($requiresExtra && ! in_array($id, $selectedIds, true)) {
+                $extraValues[$id] = null;
+            }
+        }
+
+        $this->formProperties['related_items_extra'] = $extraValues;
+    }
+    ```
+
+    Validate extra inputs when required:
+
+    ```php
+    protected function extraValidate(array $validatedData = []): bool
+    {
+        $selectedIds = $validatedData['related_items'] ?? [];
+        $extraValues = $this->formProperties['related_items_extra'] ?? [];
+
+        foreach ($this->relatedItemsOptions as $option) {
+            $id = (string) ($option['value'] ?? '');
+            $requiresExtra = (bool) ($option['has_extra_element'] ?? false);
+            $isSelected = in_array($id, $selectedIds, true);
+            $value = $extraValues[$id] ?? null;
+
+            if ($requiresExtra && $isSelected && (is_null($value) || trim((string) $value) === '')) {
+                $this->addError('formProperties.related_items_extra.'.$id, 'This field is required.');
+                return false;
+            }
+        }
+
+        return true;
+    }
+    ```
+
+    Persist the pivot data in a `save...` hook:
+
+    ```php
+    public function saveRelatedItems($validatedData): void
+    {
+        $selectedIds = $validatedData ?? [];
+        $extraValues = $this->formProperties['related_items_extra'] ?? [];
+        $syncData = [];
+
+        foreach ($selectedIds as $relatedItemId) {
+            $syncData[$relatedItemId] = [
+                'extra_element' => $extraValues[(string) $relatedItemId] ?? null,
+            ];
+        }
+
+        $this->model->relatedItems()->sync($syncData);
+    }
+    ```
+
 
 #### Type `date-picker`
 
@@ -429,6 +575,246 @@ In order to use the trix-editor form field you have to add the following to your
 ```
 
 Please see the full documentation on the official [Trix page](https://github.com/basecamp/trix)  .
+
+#### Type `yes-no-toggle-switch`
+
+The `yes-no-toggle-switch` form field is a two-state toggle that displays Yes/No labels and stores the selected value in `formProperties`.
+It has the following additional properties:
+
+* `options` (optional): Specifies the two options as a simple array `value => label`. Defaults to `[0 => 'No', 1 => 'Yes']` if not set.
+
+Example:
+
+```php
+    'is_active' => [
+        'type' => 'yes-no-toggle-switch',
+        'label' => __('Active'),
+        'options' => [
+            0 => __('No'),
+            1 => __('Yes'),
+        ],
+    ]
+```
+
+### Group Info (Layout)
+
+`group_info` is a layout helper that wraps a group of fields. It can render as a normal group or as an accordion.
+
+Common `group_info` options:
+
+* `title` (optional): Group title.
+* `description` (optional): Group description text.
+* `description_view` (optional): Blade view to include under the title/description.
+* `group_wrapper_class` (optional): CSS class(es) for the inner fields wrapper.
+* `default_group_wrapper_class` (optional): If `false`, only `group_wrapper_class` is used. Default is `true`.
+
+Accordion options (optional):
+
+* `visibility` (array): Defines visibility behavior for the group.
+    * `accordion` (boolean): Enables accordion behavior (group fields are hidden until enabled).
+    * `controlled_by` (string): Field key inside the same `fields` group used to control open/close state.
+    * `default` (optional): Initial value used only when the controller field has no value yet. Can be `true/false` (for checkbox) or the corresponding toggle value.
+
+`controlled_by` concept:
+
+* The controller is a normal form field included in the same `fields` array.
+* If `controlled_by` points to a field with `type: checkbox`, the header renders a checkbox.
+* If `controlled_by` points to a field with `type: yes-no-toggle-switch`, the header renders a yes/no toggle.
+* The controller field is still part of form data and is persisted like any other field.
+
+**Important:** Handling group data based on whether the controller is checked/enabled, and showing validation messages for required fields inside that group, is not managed automatically by LFB and must be implemented in the form logic.
+
+Example: normal group (no accordion)
+
+```php
+[
+    'group_info' => [
+        'title' => __('Dog Info'),
+        'description' => __('Basic information about the dog.'),
+        'group_wrapper_class' => 'grid grid-cols-2 gap-4',
+    ],
+    'fields' => [
+        'name' => [
+            'type' => 'input',
+            'label' => __('models/dogs.fields.name'),
+        ],
+        'breed' => [
+            'type' => 'input',
+            'label' => __('models/dogs.fields.breed'),
+        ],
+    ],
+],
+```
+
+Example: accordion controlled by checkbox
+
+```php
+[
+    'group_info' => [
+        'title' => __('Advanced settings'),
+        'description' => __('Enable to show advanced fields.'),
+        'visibility' => [
+            'accordion' => true,
+            'controlled_by' => 'is_active',
+            'default' => true,
+        ],
+        'group_wrapper_class' => 'grid grid-cols-2 gap-4',
+    ],
+    'fields' => [
+        'is_active' => [
+            'type' => 'checkbox',
+            'label' => __('Enable advanced settings'),
+            'rules' => 'boolean',
+        ],
+        'microchip' => [
+            'type' => 'input',
+            'label' => __('Microchip'),
+        ],
+    ],
+],
+```
+
+Example: accordion controlled by yes-no-toggle-switch
+
+```php
+[
+    'group_info' => [
+        'title' => __('Advanced settings'),
+        'description' => __('Enable to show advanced fields.'),
+        'visibility' => [
+            'accordion' => true,
+            'controlled_by' => 'is_active',
+            'default' => true,
+        ],
+        'group_wrapper_class' => 'grid grid-cols-2 gap-4',
+    ],
+    'fields' => [
+        'is_active' => [
+            'type' => 'yes-no-toggle-switch',
+            'label' => __('Enable advanced settings'),
+            'options' => [
+                0 => __('No'),
+                1 => __('Yes'),
+            ],
+            'rules' => 'boolean',
+        ],
+        'timezone' => [
+            'type' => 'select',
+            'label' => __('Timezone'),
+            'options' => [
+                'UTC' => 'UTC',
+                'Europe/Rome' => 'Europe/Rome',
+            ],
+        ],
+    ],
+],
+```
+
+Repeater options (optional):
+
+* `repeater` (array): Define if the group will have a repeter functionality.
+    * `group_id` (string): a unique identifier for the related repeated groups.
+
+The main point is that we always have a `group_id` and a prefix to distinguish the repeated fields in addition to set the postfix `_0` for the first field.
+All repeated fields will take the same validation rules and validation attributes as the first field.
+
+
+The following is a dummy code snippet for concept explanation (a project form which has many developers):
+```php
+
+public function beforeFormProperties(): void
+{
+    $this->rules["formProperties." . $this->groupRepeaterPrefix . 'developer_name_0'] = 'required';
+}
+
+public function setRepeatedFields(): void
+{
+    $developers = $this->model->developers;
+    if ($developers->isEmpty()) {
+        return;
+    }
+    $fieldsRepeatingCount = $developers->count() - 1;
+    for ($i = 0; $i < $fieldsRepeatingCount; $i++) {
+        $this->processGroupRepeating('developers'); // group_id
+    }
+    foreach ($developers as $index => $developer) {
+        $this->formProperties[$this->groupRepeaterPrefix . "developer_name_{$index}"] = $developer->name;
+    }
+}
+
+protected function fields(): array
+{
+    return [
+        [
+            'group_info' => [
+                'repeater' => [
+                    'group_id' => 'developers'
+                ],
+            ],
+            'fields' => [
+                $this->groupRepeaterPrefix . 'developer_name_0' => [
+                    'type' => 'input',
+                    'label' => __('Name'),
+                ]
+            ]
+        ],
+    ];
+}
+
+public function saveGroupRepeater($validated_data): void
+{
+    // Saving logic
+}
+```
+
+#### Type `custom-view`
+
+The `custom-view` form field allows rendering a custom Blade view or a dedicated Livewire component inside the form.
+It has the following additional properties:
+
+* `view` (optional): Blade view name to include (for example `forms.fields.custom-note`).
+* `livewire_component` (optional): Livewire component name to render (for example `forms.custom-note`).
+* `data` (optional): Global array of data/props passed as-is to the custom Blade view or Livewire component.
+
+At least one of `view` or `livewire_component` should be provided.
+
+When rendered:
+
+* For Blade view: `@include($field['view'], $field['data'] ?? [])`
+* For Livewire component: `@livewire($field['livewire_component'], $field['data'] ?? [])`
+
+Pass only what you need through `data`.
+
+Example with custom Blade view:
+
+```php
+'custom_note' => [
+    'type' => 'custom-view',
+    'label' => __('Custom Note'),
+    'view' => 'forms.fields.custom-note',
+    'data' => [
+        'mode' => $this->mode,
+        'model' => $this->model,
+        'formProperties' => $this->formProperties,
+    ],
+]
+```
+
+Example with custom Livewire component:
+
+```php
+'custom_note' => [
+    'type' => 'custom-view',
+    'label' => __('Custom Note'),
+    'livewire_component' => 'forms.custom-note',
+    'data' => [
+        'mode' => $this->mode,
+        'model' => $this->model,
+        'formProperties' => $this->formProperties,
+        'fieldKey' => 'custom_note',
+    ],
+]
+```
 
 ### Form Layout
 
@@ -510,6 +896,99 @@ Please see the full documentation on the official [Trix page](https://github.com
         // ... other component properties and methods
     }
     ```
+
+#### Multi-Step Customization Options
+
+The following options allow you to further customize the appearance and behavior of multi-step forms.
+
+---
+
+##### Show Step Numbers
+
+Set the `$showStepNumber` property to `true` to display a numeric index next to each step name in the navigation.
+
+```php
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $showStepNumber = true;
+
+    // ...
+}
+```
+
+Each step label will be prefixed with its sequential number (e.g. `1 Address Data`, `2 Contact Data`).
+
+---
+
+##### Top Navigation Bar
+
+Set the `$hasTopNavigation` property to `true` to render the Previous / Next navigation buttons **above** the form content in addition to the default bottom position.
+
+```php
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $hasTopNavigation = true;
+
+    // ...
+}
+```
+
+---
+
+##### Custom Button Labels
+
+Override `getPreviousStepLabel()` and/or `getNextStepLabel()` in your form component to replace the default button text. The default implementations already return `__('Previous Step')` and `__('Next Step')` respectively.
+
+```php
+public function getPreviousStepLabel(): string
+{
+    return __('Go Back');
+}
+
+public function getNextStepLabel(): string
+{
+    return __('Continue');
+}
+```
+
+---
+
+##### Navigation Icons
+
+Set the `$multiStepNavigationIconsEnabled` property to `true` to display the built-in chevron icons on the Previous / Next navigation buttons.
+
+```php
+class CustomerForm extends LaraFormComponent
+{
+    use HasTabs;
+
+    public bool $multiStepNavigationIconsEnabled = true;
+
+    // ...
+}
+```
+
+When enabled, a left-chevron icon is shown on the Previous button and a right-chevron icon on the Next button by default.
+
+To use custom icons instead, override `getPreviousStepIcon()` and/or `getNextStepIcon()` in your form component and return raw SVG markup. The override is applied regardless of the value of `$multiStepNavigationIconsEnabled`.
+
+```php
+public function getPreviousStepIcon(): ?string
+{
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M15 19l-7-7 7-7"/></svg>';
+}
+
+public function getNextStepIcon(): ?string
+{
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M9 5l7 7-7 7"/></svg>';
+}
+```
+
+---
 
 ### Form Methods
 

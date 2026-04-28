@@ -1,14 +1,24 @@
-<div class="{{ $this->getFooterButtonsWrapperClasses() }}">
+<div class="{{ ($position ?? 'bottom') === 'top' ? $this->getHeaderButtonsWrapperClasses() : $this->getFooterButtonsWrapperClasses() }}">
     <div class="lfb-buttons @if($this->isMultiStepForm() && $this->activeStepNumber() > 1)lfb-multi-step-buttons @endif">
         @if ($this->isMultiStepForm())
             @if ($this->activeStepNumber() > 1)
                 <button wire:click="previousStep" class="{{$this->getPreviousButtonClasses()}}">
-                    {{ __('Previous Step') }}
+                    @if($previousStepIcon = $this->getPreviousStepIcon())
+                        {!! $previousStepIcon !!}
+                    @endif
+                    <span class="lbf-button-label">
+                        {{ $this->getPreviousStepLabel() }}
+                    </span>
                 </button>
             @endif
             @if ($this->activeStepNumber() != $this->totalSteps())
                 <button wire:click="nextStep" class="{{$this->getNextButtonClasses()}}">
-                    {{ __('Next Step') }}
+                    <span class="lbf-button-label">
+                        {{ $this->getNextStepLabel() }}
+                    </span>
+                    @if($nextStepIcon = $this->getNextStepIcon())
+                        {!! $nextStepIcon !!}
+                    @endif
                 </button>
             @else
                 @include('lara-forms-builder::includes.submit-button')

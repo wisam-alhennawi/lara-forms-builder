@@ -2,7 +2,9 @@
 
 namespace WisamAlhennawi\LaraFormsBuilder;
 
+use Exception;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -37,24 +39,32 @@ trait LaraFormsBuilder
 
     public $scrollToFirstError = false;
 
+    public string $groupRepeaterPrefix = 'group_repeater_';
+
     /**
      * get field keys from fields array
      */
-    public function getFieldKeys(): array
+    public function getFieldKeys(bool $withRepeatedFields = false): array
     {
         // get all keys from fields array
         return array_map(function ($field) {
             return $field['key'];
-        }, $this->getFieldsFlat());
+        }, $this->getFieldsFlat($withRepeatedFields));
     }
 
     /**
      * get all fields from fields array as flat array
      */
-    public function getFieldsFlat(): array
+    public function getFieldsFlat(bool $withRepeatedFields = false): array
     {
+        $fieldsToFlat = $this->fields();
+
+        if ($withRepeatedFields === true) {
+            $fieldsToFlat = $this->fields;
+        }
+
         $fields = [];
-        foreach ($this->fields() as $key => $field) {
+        foreach ($fieldsToFlat as $key => $field) {
             if (! isset($this->hasTabs) || ! $this->hasTabs) {
                 if (is_numeric($key) && isset($field['fields'])) {
                     foreach ($field['fields'] as $k => $f) {
@@ -82,10 +92,20 @@ trait LaraFormsBuilder
                             ];
                         }
                     } elseif (is_numeric($tabFieldKey)) {
-                        $fields[] = [
-                            'key' => $tabFieldKey,
-                            'field' => $tabFieldValue,
-                        ];
+                        if (isset($tabFieldValue['fields'])) {
+                            foreach ($tabFieldValue['fields'] as $k => $f) {
+                                $fields[] = [
+                                    'key' => $k,
+                                    'field' => $f,
+                                ];
+                            }
+                        } else {
+                            // TODO: Check when this condition is accomplished
+                            $fields[] = [
+                                'key' => $tabFieldKey,
+                                'field' => $tabFieldValue,
+                            ];
+                        }
                     }
                 }
             }
@@ -141,8 +161,15 @@ trait LaraFormsBuilder
                             $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
                         }
                     } elseif (is_numeric($tabKey)) {
-                        $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
-                        $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
+                        if (isset($tabContent['fields'])) {
+                            foreach ($tabContent['fields'] as $k => $f) {
+                                $fieldRules['formProperties.'.$k] = $this->getFieldRules($f, $k, $modelRules);
+                                $fieldValidationAttributes['formProperties.'.$k] = $this->getFieldValidationAttribute($f, $k);
+                            }
+                        } else {
+                            $fieldRules['formProperties.'.$key] = $this->getFieldRules($tabContent, $tabKey, $modelRules);
+                            $fieldValidationAttributes['formProperties.'.$key] = $this->getFieldValidationAttribute($field, $key);
+                        }
                     }
                 }
             }
@@ -197,6 +224,8 @@ trait LaraFormsBuilder
 
         $this->fields = $this->fields();
 
+        $this->setRepeatedFields();
+
         if ($this->isMultiStepForm()) {
             // @phpstan-ignore-next-line
             $this->initSteps();
@@ -207,6 +236,8 @@ trait LaraFormsBuilder
      * It can be used to set options, values, etc. before setting the form properties
      */
     protected function beforeFormProperties(): void {}
+
+    protected function setRepeatedFields(): void {}
 
     /**
      * Set form properties
@@ -248,12 +279,27 @@ trait LaraFormsBuilder
 
     private function processSaveFunctions(): void
     {
-        // saveFoo(), for all fields
-        foreach ($this->getFieldKeys() as $fieldKey) {
+        $allRepeatedFieldsData = [];
+
+        foreach ($this->getFieldKeys(true) as $fieldKey) {
+            // Collect all group_repeater_* keys into $allRepeaterData
+            if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                $allRepeatedFieldsData[$fieldKey] = $this->formProperties[$fieldKey];
+
+                continue; // skip individual save
+            }
+
+            // For normal fields, call their individual save function
+            // saveFoo(), for all fields
             $function = 'save'.Str::of($fieldKey)->studly();
             if (method_exists($this, $function) && array_key_exists($fieldKey, $this->formProperties)) {
                 $this->$function($this->formProperties[$fieldKey]);
             }
+        }
+
+        // Call saveGroupRepeater once with all repeater fields
+        if (method_exists($this, 'saveGroupRepeater')) {
+            $this->saveGroupRepeater($allRepeatedFieldsData);
         }
     }
 
@@ -472,6 +518,77 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Resolve group metadata used by fields.blade.php
+     */
+    public function resolveGroupMeta(array $field, string $groupWrapperClass, ?string $mode = null): array
+    {
+        $groupInfo = $field['group_info'] ?? [];
+        $visibility = $groupInfo['visibility'] ?? [];
+        $isAccordion = (bool) ($visibility['accordion'] ?? false);
+        $controlledBy = $visibility['controlled_by'] ?? null;
+        $controllerField = null;
+
+        if ($isAccordion && $controlledBy && is_array($field['fields'] ?? null)) {
+            foreach ($field['fields'] as $groupFieldKey => $groupField) {
+                if (! is_array($groupField)) {
+                    continue;
+                }
+                $resolvedGroupFieldKey = is_string($groupFieldKey) ? $groupFieldKey : ($groupField['key'] ?? null);
+                if ($resolvedGroupFieldKey === $controlledBy) {
+                    $controllerField = $groupField;
+                    break;
+                }
+            }
+        }
+
+        $useToggle = ($controllerField['type'] ?? null) === 'yes-no-toggle-switch';
+        $controllerDefault = $controllerField['default'] ?? null;
+        $visibilityDefault = $visibility['default'] ?? null;
+        $initialAccordionValue = $controllerDefault ?? $visibilityDefault;
+        $accordionOpenValue = 1;
+        $accordionClosedValue = 0;
+        if ($useToggle) {
+            $toggleOptions = $controllerField['options'] ?? [0 => __('No'), 1 => __('Yes')];
+            $toggleValues = array_keys($toggleOptions);
+            $accordionClosedValue = $toggleValues[0] ?? 0;
+            $accordionOpenValue = $toggleValues[1] ?? 1;
+            if (is_bool($initialAccordionValue)) {
+                $initialAccordionValue = $initialAccordionValue ? $accordionOpenValue : $accordionClosedValue;
+            }
+        }
+
+        $currentAccordionValue = ($controlledBy && array_key_exists($controlledBy, $this->formProperties))
+            ? $this->formProperties[$controlledBy]
+            : $initialAccordionValue;
+
+        $initialAccordionOpen = $useToggle
+            ? ((string) $currentAccordionValue === (string) $accordionOpenValue || in_array($currentAccordionValue, [true, 1, '1'], true))
+            : in_array($currentAccordionValue, [true, 1, '1'], true);
+
+        $isReadonlyMode = ($mode == 'view' || $mode == 'confirm') || (($controllerField['readOnly'] ?? false) ?: false);
+
+        $resolvedGroupWrapperClass = $groupWrapperClass;
+        $customGroupWrapperClass = $groupInfo['group_wrapper_class'] ?? null;
+        $isGroupWrapperClassDefault = $groupInfo['default_group_wrapper_class'] ?? true;
+        if (! empty($customGroupWrapperClass)) {
+            $resolvedGroupWrapperClass = ! $isGroupWrapperClassDefault ? $customGroupWrapperClass : $resolvedGroupWrapperClass.' '.$customGroupWrapperClass;
+        }
+
+        return [
+            'groupInfo' => $groupInfo,
+            'isAccordion' => $isAccordion,
+            'controlledBy' => $controlledBy,
+            'controllerField' => $controllerField,
+            'useToggle' => $useToggle,
+            'initialAccordionValue' => $initialAccordionValue,
+            'initialAccordionOpen' => $initialAccordionOpen,
+            'accordionOpenValue' => $accordionOpenValue,
+            'isReadonlyMode' => $isReadonlyMode,
+            'resolvedGroupWrapperClass' => $resolvedGroupWrapperClass,
+        ];
+    }
+
+    /**
      * Get the default css classes for the wrapper of group of fields
      */
     protected function getDefaultGroupWrapperClass(): string
@@ -493,6 +610,14 @@ trait LaraFormsBuilder
     protected function getFooterButtonsWrapperClasses(): string
     {
         return config('lara-forms-builder.footer_buttons_wrapper_classes');
+    }
+
+    /**
+     * Get the css classes for header buttons wrapper
+     */
+    protected function getHeaderButtonsWrapperClasses(): string
+    {
+        return config('lara-forms-builder.header_buttons_wrapper_classes') ?? 'lfb-header-buttons-wrapper';
     }
 
     /**
@@ -525,5 +650,151 @@ trait LaraFormsBuilder
     protected function getDefaultFieldErrorWrapperClasses(): string
     {
         return config('lara-forms-builder.field_error_wrapper_classes');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function processGroupRepeating(string|int $groupId): void
+    {
+        $repeatedGroups = $this->collectRepeatedGroups($groupId);
+        $lastRepeatedGroup = $repeatedGroups->last() ?? [];
+        $lastRepeatedGroupIndex = $repeatedGroups->keys()->last();
+        $lastPostfixNumericIndex = $lastRepeatedGroup !== []
+            ? $this->resolveLastPostfixNumericIndex($lastRepeatedGroup)
+            : null;
+        $tabIndex = isset($this->hasTabs) && $this->hasTabs === true
+            ? $this->findTabIndexForGroup($groupId)
+            : null;
+
+        if ($lastRepeatedGroup === [] || $lastRepeatedGroupIndex === null || $lastPostfixNumericIndex === null) {
+            throw new Exception("Group not found check the provided 'repeater' => ['group_id' => 'developers'] property");
+        }
+
+        // Init the new repeated group
+        $newRepeatedGroup['group_info'] = $lastRepeatedGroup['group_info'];
+
+        // Get repeatable fields that start with the $groupRepeaterPrefix (e.g.: 'group_repeater_foo_3')
+        $repeatableGroupFields = collect($lastRepeatedGroup['fields'])->filter(fn ($field, $key) => str_starts_with($key, $this->groupRepeaterPrefix));
+
+        // Duplicate each repeatable field
+        foreach ($repeatableGroupFields as $key => $field) {
+            // Remove the numeric suffix (_3) to get the base name of the field (e.g.: group_repeater_foo_3 -> group_repeater_foo)
+            $baseNameWithoutIndex = substr($key, 0, -2);
+
+            $newKey = $baseNameWithoutIndex.'_'.$lastPostfixNumericIndex + 1;
+
+            // add the repeated field
+            $newRepeatedGroup['fields'][$newKey] = $field;
+            // Initialize the repeated field in the $formProperties array
+            $this->formProperties[$newKey] = null;
+            if ($field['type'] === 'yes-no-toggle-switch') {
+                $this->formProperties[$newKey] = false;
+            }
+            // Set the validation rules depending on the base field
+            $this->rules['formProperties.'.$newKey] = $this->rules['formProperties.'.$key];
+            // Set the validation attributes depending on the base field
+            $this->validationAttributes['formProperties.'.$newKey] = $this->getFieldValidationAttribute($field, $key);
+        }
+
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            // Add the new repeated group to the $this->fields[$tabIndex]['content'] array directly after the last repeated group
+            array_splice($this->fields[$tabIndex]['content'], $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+            $this->initSteps();
+        } else {
+            // Add the new repeated group to the $this->fields array directly after the last repeated group
+            array_splice($this->fields, $lastRepeatedGroupIndex + 1, 0, [$newRepeatedGroup]);
+        }
+    }
+
+    public function deleteRepeatedGroup(int $groupIndex, string|int $groupId): void
+    {
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            $targetTabIndex = $this->findTabIndexForGroup($groupId);
+            $repeatedGroupToDelete = $this->fields[$targetTabIndex]['content'][$groupIndex];
+        } else {
+            $repeatedGroupToDelete = $this->fields[$groupIndex];
+        }
+
+        $repeatedFieldKeysToDelete = array_keys($repeatedGroupToDelete['fields']);
+
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            // Remove the group from $this->fields content array and reindex it
+            unset($this->fields[$targetTabIndex]['content'][$groupIndex]);
+            // TODO: Check if the reindex is needed.
+            $this->fields[$targetTabIndex]['content'] = array_values($this->fields[$targetTabIndex]['content']);
+        } else {
+            // Remove the group from $this->fields array and reindex it
+            unset($this->fields[$groupIndex]);
+            // TODO: Check if the reindex is needed.
+            $this->fields = array_values($this->fields);
+        }
+        // Remove fields keys from formProperties, rules, and validationAttributes
+        foreach ($repeatedFieldKeysToDelete as $key) {
+            unset($this->formProperties[$key]);
+            unset($this->rules["formProperties.$key"]);
+            unset($this->validationAttributes["formProperties.$key"]);
+        }
+    }
+
+    private function collectRepeatedGroups(string|int $groupId): Collection
+    {
+        if (isset($this->hasTabs) && $this->hasTabs === true) {
+            $repeatedGroups = collect();
+            foreach ($this->fields as $tab) {
+                foreach ($tab['content'] as $groupIndex => $group) {
+                    if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                        $repeatedGroups[$groupIndex] = $group;
+                    }
+                }
+            }
+
+            return $repeatedGroups;
+        }
+
+        return collect($this->fields)
+            ->filter(fn ($group) => isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId);
+    }
+
+    private function resolveLastPostfixNumericIndex(array $group): ?int
+    {
+        $lastPostfixNumericIndex = null;
+
+        if (isset($group['fields'])) {
+            foreach ($group['fields'] as $fieldKey => $field) {
+                if (str_starts_with($fieldKey, $this->groupRepeaterPrefix)) {
+                    if (preg_match('/_(\d+)$/', $fieldKey, $matches)) {
+                        $lastPostfixNumericIndex = (int) $matches[1]; // only parse numeric suffix
+                    } else {
+                        throw new Exception('Use numeric postfix for repeated fields keys (e.g.: '.$this->groupRepeaterPrefix.'foo_0)');
+                    }
+                }
+            }
+        }
+
+        return $lastPostfixNumericIndex;
+    }
+
+    private function findTabIndexForGroup(string|int $groupId): ?int
+    {
+        foreach ($this->fields as $tabIndex => $tab) {
+            foreach ($tab['content'] as $group) {
+                if (isset($group['group_info']['repeater']['group_id']) && $group['group_info']['repeater']['group_id'] === $groupId) {
+                    return $tabIndex;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public function isLastRepeatedGroup(string|int $groupId, string|int $fieldKey): bool
+    {
+        return $fieldKey === $this->collectRepeatedGroups($groupId)->keys()->last();
+    }
+
+    public function getRepeatedGroupsCount(string|int $groupId): int
+    {
+        return $this->collectRepeatedGroups($groupId)->count();
     }
 }

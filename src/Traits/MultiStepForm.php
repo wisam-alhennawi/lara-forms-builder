@@ -129,7 +129,7 @@ trait MultiStepForm
      */
     public function nextStep(): void
     {
-        if ($key = $this->stepKeyAt($this->activeStepNumber + 1)) {
+        if (($key = $this->stepKeyAt($this->activeStepNumber + 1)) !== null) {
             $this->changeStep($key, 'forward');
         }
     }
@@ -139,7 +139,18 @@ trait MultiStepForm
      */
     public function goToStep(string $stepKey): void
     {
-        $this->changeStep($stepKey, 'jump');
+        if ($this->canJumpBetweenSteps()) {
+            $this->changeStep($stepKey, 'jump');
+        }
+    }
+
+    /**
+     * Check if free step jumping is allowed. Used by goToStep() and
+     * the step-nav view.
+     */
+    public function canJumpBetweenSteps(): bool
+    {
+        return $this->isJumpingBetweenStepsEnabled && $this->mode !== 'create';
     }
 
     /**
@@ -286,7 +297,7 @@ trait MultiStepForm
     /**
      * Build the per-step validity snapshot: [ 'step-key' => bool ] (true = valid).
      */
-    public function resolveStepStatuses(): array
+    protected function resolveStepStatuses(): array
     {
         $statuses = [];
         foreach ($this->steps as $step) {

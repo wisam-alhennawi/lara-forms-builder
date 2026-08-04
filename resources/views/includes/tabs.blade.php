@@ -7,7 +7,7 @@
                     <nav class="lfb-steps-nav">
                         @php
                             $lfbStepStatuses = property_exists($this, 'stepStatuses') ? $this->stepStatuses : [];
-                            $lfbCanJumpSteps = property_exists($this, 'isJumpingBetweenStepsEnabled') && $this->isJumpingBetweenStepsEnabled && $this->mode !== 'create';
+                            $lfbCanJumpSteps = method_exists($this, 'canJumpBetweenSteps') && $this->canJumpBetweenSteps();
                         @endphp
                         @foreach($fields as $index => $field)
                             @php

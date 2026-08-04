@@ -294,6 +294,14 @@
         @apply bg-gray-200/50 border-gray-300;
     }
 
+    .lfb-step-nav-title-btn {
+        @apply cursor-pointer hover:bg-gray-100;
+    }
+
+    .lfb-step-nav-title-error {
+        @apply text-red-600 border-red-300;
+    }
+
     .lfb-tab-content-wrapper {
         @apply lg:col-span-10 relative pb-4;
     }

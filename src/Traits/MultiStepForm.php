@@ -211,12 +211,18 @@ trait MultiStepForm
 
     /**
      * Hook: runs right after the active step has changed.
-     * Default: regenerate any derived step content, refresh the status snapshot, and scroll to the top of the form.
+     * Default: regenerate any derived step content, refresh the status snapshot
+     * (only for directions we validate on — a direction that skips validation,
+     * e.g. Previous, keeps the existing badges), and scroll to the top of the form.
      */
     protected function onStepChanged(string $from, string $to, string $direction): void
     {
         $this->refreshSteps($to, $from, $direction);
-        $this->refreshStepStatuses();
+
+        if ($this->shouldValidateOnLeave($direction)) {
+            $this->refreshStepStatuses();
+        }
+
         $this->dispatch('scroll-to-top-form');
     }
 

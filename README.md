@@ -1025,7 +1025,7 @@ all funnel through one pipeline. Override any of these to customise navigation
 |-----------------------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `canLeaveStep($from, $to, $direction)`  | `bool`  | Validate `$from` (per `shouldValidateOnLeave`) + run `extraValidate()`; return `false` to block.                                                                                       |
 | `shouldValidateOnLeave($direction)`     | `bool`  | `forward` → `$shouldValidateCurrentStepOnNext`; `backward` → `$shouldValidateCurrentStepOnPrevious`; `jump` → `$shouldValidateCurrentStepOnJump` (Back/Jump forced off in create mode) |
-| `onStepChanged($from, $to, $direction)` | `void`  | `refreshSteps()`, recompute statuses, scroll to top                                                                                                                                    |
+| `onStepChanged($from, $to, $direction)` | `void`  | `refreshSteps()`, recompute status badges (only when the direction validates, per `shouldValidateOnLeave`), scroll to top                                                             |
 
 `$direction` is one of `forward`, `backward`, `jump`.
 
@@ -1036,7 +1036,9 @@ take effect once the record exists (view/edit).
 
 **Per-step validity & error badges.** The component exposes `$stepStatuses` — a
 plain map `['step-key' => bool]` (true = valid), recomputed on navigation for
-existing records (skipped in create mode, so a fresh form isn't all red).
+existing records — only on directions that validate (so leaving a step without
+re-validating, e.g. Previous, keeps the current badges), and skipped in create
+mode so a fresh form isn't all red.
 Invalid steps receive the `lfb-step-nav-title-error` class in the nav and a
 default error icon (override `getStepErrorIcon()` to customise it, or return
 null for none). Define step-level rules — including "at least one selected"

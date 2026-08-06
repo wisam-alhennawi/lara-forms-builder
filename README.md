@@ -988,6 +988,103 @@ public function getNextStepIcon(): ?string
 }
 ```
 
+##### Step Navigation, Guards & Validity
+
+By default a multi-step form is a forward-only wizard: `Next` validates the
+current step, `Previous` does not, and the step nav is display-only. All of the
+behaviour below is **opt-in** — enable it per-form via public properties (set
+as class properties or through `mountForm([...])`, like `showStepNumber`)
+without affecting other forms.
+
+```php
+$this->mountForm($model, [
+    'isMultiStep'                         => true,
+    'isJumpingBetweenStepsEnabled'        => false, // clickable step nav (jump to any step)
+    'shouldValidateCurrentStepOnNext'     => true,  // validate the current step on Next
+    'shouldValidateCurrentStepOnPrevious' => false, // validate the current step on Previous
+    'shouldValidateCurrentStepOnJump'     => true,  // validate the current step when jumping
+]);
+```
+
+**Free navigation (jumping).** With `$isJumpingBetweenStepsEnabled` enabled the step nav
+becomes clickable and calls `goToStep($key)`. To decide it per-form (e.g. only
+when editing an existing record), set the property from `mount()`:
+
+```php
+$this->mountForm($model, [
+    'isMultiStep'                  => true,
+    'isJumpingBetweenStepsEnabled' => true,
+]);
+```
+
+**Navigation guards & hooks.** `nextStep()`, `previousStep()` and `goToStep()`
+all funnel through one pipeline. Override any of these to customise navigation
+— you never need to alias or re-implement the navigation methods themselves:
+
+| Method                                  | Returns | Default                                                                                                                                                                                |
+|-----------------------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `canLeaveStep($from, $to, $direction)`  | `bool`  | Validate `$from` (per `shouldValidateOnLeave`) + run `extraValidate()`; return `false` to block.                                                                                       |
+| `shouldValidateOnLeave($direction)`     | `bool`  | `forward` → `$shouldValidateCurrentStepOnNext`; `backward` → `$shouldValidateCurrentStepOnPrevious`; `jump` → `$shouldValidateCurrentStepOnJump` (Back/Jump forced off in create mode) |
+| `onStepChanged($from, $to, $direction)` | `void`  | `refreshSteps()`, recompute status badges (only when the direction validates, per `shouldValidateOnLeave`), scroll to top                                                             |
+
+`$direction` is one of `forward`, `backward`, `jump`.
+
+**Create mode is a strict forward wizard.** In create mode the package auto-disables the
+view/edit-only features regardless of their flags: step jumping is off, error badges are
+not shown, and only `Next` validation runs (Back/Jump validation are skipped). All of them
+take effect once the record exists (view/edit).
+
+**Per-step validity & error badges.** The component exposes `$stepStatuses` — a
+plain map `['step-key' => bool]` (true = valid), recomputed on navigation for
+existing records — only on directions that validate (so leaving a step without
+re-validating, e.g. Previous, keeps the current badges), and skipped in create
+mode so a fresh form isn't all red.
+Invalid steps receive the `lfb-step-nav-title-error` class in the nav and a
+default error icon (override `getStepErrorIcon()` to customise it, or return
+null for none). Define step-level rules — including "at least one selected"
+checks — by overriding
+`isStepValid()`, the single source of truth for step validity. It lives in the
+trait, so to reuse the base rules alias the trait method rather than using
+`parent::`:
+
+```php
+use HasTabs, MultiStepForm {
+    MultiStepForm::isStepValid as baseIsStepValid;
+}
+
+protected function isStepValid(string $key): bool
+{
+    if (! $this->baseIsStepValid($key)) {   // base rules for this step
+        return false;
+    }
+
+    if ($key === 'contacts-step' && ! $otherCondition) {
+        return false;
+    }
+
+    return true;
+}
+```
+
+**Derived steps (content that depends on other steps).** When a step's fields
+depend on answers from an earlier step, regenerate only that step inside
+`refreshSteps()` using `rebuildStepFields()` — this leaves every other step
+(and any repeater rows they contain) untouched:
+
+```php
+protected function refreshSteps(string $to, string $from, string $direction): void
+{
+    if ($to === 'contacts-step') {
+        $this->rebuildStepFields('contacts-step', $this->contactsStepFields());
+    }
+}
+```
+
+**Save orchestration.** For a multi-step form, `submit()` always validates every
+step before saving — so a rule on a non-active step can't be bypassed. If any
+step is invalid it jumps to the first one, surfaces its errors, and blocks the
+save; otherwise it saves.
+
 ---
 
 ### Form Methods

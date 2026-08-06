@@ -38,6 +38,7 @@
                 open() {
                     this.show = true;
                     this.resetSearch();
+                    this.$nextTick(() => this.$refs.searchInput?.focus());
                 },
                 close() {
                     this.show = false;

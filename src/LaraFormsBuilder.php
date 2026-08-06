@@ -337,6 +337,11 @@ trait LaraFormsBuilder
             $this->dispatch('scroll-to-first-error');
         }
 
+        // Multi-step: validate every step before saving; runs before validate() so it can route to the first invalid step.
+        if ($this->isMultiStepForm() && ! $this->validateAllStepsBeforeSave()) {
+            return false;
+        }
+
         $validatedData = $this->validate();
 
         $validatedData = $validatedData['formProperties'];

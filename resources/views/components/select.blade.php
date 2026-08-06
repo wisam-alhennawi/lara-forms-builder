@@ -93,6 +93,7 @@
                         <input
                             type="text"
                             x-model="search"
+                            x-ref="searchInput"
                             class="lfb-styled-select-search-input"
                             placeholder="{{ __('Search') }}"
                         >

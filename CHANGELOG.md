@@ -2,6 +2,16 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.4.0 - 2026-08-06
+
+### What's Changed
+
+* Set focus on search input when opening searchable select dropdown by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/92
+* Add navigation functionality for multi-step form by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/93
+* Release: v2.4.0 by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/94
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.3.0...v2.4.0
+
 ## v2.3.0 - 2026-04-28
 
 ### What's Changed

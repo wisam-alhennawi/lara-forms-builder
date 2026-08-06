@@ -5,14 +5,33 @@
             <aside class="lfb-steps-nav-wrapper">
                 <div class="lfb-steps-nav-container">
                     <nav class="lfb-steps-nav">
+                        @php
+                            $lfbStepStatuses = property_exists($this, 'stepStatuses') ? $this->stepStatuses : [];
+                            $lfbCanJumpSteps = method_exists($this, 'canJumpBetweenSteps') && $this->canJumpBetweenSteps();
+                        @endphp
                         @foreach($fields as $index => $field)
+                            @php
+                                $lfbStepKey = $field['key'];
+                                $lfbStepInvalid = ! ($lfbStepStatuses[$lfbStepKey] ?? true);
+                            @endphp
                             <div class="lfb-step-nav">
-                                <div x-bind:class="[ tab == '{{ $field['key'] }}' ? 'lfb-step-nav-title-active' : '']" class="lfb-step-nav-title">
+                                <div
+                                    x-bind:class="[ tab == '{{ $lfbStepKey }}' ? 'lfb-step-nav-title-active' : '']"
+                                    @class([
+                                        'lfb-step-nav-title',
+                                        'lfb-step-nav-title-btn' => $lfbCanJumpSteps,
+                                        'lfb-step-nav-title-error' => $lfbStepInvalid,
+                                    ])
+                                    @if($lfbCanJumpSteps) wire:click="goToStep('{{ $lfbStepKey }}')" @endif
+                                >
                                     @if(property_exists($this, 'showStepNumber') && $this->showStepNumber)
                                         <span class="lfb-step-nav-number">{{ $index + 1 }}</span>
                                     @endif
                                     <div class="lfb-step-nav-label">
                                         {{ $field['navTitle'] ?? $field['title'] }}
+                                        @if($lfbStepInvalid)
+                                            {!! $this->getStepErrorIcon() !!}
+                                        @endif
                                     </div>
                                 </div>
                             </div>

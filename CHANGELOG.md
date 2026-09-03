@@ -2,6 +2,15 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.5.0 - 2026-09-03
+
+### What's Changed
+
+* Feature  / Add support for Laravel 13 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/95
+* Release: v2.5.0  by @wisam-alhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/96
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.4.0...v2.5.0
+
 ## v2.4.0 - 2026-08-06
 
 ### What's Changed

@@ -12,4 +12,5 @@ return [
     'next_button_classes' => 'lfb-primary-button',
     'field_error_wrapper_classes' => 'lfb-field-error-wrapper',
     'header_buttons_wrapper_classes' => 'lfb-header-buttons-wrapper',
+    'trim_strings' => true,
 ];

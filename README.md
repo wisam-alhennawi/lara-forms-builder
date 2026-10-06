@@ -89,6 +89,7 @@ This command will do the following:
         'footer_buttons_wrapper_classes' => 'lfb-buttons-wrapper',
         'previous_button_classes' => 'lfb-secondary-button',
         'next_button_classes' => 'lfb-primary-button',
+        'trim_strings' => true,
     ];
     ```
 
@@ -157,6 +158,33 @@ Like it mention in the Requirements section if your form has a date field you mu
 
 In order to use the confirmation modal within your project you must include it globally in the default layout of your blade view where you want to use it.
 So you can add `@livewire('modals.confirmation')` to your `views/layouts/app.blade.php` inside the html `<body>` tag.
+
+### Trimming text fields
+
+Livewire requests skip Laravel's `TrimStrings` middleware, so the package trims leading and trailing whitespace itself.
+It runs on submit and on every step change of a multi-step form, before any validation (`rules`, `extraValidate()`) and before the model is saved, so rules like `required`, `unique` or `email` see the clean value. It never runs while the user is typing.
+
+- The save button (`checkAndSave()`) trims before calling `submit()`, so an overridden `submit()` already sees clean values before `parent::submit()`. If you call `submit()` from your own action and read `formProperties` before it, call `$this->trimFormProperties()` first.
+- Only `input` and `textarea` fields are trimmed. All other field types (e.g. `trix-editor`, `select`, `checkbox-group` incl. its extra texts) are left untouched.
+- Besides normal whitespace, non-breaking and zero-width spaces (common when pasting from Word or Excel) are removed too, like Laravel's `TrimStrings` middleware does.
+- A value that contains only whitespace becomes `null`, like an emptied field. An empty string `''` loaded from the model stays `''`.
+- These fields are never trimmed:
+    - password inputs (`'inputType' => 'password'`);
+    - `readOnly` fields: they are not user input. The flag is read at submit time, so changing `readOnly` at runtime is respected;
+    - fields with `'trim' => false`.
+- Disable it for a single field with `'trim' => false`:
+    ```php
+    'code' => [
+        'type' => 'input',
+        'label' => __('Code'),
+        'trim' => false,
+    ],
+    ```
+- Disable it globally in `config/lara-forms-builder.php` (if the key is missing, trimming is enabled):
+    ```php
+    'trim_strings' => false,
+    ```
+- Override the `trimFormProperties()` method in your form component to customize the behavior.
 
 ## Usage
 
@@ -344,6 +372,7 @@ The `input` form field is a classic html input element. It has the following add
     - `live.throttle.750ms` - Throttles input to maximum 1 event per 750ms
 
 If no modifier is specified, Livewire's default `live` modifier will be applied.
+* `trim` (optional): Set to `false` to keep leading/trailing whitespace on submit. Default is `true`, see [Trimming text fields](#trimming-text-fields).
 
 Example:
 
@@ -363,6 +392,7 @@ Example:
 The `textarea` form field represents a text area and has the following additional properties:
 
 * `rows` (optional): Defines the number of rows of the text area, default if not set is 5.
+* `trim` (optional): Set to `false` to keep leading/trailing whitespace on submit. Default is `true`, see [Trimming text fields](#trimming-text-fields).
 
 #### Type `select`
 

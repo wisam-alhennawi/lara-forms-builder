@@ -165,6 +165,9 @@ trait MultiStepForm
             return;
         }
 
+        // Trim before the leave guard, so step validation and step statuses see clean values.
+        $this->trimFormProperties();
+
         if (! $this->canLeaveStep($from, $to, $direction)) {
             return;
         }

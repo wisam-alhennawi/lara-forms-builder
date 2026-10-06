@@ -322,6 +322,56 @@ trait LaraFormsBuilder
     }
 
     /**
+     * Trim leading/trailing whitespace of free-text fields (input, textarea) before validation.
+     * Livewire requests skip Laravel's TrimStrings middleware, so this is not done automatically.
+     * Done on submit/step change only: trimming on every update would eat spaces while typing.
+     * Skips password inputs, readOnly fields and fields with 'trim' => false; disabled globally via the 'trim_strings' config.
+     */
+    protected function trimFormProperties(): void
+    {
+        if (! config('lara-forms-builder.trim_strings', true)) {
+            return;
+        }
+
+        // Read from $this->fields (via getFieldsFlat(true)), so runtime changes like readOnly and repeated groups count.
+        foreach ($this->getFieldsFlat(true) as $item) {
+            $key = $item['key'];
+            $field = $item['field'];
+
+            if (! in_array($field['type'] ?? null, ['input', 'textarea'], true)
+                || ($field['inputType'] ?? null) === 'password'
+                || ($field['readOnly'] ?? false) === true
+                || ($field['trim'] ?? true) === false
+                || ! is_string($this->formProperties[$key] ?? null)
+                || $this->formProperties[$key] === ''
+            ) {
+                continue;
+            }
+
+            $trimmed = $this->trimString($this->formProperties[$key]);
+
+            // Whitespace-only becomes null, like an emptied field in updated(); an untouched '' from the model stays ''.
+            $this->formProperties[$key] = $trimmed === '' ? null : $trimmed;
+        }
+    }
+
+    /**
+     * Trim whitespace including non-breaking and zero-width spaces (common when pasting from Word/Excel),
+     * like Laravel's TrimStrings middleware.
+     */
+    private function trimString(string $value): string
+    {
+        // Always true on recent Laravel, but needed for older supported versions.
+        // @phpstan-ignore-next-line
+        if (method_exists(Str::class, 'trim')) {
+            return Str::trim($value);
+        }
+
+        // Fallback for Laravel versions without Str::trim() (10.x, early 11.x); with /u, \s also matches U+00A0.
+        return preg_replace('~^[\s\x{FEFF}\x{200B}]+|[\s\x{FEFF}\x{200B}]+$~u', '', $value) ?? trim($value);
+    }
+
+    /**
      * Submit the form (validation, create or update the model, etc.)
      */
     protected function submit(): bool
@@ -332,6 +382,8 @@ trait LaraFormsBuilder
 
             return false;
         }
+
+        $this->trimFormProperties();
 
         if ($this->scrollToFirstError) {
             $this->dispatch('scroll-to-first-error');
@@ -410,6 +462,9 @@ trait LaraFormsBuilder
      */
     public function checkAndSave()
     {
+        // Trim before submit(), so an overridden submit() sees clean values before calling parent::submit().
+        $this->trimFormProperties();
+
         if ($this->submit() && count($this->getErrorBag()->getMessages()) == 0) {
             $this->successMessage();
             $this->responseCallBack();

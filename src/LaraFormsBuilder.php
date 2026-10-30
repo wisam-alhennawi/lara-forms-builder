@@ -23,6 +23,8 @@ trait LaraFormsBuilder
 
     public $headView;
 
+    public $customButtonView;
+
     public $fields;
 
     public bool $hasSession = true;

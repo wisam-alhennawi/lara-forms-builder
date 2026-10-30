@@ -1145,6 +1145,31 @@ To enable this feature, add the following line in the `mount` method of your for
 $this->scrollToFirstError = true;
 ```
 
+#### Custom Action Button
+
+An extra button can be shown next to Save/Cancel (after Save). It is disabled by default; enable it by passing a view in the `mountForm` configurations:
+
+```php
+$this->mountForm($dog, ['customButtonView' => 'forms.buttons.export']);
+```
+
+`resources/views/forms/buttons/export.blade.php`:
+
+```blade
+<button wire:click="export" class="{{ $this->getSecondaryButtonClasses() }}">
+    {{ __('Export') }}
+</button>
+```
+
+The logic lives in your form component:
+
+```php
+public function export()
+{
+    $this->dispatch('dog-exported', id: $this->model->id);
+}
+```
+
 
 ## Changelog
 

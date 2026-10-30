@@ -37,5 +37,8 @@
                 @include('lara-forms-builder::includes.submit-button')
             @endif
         @endif
+        @if ($customButtonView)
+            @include($customButtonView)
+        @endif
     </div>
 </div>

@@ -1147,7 +1147,7 @@ $this->scrollToFirstError = true;
 
 #### Custom Action Button
 
-An extra button can be shown next to Save/Cancel (after Save). It is disabled by default; enable it by passing a view in the `mountForm` configurations:
+An extra button can be shown next to Save/Cancel (after Save). In multi-step forms it is shown before the Next/Save button. With `hasTopNavigation` it is shown only in the bottom buttons bar. It is disabled by default; enable it by passing a view in the `mountForm` configurations:
 
 ```php
 $this->mountForm($dog, ['customButtonView' => 'forms.buttons.export']);

@@ -11,6 +11,9 @@
                     </span>
                 </button>
             @endif
+            @if ($customButtonView && ($position ?? 'bottom') === 'bottom')
+                @include($customButtonView)
+            @endif
             @if ($this->activeStepNumber() != $this->totalSteps())
                 <button wire:click="nextStep" class="{{$this->getNextButtonClasses()}}">
                     <span class="lbf-button-label">
@@ -36,9 +39,9 @@
             @else
                 @include('lara-forms-builder::includes.submit-button')
             @endif
-        @endif
-        @if ($customButtonView)
-            @include($customButtonView)
+            @if ($customButtonView && ($position ?? 'bottom') === 'bottom')
+                @include($customButtonView)
+            @endif
         @endif
     </div>
 </div>

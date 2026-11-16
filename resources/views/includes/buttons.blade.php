@@ -1,3 +1,6 @@
+@php
+    $showCustomButton = $customButtonView && ($position ?? 'bottom') === 'bottom';
+@endphp
 <div class="{{ ($position ?? 'bottom') === 'top' ? $this->getHeaderButtonsWrapperClasses() : $this->getFooterButtonsWrapperClasses() }}">
     <div class="lfb-buttons @if($this->isMultiStepForm() && $this->activeStepNumber() > 1)lfb-multi-step-buttons @endif">
         @if ($this->isMultiStepForm())
@@ -11,7 +14,7 @@
                     </span>
                 </button>
             @endif
-            @if ($customButtonView && ($position ?? 'bottom') === 'bottom')
+            @if ($showCustomButton)
                 @include($customButtonView)
             @endif
             @if ($this->activeStepNumber() != $this->totalSteps())
@@ -39,7 +42,7 @@
             @else
                 @include('lara-forms-builder::includes.submit-button')
             @endif
-            @if ($customButtonView && ($position ?? 'bottom') === 'bottom')
+            @if ($showCustomButton)
                 @include($customButtonView)
             @endif
         @endif

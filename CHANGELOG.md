@@ -2,6 +2,15 @@
 
 All notable changes to `lara-forms-builder` will be documented in this file.
 
+## v2.6.0 - 2026-11-19
+
+### What's Changed
+
+* Added optional custom action button via customButtonView. by @sheol77 in https://github.com/wisam-alhennawi/lara-forms-builder/pull/98
+* Release: v2.6.0 by @HussamAlhennawi in https://github.com/wisam-alhennawi/lara-forms-builder/pull/99
+
+**Full Changelog**: https://github.com/wisam-alhennawi/lara-forms-builder/compare/v2.5.0...v2.6.0
+
 ## v2.5.0 - 2026-09-03
 
 ### What's Changed

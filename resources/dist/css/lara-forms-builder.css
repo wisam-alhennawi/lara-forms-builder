@@ -162,8 +162,8 @@
         @apply px-4 flex justify-end gap-2;
     }
 
-    .lfb-multi-step-buttons {
-        @apply justify-between;
+    .lfb-multi-step-buttons > :first-child {
+        @apply mr-auto;
     }
 
     .lfb-secondary-button {

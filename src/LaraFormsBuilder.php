@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 
 trait LaraFormsBuilder
 {
@@ -22,6 +23,9 @@ trait LaraFormsBuilder
     public $cancelButtonLabel;
 
     public $headView;
+
+    #[Locked]
+    public $customButtonView;
 
     public $fields;
 

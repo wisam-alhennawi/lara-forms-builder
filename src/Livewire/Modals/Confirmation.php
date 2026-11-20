@@ -59,7 +59,7 @@ class Confirmation extends Component
     public function hideConfirmationModal()
     {
         $this->showConfirmationModal = false;
-        // ponytail: only callback is reset; title, content and icon params stay for the closing animation, showConfirmationModal() overwrites them all.
+        // Only callback is reset; title, content and icon params stay for the closing animation, showConfirmationModal() overwrites them all.
         $this->reset('callback');
     }
 

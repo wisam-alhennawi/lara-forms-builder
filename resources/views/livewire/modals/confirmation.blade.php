@@ -13,7 +13,7 @@
         </x-secondary-button>
 
         @if ($isDanger)
-        <x-danger-button class="ml-2 {{ $confirmButtonClass }}" wire:click="confirm" wire:loading.attr="disabled">
+        <x-danger-button class="ml-2" wire:click="confirm" wire:loading.attr="disabled">
             {!! __('Confirm') !!}
         </x-danger-button>
         @else

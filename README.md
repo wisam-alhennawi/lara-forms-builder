@@ -175,7 +175,7 @@ By default the modal is meant for destructive actions: warning icon and danger b
 | `icon`               | Blade component name of the icon, e.g. `heroicon-o-check-circle`.           |
 | `iconClass`          | CSS classes of the icon.                                                    |
 | `iconWrapperClass`   | CSS classes of the icon wrapper.                                            |
-| `confirmButtonClass` | Additional CSS classes of the confirm button.                               |
+| `confirmButtonClass` | Additional CSS classes of the confirm button |
 
 ```php
 $this->dispatch('showConfirmationModal',
@@ -186,11 +186,11 @@ $this->dispatch('showConfirmationModal',
     icon: 'heroicon-o-check-circle',
     iconClass: 'h-8 w-8 text-primary',
     iconWrapperClass: 'bg-primary/10',
-    confirmButtonClass: 'bg-primary hover:bg-primary-hover',
+    confirmButtonClass: 'bg-primary hover:bg-secondary focus:bg-secondary active:bg-secondary',
 )->to('modals.confirmation');
 ```
 
-`icon`, `iconClass` and `iconWrapperClass` are passed to your `<x-confirmation-modal>` component only when they are set, so its own defaults are used otherwise.
+When `icon`, `iconClass` or `iconWrapperClass` is left `null`, the defaults of your `<x-confirmation-modal>` props are used.
 The component published by Jetstream does not render them; declare them as props in `resources/views/components/confirmation-modal.blade.php`, for example:
 ```blade
 @props([

@@ -158,6 +158,62 @@ Like it mention in the Requirements section if your form has a date field you mu
 In order to use the confirmation modal within your project you must include it globally in the default layout of your blade view where you want to use it.
 So you can add `@livewire('modals.confirmation')` to your `views/layouts/app.blade.php` inside the html `<body>` tag.
 
+Open the modal by dispatching `showConfirmationModal` to it. When the user confirms, a `modalConfirmed` event is dispatched with the given `callback`:
+```php
+$this->dispatch('showConfirmationModal',
+    title: __('Delete'),
+    content: __('Do you really want to delete this record?'),
+    callback: ['action' => 'delete', 'id' => $id],
+)->to('modals.confirmation');
+```
+
+By default the modal is meant for destructive actions: warning icon and danger button. For non-destructive actions you can pass these optional parameters:
+
+| Parameter            | Description                                                                 |
+|----------------------|-----------------------------------------------------------------------------|
+| `isDanger`           | `false` renders `<x-button>` instead of `<x-danger-button>` (default `true`). |
+| `icon`               | Blade component name of the icon, e.g. `heroicon-o-check-circle`.           |
+| `iconClass`          | CSS classes of the icon.                                                    |
+| `iconWrapperClass`   | CSS classes of the icon wrapper.                                            |
+| `confirmButtonClass` | Additional CSS classes of the confirm button |
+
+```php
+$this->dispatch('showConfirmationModal',
+    title: __('Complete'),
+    content: __('Do you want to complete this task?'),
+    callback: ['action' => 'completeTask', 'id' => $id],
+    isDanger: false,
+    icon: 'heroicon-o-check-circle',
+    iconClass: 'h-8 w-8 text-primary',
+    iconWrapperClass: 'bg-primary/10',
+    confirmButtonClass: 'bg-primary hover:bg-secondary focus:bg-secondary active:bg-secondary',
+)->to('modals.confirmation');
+```
+
+When `icon`, `iconClass` or `iconWrapperClass` is left `null`, the defaults of your `<x-confirmation-modal>` props are used.
+The component published by Jetstream does not render them; declare them as props in `resources/views/components/confirmation-modal.blade.php`, for example:
+```blade
+@props([
+    'id' => null,
+    'maxWidth' => null,
+    'icon' => 'heroicon-o-exclamation-triangle',
+    'iconClass' => 'h-6 w-6 text-red-600',
+    'iconWrapperClass' => 'bg-red-100',
+])
+
+<x-modal :id="$id" :maxWidth="$maxWidth" {{ $attributes }}>
+    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="sm:flex sm:items-start">
+            <div class="mx-auto shrink-0 flex items-center justify-center h-12 w-12 rounded-full {{ $iconWrapperClass }} sm:mx-0 sm:h-10 sm:w-10">
+                <x-dynamic-component :component="$icon" class="{{ $iconClass }}" />
+            </div>
+            {{-- title and content as in the Jetstream component --}}
+        </div>
+    </div>
+    {{-- footer as in the Jetstream component --}}
+</x-modal>
+```
+
 ## Usage
 
 ### Create new Livewire from

@@ -1,4 +1,4 @@
-<x-confirmation-modal wire:model="showConfirmationModal">
+<x-confirmation-modal wire:model="showConfirmationModal" :icon="$icon" :icon-class="$iconClass" :icon-wrapper-class="$iconWrapperClass">
     <x-slot name="title">
         {{ $title }}
     </x-slot>
@@ -17,7 +17,7 @@
             {!! __('Confirm') !!}
         </x-danger-button>
         @else
-        <x-button class="ml-2" wire:click="confirm" wire:loading.attr="disabled">
+        <x-button class="ml-2 {{ $confirmButtonClass }}" wire:click="confirm" wire:loading.attr="disabled">
             {!! __('Confirm') !!}
         </x-button>
         @endif
